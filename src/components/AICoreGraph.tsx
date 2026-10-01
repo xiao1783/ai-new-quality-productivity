@@ -63,12 +63,8 @@ export default function AICoreGraph() {
   })
 
   return (
-    <svg viewBox="0 0 720 720" className="h-full w-full" role="img" aria-label="AI 新质生产力引擎">
+    <svg viewBox="0 0 720 720" className="relative z-[1] h-full w-full" role="img" aria-label="AI 新质生产力引擎">
       <defs>
-        <linearGradient id="core-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#0F5BFB" />
-          <stop offset="1" stopColor="#18B9EA" />
-        </linearGradient>
         <radialGradient id="core-glow" cx="0.5" cy="0.5" r="0.5">
           <stop offset="0" stopColor="#2563EB" stopOpacity="0.18" />
           <stop offset="1" stopColor="#2563EB" stopOpacity="0" />
@@ -124,13 +120,13 @@ export default function AICoreGraph() {
 
       {/* 中心 AI Core */}
       <g>
-        <circle cx={CX} cy={CY} r="74" fill="#0F5BFB" opacity="0.1" />
-        <circle cx={CX} cy={CY} r="61" fill="url(#core-g)" stroke="rgba(255,255,255,.85)" strokeWidth="3" style={{ filter: 'drop-shadow(0 12px 22px rgba(15,91,251,.38))' }} />
-        <circle cx={CX} cy={CY} r="61" fill="none" stroke="#0F5BFB" strokeWidth="2" className="pulse-ring" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+        <circle cx={CX} cy={CY} r="76" fill="#0F5BFB" opacity="0.18" />
+        <circle cx={CX} cy={CY} r="61" fill="#0B52D6" stroke="rgba(255,255,255,.96)" strokeWidth="3" style={{ filter: 'drop-shadow(0 12px 24px rgba(15,91,251,.5))' }} />
+        <circle cx={CX} cy={CY} r="61" fill="none" stroke="#0647D8" strokeWidth="2.5" className="pulse-ring" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
         <text x={CX} y={CY - 4} textAnchor="middle" fill="#fff" fontSize="21" fontWeight="700">
           AI Core
         </text>
-        <text x={CX} y={CY + 18} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="11" fontWeight="600" letterSpacing="1.5">
+        <text x={CX} y={CY + 18} textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="11" fontWeight="600" letterSpacing="1.5">
           智能引擎
         </text>
       </g>
