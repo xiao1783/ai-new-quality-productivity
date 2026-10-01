@@ -46,7 +46,7 @@ type Point = [number, number]
 
 function DigitIntro() {
   return (
-    <div className="journey-visual grid grid-cols-3 gap-3 p-6 sm:p-10">
+    <div className="journey-visual journey-digit-grid grid grid-cols-3 gap-3 p-6 sm:p-8">
       {DIGITS.map((digit, index) => (
         <motion.div
           key={`${digit}-${index}`}

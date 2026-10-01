@@ -304,6 +304,11 @@ body {
   min-height: min(62vh, 590px);
   box-shadow: 0 26px 70px rgba(30,102,172,.13), inset 0 1px 0 rgba(255,255,255,.96);
 }
+.experience-stage .journey-digit-grid {
+  width: min(100%, 480px);
+  min-height: 0;
+  justify-self: center;
+}
 .journey-lottie-shell {
   position: relative;
   display: flex;
@@ -599,6 +604,10 @@ input[type='range'].slider::-moz-range-thumb {
   }
   .experience-stage .journey-visual {
     min-height: 360px;
+  }
+  .experience-stage .journey-digit-grid {
+    width: min(100%, 320px);
+    min-height: 0;
   }
   .journey-lottie-canvas {
     height: 360px;
