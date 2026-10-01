@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
 export default defineConfig({
+  // GitHub Pages 项目站点路径：https://xiao1783.github.io/ai-new-quality-productivity/
+  base: '/ai-new-quality-productivity/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
