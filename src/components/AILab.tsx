@@ -419,7 +419,7 @@ export default function AILab() {
     <section id="lab" className="scene scene-lab section-pad bg-canvas">
       <div className="container-x">
         <SectionHeading
-          index="08"
+          index="07"
           en="AI LAB"
           title="亲手体验 AI 如何创造生产力"
           subtitle="四个交互式实验，模拟机器视觉、智能调度、预测性维护与智能决策的完整过程。"

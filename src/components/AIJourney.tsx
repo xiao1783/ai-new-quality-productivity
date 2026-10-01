@@ -18,27 +18,27 @@ import {
   Zap,
   type LucideIcon,
 } from 'lucide-react'
-import SectionHeading from './ui/SectionHeading'
-import Reveal from './ui/Reveal'
+import Logo from './Logo'
 import { loadWeights, recognizeDigit, type Recognition } from '@/utils/mnistNetwork'
 
 interface Chapter {
   title: string
   en: string
   summary: string
+  body: string[]
   icon: LucideIcon
 }
 
 const CHAPTERS: Chapter[] = [
-  { title: '体验人工智能', en: 'Meet AI', summary: '从一个熟悉的问题开始：机器怎样看懂人写下的数字？', icon: Sparkles },
-  { title: '手写数字识别', en: 'Try MNIST', summary: '亲手写下 0–9，观察神经网络给出的识别结果与概率。', icon: PenLine },
-  { title: 'AI 发展历程', en: 'AI Timeline', summary: '从符号智能、机器学习到生成式 AI，能力边界持续扩展。', icon: History },
-  { title: '神经元信号', en: 'Neuron Signal', summary: '输入超过阈值后被激活，并把信号继续传向下一层。', icon: Zap },
-  { title: '前向传播', en: 'Forward Pass', summary: '数据沿网络逐层计算，最终转换为可以解释的预测。', icon: Network },
-  { title: 'MNIST 流程', en: 'Recognition Flow', summary: '图像经过预处理、特征计算和概率输出，形成完整闭环。', icon: ScanSearch },
-  { title: 'AI 应用场景', en: 'AI Everywhere', summary: 'AI 已进入交通、制造、医疗、科研与日常数字服务。', icon: Eye },
-  { title: '生产力信号', en: 'Productivity Signals', summary: '价值不只体现在规模，更体现在效率、创新、协同与质量。', icon: ChartNoAxesCombined },
-  { title: '核心词汇', en: 'AI Vocabulary', summary: '用四个基础概念建立理解人工智能的共同语言。', icon: BookOpen },
+  { title: '体验人工智能', en: 'Meet AI', summary: '从一个熟悉的问题开始：机器怎样看懂人写下的数字？', body: ['你有没有好奇过人工智能可以做些什么？接下来的旅程从一个能识别手写数字的交互模块开始。', '之后的章节会逐步拆解它背后的神经元、前向传播和识别流程。'], icon: Sparkles },
+  { title: '手写数字识别', en: 'Try MNIST', summary: '亲手写下 0–9，观察神经网络给出的识别结果与概率。', body: ['在白色画布内写一个 0 到 9 之间的数字，然后点击“开始识别”。', '模型使用原页面的 784–200–10 神经网络和 MNIST 权重，原项目标注测试准确率为 98.08%。'], icon: PenLine },
+  { title: 'AI 的发展历程', en: 'AI Timeline', summary: '从符号智能、机器学习到生成式 AI，能力边界持续扩展。', body: ['人工智能作为研究领域始于 1956 年。今天常见的系统仍属于面向具体任务的专用人工智能。', '研究者也在持续探索能够学习并完成更广泛任务的通用人工智能。'], icon: History },
+  { title: '神经元信号传输', en: 'Neuron Signal', summary: '输入超过阈值后被激活，并把信号继续传向下一层。', body: ['生物神经元通过树突接收信号，在细胞体内处理，再通过轴突把信号传递出去。', '人工神经网络借鉴这一过程，用数学模型模拟输入、加权、激活与输出。'], icon: Zap },
+  { title: '前向传播', en: 'Forward Pass', summary: '数据沿网络逐层计算，最终转换为可以解释的预测。', body: ['数据从输入层进入，经过隐藏层的计算，最终到达输出层。', '每个神经元对输入加权求和、加入偏置，再由激活函数产生新的输出。'], icon: Network },
+  { title: 'MNIST 识别流程', en: 'Recognition Flow', summary: '图像经过预处理、特征计算和概率输出，形成完整闭环。', body: ['手写内容先被转换为 28×28 像素的灰度数据，随后经过多层计算提取特征。', '输出层产生数字 0–9 的十个概率，概率最高的数字成为识别结果。'], icon: ScanSearch },
+  { title: '无处不在的人工智能', en: 'AI Everywhere', summary: 'AI 已进入交通、制造、医疗、科研与日常数字服务。', body: ['从自动驾驶、无人零售到围棋程序和生成式艺术，AI 正在越来越多的领域发挥作用。', '它也存在于日常服务中，例如商品推荐、路线规划和视频推荐。人工智能更像机器的“大脑”，而不是机械部件本身。'], icon: Eye },
+  { title: '一些数字', en: 'AI Statistics', summary: '保留原页面的数据章节，并明确其历史统计口径。', body: ['下面的数据来自原体验页面的历史快照，用于保留原页面内容，不代表当前实时统计。'], icon: ChartNoAxesCombined },
+  { title: '核心词汇', en: 'AI Vocabulary', summary: '用四个基础概念建立理解人工智能的共同语言。', body: ['了解算法、人工智能、机器学习和深度学习，是理解后续技术内容的第一步。'], icon: BookOpen },
 ]
 
 const DIGITS = [7, 8, 6, 4, 5, 0, 9, 1, 2]
@@ -262,7 +262,8 @@ function ApplicationsVisual() {
 }
 
 function SignalsVisual() {
-  return <div className="journey-visual grid content-center gap-4 p-7 sm:grid-cols-2">{[['效率', '更快响应与更少重复劳动'], ['创新', '缩短试验与迭代周期'], ['协同', '连接人员、设备与数据'], ['质量', '稳定检测与持续优化']].map(([title, text], index) => <motion.div key={title} className="rounded-[22px] border border-white bg-white/76 p-5" initial={{ opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * .1 }}><p className="text-[24px] font-black text-gradient">{title}</p><p className="mt-2 text-[12.5px] text-body">{text}</p></motion.div>)}</div>
+  const stats = [['3327', 'Crunchbase 登记的 AI 公司数量'], ['40 亿', '2017 年带智能语音助手的移动设备数量'], ['50 亿美元', '2017 年 AI 相关公司风险投资总值'], ['370 亿美元', '原页面预估的 2025 年 AI 产业年收入']]
+  return <div className="journey-visual grid content-center gap-4 p-7 sm:grid-cols-2">{stats.map(([title, text], index) => <motion.div key={title} className="rounded-[22px] border border-white bg-white/76 p-5" initial={{ opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * .1 }}><p className="text-[26px] font-black text-gradient">{title}</p><p className="mt-2 text-[12.5px] leading-relaxed text-body">{text}</p></motion.div>)}</div>
 }
 
 function VocabularyVisual() {
@@ -282,37 +283,51 @@ function ChapterVisual({ index }: { index: number }) {
   return <VocabularyVisual />
 }
 
-export default function AIJourney() {
+export default function AIJourney({ onBack }: { onBack: () => void }) {
   const [chapter, setChapter] = useState(0)
+  const wheelLock = useRef(false)
   const current = CHAPTERS[chapter]
-  return (
-    <section id="journey" className="scene scene-journey section-pad bg-canvas-2">
-      <div className="container-x">
-        <SectionHeading index="07" en="AI JOURNEY" title="体验 AI 之旅" subtitle="从一次真实的手写数字识别出发，用九个轻量章节理解人工智能如何感知、计算、预测并创造价值。" />
-        <Reveal className="mt-10">
-          <div className="card overflow-hidden p-4 sm:p-6">
-            <div className="grid gap-5 lg:grid-cols-[260px_1fr]">
-              <nav className="journey-nav flex gap-2 overflow-x-auto lg:flex-col" aria-label="AI 体验章节">
-                {CHAPTERS.map((item, index) => (
-                  <button key={item.en} onClick={() => setChapter(index)} className={`flex min-w-[170px] items-center gap-3 rounded-2xl px-4 py-3 text-left transition-all lg:min-w-0 ${chapter === index ? 'bg-gradient-to-r from-brand to-cyan text-white shadow-[0_12px_26px_rgba(15,91,251,.22)]' : 'bg-white/58 text-body hover:bg-white'}`}>
-                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${chapter === index ? 'bg-white/18' : 'bg-brand/8 text-brand'}`}><item.icon size={17} /></span>
-                    <span><span className="block text-[13.5px] font-bold">{String(index + 1).padStart(2, '0')} · {item.title}</span><span className={`mt-0.5 block text-[9.5px] tracking-wider ${chapter === index ? 'text-white/72' : 'text-muted'}`}>{item.en}</span></span>
-                  </button>
-                ))}
-              </nav>
+  const go = (next: number) => setChapter(Math.max(0, Math.min(CHAPTERS.length - 1, next)))
 
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-start justify-between gap-4 px-1 pb-5">
-                  <div><p className="text-[11px] font-bold tracking-[.2em] text-brand">CHAPTER {String(chapter + 1).padStart(2, '0')} / 09</p><h3 className="mt-2 text-[26px] font-black text-ink">{current.title}</h3><p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-body">{current.summary}</p></div>
-                  <div className="flex gap-2"><button className="btn btn-ghost !h-10 !px-3 !py-0" disabled={chapter === 0} onClick={() => setChapter((value) => Math.max(0, value - 1))} aria-label="上一章"><ArrowLeft size={16} /></button><button className="btn btn-primary !h-10 !px-3 !py-0" disabled={chapter === CHAPTERS.length - 1} onClick={() => setChapter((value) => Math.min(CHAPTERS.length - 1, value + 1))} aria-label="下一章"><ArrowRight size={16} /></button></div>
-                </div>
-                <AnimatePresence mode="wait"><motion.div key={chapter} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ duration: .32 }}><ChapterVisual index={chapter} /></motion.div></AnimatePresence>
-                <div className="mt-4 flex gap-1.5">{CHAPTERS.map((_, index) => <button key={index} aria-label={`第 ${index + 1} 章`} onClick={() => setChapter(index)} className={`h-1.5 flex-1 rounded-full transition-colors ${index <= chapter ? 'bg-brand' : 'bg-line'}`} />)}</div>
-              </div>
-            </div>
+  const onWheel = (event: React.WheelEvent) => {
+    if (Math.abs(event.deltaY) < 32 || wheelLock.current) return
+    wheelLock.current = true
+    go(chapter + (event.deltaY > 0 ? 1 : -1))
+    window.setTimeout(() => { wheelLock.current = false }, 620)
+  }
+
+  return (
+    <div className="experience-page" onWheel={onWheel}>
+      <header className="experience-header glass">
+        <button className="flex items-center gap-3 text-left" onClick={onBack}>
+          <Logo size={38} />
+          <span><span className="block text-[16px] font-black text-ink">智启新质</span><span className="block text-[9px] font-bold tracking-[.2em] text-muted">AI EXPERIENCE JOURNEY</span></span>
+        </button>
+        <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={onBack}><ArrowLeft size={15} /> 返回数字展馆</button>
+      </header>
+
+      <AnimatePresence mode="wait">
+        <motion.main key={chapter} className="experience-stage" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -22 }} transition={{ duration: .46, ease: [0.22, 1, 0.36, 1] }}>
+          <div className="experience-copy">
+            <span className="chip">CHAPTER {String(chapter + 1).padStart(2, '0')} × {current.en.toUpperCase()}</span>
+            <h1>{current.title}</h1>
+            <p className="experience-lead">{current.summary}</p>
+            <div className="experience-body">{current.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
           </div>
-        </Reveal>
+          <ChapterVisual index={chapter} />
+        </motion.main>
+      </AnimatePresence>
+
+      <nav className="experience-progress" aria-label="章节进度">
+        <span>{String(chapter + 1).padStart(2, '0')} / 09</span>
+        <div>{CHAPTERS.map((item, index) => <button key={item.en} className={chapter === index ? 'active' : ''} onClick={() => go(index)} aria-label={`第 ${index + 1} 章：${item.title}`} title={item.title} />)}</div>
+      </nav>
+
+      <div className="experience-controls">
+        <button className="btn btn-ghost !py-2.5" disabled={chapter === 0} onClick={() => go(chapter - 1)}><ArrowLeft size={16} /> 上一章</button>
+        <button className="btn btn-primary !py-2.5" disabled={chapter === CHAPTERS.length - 1} onClick={() => go(chapter + 1)}>下一章 <ArrowRight size={16} /></button>
       </div>
-    </section>
+      <p className="experience-wheel-hint">滚动切换章节</p>
+    </div>
   )
 }

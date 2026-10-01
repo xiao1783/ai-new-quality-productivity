@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Understand from './components/Understand'
@@ -11,6 +12,18 @@ import AILab from './components/AILab'
 import Footer from './components/Footer'
 
 export default function App() {
+  const [route, setRoute] = useState(window.location.hash)
+
+  useEffect(() => {
+    const onRouteChange = () => setRoute(window.location.hash)
+    window.addEventListener('hashchange', onRouteChange)
+    return () => window.removeEventListener('hashchange', onRouteChange)
+  }, [])
+
+  if (route === '#/ai-experience') {
+    return <AIJourney onBack={() => { window.location.hash = ''; window.scrollTo(0, 0) }} />
+  }
+
   return (
     <>
       <Navbar />
@@ -22,7 +35,6 @@ export default function App() {
         <Efficiency />
         <Dashboard />
         <Future />
-        <AIJourney />
         <AILab />
       </main>
       <Footer />

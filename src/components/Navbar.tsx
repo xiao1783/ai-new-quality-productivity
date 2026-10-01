@@ -14,6 +14,7 @@ export default function Navbar() {
       const marker = window.scrollY + Math.min(window.innerHeight * 0.34, 320)
       let current: string = NAV_ITEMS[0].id
       NAV_ITEMS.forEach((item) => {
+        if (item.id === 'ai-experience') return
         const section = document.getElementById(item.id)
         if (section && section.offsetTop <= marker) current = item.id
       })
@@ -28,6 +29,10 @@ export default function Navbar() {
 
   const go = (id: string) => {
     setOpen(false)
+    if (id === 'ai-experience') {
+      window.location.hash = '/ai-experience'
+      return
+    }
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 

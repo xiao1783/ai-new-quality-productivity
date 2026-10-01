@@ -6,7 +6,7 @@ export const NAV_ITEMS = [
   { id: 'efficiency', label: '效率' },
   { id: 'dashboard', label: '数据' },
   { id: 'future', label: '未来' },
-  { id: 'journey', label: '体验' },
+  { id: 'ai-experience', label: '体验' },
   { id: 'lab', label: '实验室' },
 ] as const
 
