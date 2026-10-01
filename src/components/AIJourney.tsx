@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState, type PointerEvent } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useRef, useState, type PointerEvent, type WheelEvent } from 'react'
+import { motion } from 'framer-motion'
+import lottie, { type AnimationItem } from 'lottie-web'
 import {
   ArrowLeft,
   ArrowRight,
-  Binary,
   BookOpen,
   BrainCircuit,
   ChartNoAxesCombined,
@@ -37,8 +37,8 @@ const CHAPTERS: Chapter[] = [
   { title: '前向传播', en: 'Forward Pass', summary: '数据沿网络逐层计算，最终转换为可以解释的预测。', body: ['数据从输入层进入，经过隐藏层的计算，最终到达输出层。', '每个神经元对输入加权求和、加入偏置，再由激活函数产生新的输出。'], icon: Network },
   { title: 'MNIST 识别流程', en: 'Recognition Flow', summary: '图像经过预处理、特征计算和概率输出，形成完整闭环。', body: ['手写内容先被转换为 28×28 像素的灰度数据，随后经过多层计算提取特征。', '输出层产生数字 0–9 的十个概率，概率最高的数字成为识别结果。'], icon: ScanSearch },
   { title: '无处不在的人工智能', en: 'AI Everywhere', summary: 'AI 已进入交通、制造、医疗、科研与日常数字服务。', body: ['从自动驾驶、无人零售到围棋程序和生成式艺术，AI 正在越来越多的领域发挥作用。', '它也存在于日常服务中，例如商品推荐、路线规划和视频推荐。人工智能更像机器的“大脑”，而不是机械部件本身。'], icon: Eye },
-  { title: '一些数字', en: 'AI Statistics', summary: '保留原页面的数据章节，并明确其历史统计口径。', body: ['下面的数据来自原体验页面的历史快照，用于保留原页面内容，不代表当前实时统计。'], icon: ChartNoAxesCombined },
-  { title: '核心词汇', en: 'AI Vocabulary', summary: '用四个基础概念建立理解人工智能的共同语言。', body: ['了解算法、人工智能、机器学习和深度学习，是理解后续技术内容的第一步。'], icon: BookOpen },
+  { title: '一些数字', en: 'AI Statistics', summary: '保留原页面的数据章节，并明确其历史统计口径。', body: ['3327 家 Crunchbase 登记的 AI 公司；40 亿台带智能语音助手的移动设备。', '50 亿美元 AI 相关公司风险投资；原页面预估 2025 年产业年收入 370 亿美元。以上均为原页面历史快照，不代表当前实时统计。'], icon: ChartNoAxesCombined },
+  { title: '核心词汇', en: 'AI Vocabulary', summary: '用四个基础概念建立理解人工智能的共同语言。', body: ['算法：为达成目标而执行的一系列规则；人工智能：让计算机完成通常需要人类智能的任务。', '机器学习：利用数据训练模型获得任务能力；深度学习：使用多层神经网络处理复杂模式。'], icon: BookOpen },
 ]
 
 const DIGITS = [7, 8, 6, 4, 5, 0, 9, 1, 2]
@@ -199,101 +199,121 @@ function DigitCanvas() {
   )
 }
 
-function TimelineVisual() {
-  const items = [['1956', '人工智能诞生'], ['1997', '深蓝击败棋王'], ['2012', '深度学习突破'], ['2022+', '生成式 AI 加速']]
+function LottieScrollVisual({ file, active }: { file: string; active: boolean }) {
+  const container = useRef<HTMLDivElement>(null)
+  const animation = useRef<AnimationItem | null>(null)
+  const pauseTimer = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    if (!container.current) return
+    const item = lottie.loadAnimation({
+      container: container.current,
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: `${import.meta.env.BASE_URL}assets/ai-journey/lottie/${file}`,
+      rendererSettings: { preserveAspectRatio: 'xMidYMid meet' },
+    })
+
+    item.pause()
+    animation.current = item
+
+    return () => {
+      if (pauseTimer.current) window.clearTimeout(pauseTimer.current)
+      item.destroy()
+      animation.current = null
+    }
+  }, [file])
+
+  useEffect(() => {
+    if (active || !animation.current) return
+    animation.current.pause()
+    animation.current.setSpeed(1)
+    animation.current.goToAndStop(0, true)
+  }, [active])
+
+  const scrub = (event: WheelEvent<HTMLDivElement>) => {
+    const item = animation.current
+    if (!active || !item) return
+    const frame = Number(item.currentFrame || 0)
+    const totalFrames = Number(item.totalFrames || 0)
+    const atStart = event.deltaY < 0 && frame <= 0.5
+    const atEnd = event.deltaY > 0 && totalFrames > 0 && frame >= totalFrames - 1.5
+    if (atStart || atEnd) {
+      item.pause()
+      return
+    }
+
+    event.stopPropagation()
+    if (pauseTimer.current) window.clearTimeout(pauseTimer.current)
+    item.setSpeed(event.deltaY > 0 ? 2 : -2)
+    item.play()
+    pauseTimer.current = window.setTimeout(() => item.pause(), 300)
+  }
+
   return (
-    <div className="journey-visual flex flex-col justify-center gap-4 p-7">
-      {items.map(([year, label], index) => (
-        <motion.div key={year} className="flex items-center gap-4" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.12 }}>
-          <span className="w-16 text-[16px] font-black text-brand">{year}</span>
-          <span className="h-3 w-3 rounded-full bg-cyan shadow-[0_0_0_7px_rgba(24,185,234,.12)]" />
-          <span className="flex-1 rounded-2xl border border-white bg-white/75 px-4 py-3 text-[14px] font-semibold text-ink">{label}</span>
-        </motion.div>
-      ))}
+    <div className="journey-visual journey-lottie-shell" onWheel={scrub}>
+      <div ref={container} className="journey-lottie-canvas" />
+      <div className="journey-lottie-hint"><span>↕</span> 滑动鼠标控制动画</div>
     </div>
   )
 }
 
-function NeuronVisual() {
-  return (
-    <div className="journey-visual flex items-center justify-center p-5">
-      <svg viewBox="0 0 520 300" className="w-full">
-        {[70, 135, 200, 265].map((y, i) => <path key={y} d={`M30 ${y} C120 ${y},125 150,220 150`} fill="none" stroke="#8ECBF1" strokeWidth="3" />)}
-        <circle cx="245" cy="150" r="55" fill="#fff" stroke="#0F5BFB" strokeWidth="4" />
-        <BrainCircuit x="218" y="123" width="54" height="54" color="#0F5BFB" />
-        <path d="M300 150 C355 150,365 90,420 90 S470 150,505 150" fill="none" stroke="#18B9EA" strokeWidth="5" strokeLinecap="round" />
-        {[0, 1, 2].map((i) => <motion.circle key={i} r="7" fill="#0F5BFB" animate={{ cx: [35, 220, 300, 420, 500], cy: [70 + i * 65, 150, 150, 90, 150] }} transition={{ duration: 2.4, repeat: Infinity, delay: i * .5 }} />)}
-        <text x="245" y="230" textAnchor="middle" fill="#526681" fontSize="13">输入加权 · 阈值激活 · 信号输出</text>
-      </svg>
-    </div>
-  )
+function TimelineVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch1_robot.json" active={active} />
 }
 
-function ForwardVisual() {
-  const layers = [[70, 100, 130, 160, 190, 220], [115, 155, 195], [135, 175]]
-  const xs = [80, 270, 450]
-  return (
-    <div className="journey-visual flex items-center justify-center p-5">
-      <svg viewBox="0 0 530 300" className="w-full">
-        {layers.slice(0, -1).flatMap((layer, li) => layer.flatMap((y, i) => layers[li + 1].map((ny, j) => <line key={`${li}-${i}-${j}`} x1={xs[li]} y1={y} x2={xs[li + 1]} y2={ny} stroke="#BBD8F2" />)))}
-        {layers.map((layer, li) => layer.map((y, i) => <motion.circle key={`${li}-${i}`} cx={xs[li]} cy={y} r={li === 2 ? 17 : 12} fill={li === 2 ? '#0F5BFB' : '#fff'} stroke={li === 1 ? '#18B9EA' : '#0F5BFB'} strokeWidth="3" animate={{ scale: [1, 1.16, 1] }} transition={{ duration: 1.8, repeat: Infinity, delay: li * .5 + i * .08 }} />))}
-        <text x="80" y="265" textAnchor="middle" fill="#526681" fontSize="13">输入层</text><text x="270" y="265" textAnchor="middle" fill="#526681" fontSize="13">隐藏层</text><text x="450" y="265" textAnchor="middle" fill="#526681" fontSize="13">输出层</text>
-      </svg>
-    </div>
-  )
+function NeuronVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch3_neuron.json" active={active} />
 }
 
-function PipelineVisual() {
-  const steps = [['01', '手写输入', PenLine], ['02', '28×28 灰度', Binary], ['03', '特征计算', BrainCircuit], ['04', '概率输出', ChartNoAxesCombined]] as const
-  return (
-    <div className="journey-visual grid content-center gap-3 p-7 sm:grid-cols-4">
-      {steps.map(([number, label, Icon], index) => (
-        <div key={number} className="relative rounded-2xl border border-white bg-white/76 p-4 text-center">
-          <span className="text-[11px] font-bold tracking-widest text-muted">STEP {number}</span><Icon className="mx-auto mt-4 text-brand" size={30} /><p className="mt-3 text-[13px] font-bold text-ink">{label}</p>
-          {index < steps.length - 1 && <ArrowRight className="absolute -right-5 top-1/2 z-10 hidden -translate-y-1/2 text-cyan sm:block" size={20} />}
-        </div>
-      ))}
-    </div>
-  )
+function ForwardVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch6_prop.json" active={active} />
 }
 
-function ApplicationsVisual() {
-  return <div className="journey-visual grid content-center gap-3 p-7 sm:grid-cols-2">{['智能制造', '自动驾驶', '医学影像', '科研发现', '内容推荐', '能源优化'].map((item, index) => <motion.div key={item} className="rounded-2xl border border-white bg-white/76 px-5 py-4 text-[14px] font-bold text-ink" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * .08 }}><Sparkles className="mr-2 inline text-brand" size={16} />{item}</motion.div>)}</div>
+function PipelineVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch6_mnist.json" active={active} />
 }
 
-function SignalsVisual() {
-  const stats = [['3327', 'Crunchbase 登记的 AI 公司数量'], ['40 亿', '2017 年带智能语音助手的移动设备数量'], ['50 亿美元', '2017 年 AI 相关公司风险投资总值'], ['370 亿美元', '原页面预估的 2025 年 AI 产业年收入']]
-  return <div className="journey-visual grid content-center gap-4 p-7 sm:grid-cols-2">{stats.map(([title, text], index) => <motion.div key={title} className="rounded-[22px] border border-white bg-white/76 p-5" initial={{ opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * .1 }}><p className="text-[26px] font-black text-gradient">{title}</p><p className="mt-2 text-[12.5px] leading-relaxed text-body">{text}</p></motion.div>)}</div>
+function ApplicationsVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch1_seed.json" active={active} />
 }
 
-function VocabularyVisual() {
-  const words = [['算法 Algorithm', '为达成目标而执行的一系列规则。'], ['人工智能 AI', '让计算机完成通常需要人类智能的任务。'], ['机器学习 ML', '利用数据训练模型获得任务能力。'], ['深度学习 DL', '使用多层神经网络处理复杂模式。']]
-  return <div className="journey-visual grid content-center gap-3 p-7 sm:grid-cols-2">{words.map(([word, meaning]) => <div key={word} className="rounded-2xl border border-white bg-white/78 p-5"><p className="text-[14px] font-black text-ink">{word}</p><p className="mt-2 text-[12.5px] leading-relaxed text-body">{meaning}</p></div>)}</div>
+function SignalsVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch1_data.json" active={active} />
 }
 
-function ChapterVisual({ index }: { index: number }) {
+function VocabularyVisual({ active }: { active: boolean }) {
+  return <LottieScrollVisual file="ch1_words.json" active={active} />
+}
+
+function ChapterVisual({ index, active }: { index: number; active: boolean }) {
   if (index === 0) return <DigitIntro />
   if (index === 1) return <DigitCanvas />
-  if (index === 2) return <TimelineVisual />
-  if (index === 3) return <NeuronVisual />
-  if (index === 4) return <ForwardVisual />
-  if (index === 5) return <PipelineVisual />
-  if (index === 6) return <ApplicationsVisual />
-  if (index === 7) return <SignalsVisual />
-  return <VocabularyVisual />
+  if (index === 2) return <TimelineVisual active={active} />
+  if (index === 3) return <NeuronVisual active={active} />
+  if (index === 4) return <ForwardVisual active={active} />
+  if (index === 5) return <PipelineVisual active={active} />
+  if (index === 6) return <ApplicationsVisual active={active} />
+  if (index === 7) return <SignalsVisual active={active} />
+  return <VocabularyVisual active={active} />
 }
 
 export default function AIJourney({ onBack }: { onBack: () => void }) {
   const [chapter, setChapter] = useState(0)
   const wheelLock = useRef(false)
-  const current = CHAPTERS[chapter]
-  const go = (next: number) => setChapter(Math.max(0, Math.min(CHAPTERS.length - 1, next)))
+  const go = (next: number) => {
+    const target = Math.max(0, Math.min(CHAPTERS.length - 1, next))
+    if (target === chapter) return false
+    setChapter(target)
+    return true
+  }
 
-  const onWheel = (event: React.WheelEvent) => {
-    if (Math.abs(event.deltaY) < 32 || wheelLock.current) return
+  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (!event.deltaY || wheelLock.current) return
+    if (!go(chapter + (event.deltaY > 0 ? 1 : -1))) return
     wheelLock.current = true
-    go(chapter + (event.deltaY > 0 ? 1 : -1))
-    window.setTimeout(() => { wheelLock.current = false }, 620)
+    window.setTimeout(() => { wheelLock.current = false }, 500)
   }
 
   return (
@@ -306,17 +326,19 @@ export default function AIJourney({ onBack }: { onBack: () => void }) {
         <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={onBack}><ArrowLeft size={15} /> 返回数字展馆</button>
       </header>
 
-      <AnimatePresence mode="wait">
-        <motion.main key={chapter} className="experience-stage" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -22 }} transition={{ duration: .46, ease: [0.22, 1, 0.36, 1] }}>
-          <div className="experience-copy">
-            <span className="chip">CHAPTER {String(chapter + 1).padStart(2, '0')} × {current.en.toUpperCase()}</span>
-            <h1>{current.title}</h1>
-            <p className="experience-lead">{current.summary}</p>
-            <div className="experience-body">{current.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
-          </div>
-          <ChapterVisual index={chapter} />
-        </motion.main>
-      </AnimatePresence>
+      <div className="experience-pages" style={{ transform: `translate3d(0, -${chapter * 100}svh, 0)` }}>
+        {CHAPTERS.map((item, index) => (
+          <main key={item.en} className="experience-stage" aria-hidden={chapter !== index}>
+            <div className="experience-copy">
+              <span className="chip">CHAPTER {String(index + 1).padStart(2, '0')} × {item.en.toUpperCase()}</span>
+              <h1>{item.title}</h1>
+              <p className="experience-lead">{item.summary}</p>
+              <div className="experience-body">{item.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+            </div>
+            <ChapterVisual index={index} active={chapter === index} />
+          </main>
+        ))}
+      </div>
 
       <nav className="experience-progress" aria-label="章节进度">
         <span>{String(chapter + 1).padStart(2, '0')} / 09</span>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Menu, X, ArrowRight } from 'lucide-react'
+import { Menu, X, ArrowRight, Sparkles } from 'lucide-react'
 import { NAV_ITEMS } from '@/data/site'
 import Logo from './Logo'
 
@@ -14,7 +14,6 @@ export default function Navbar() {
       const marker = window.scrollY + Math.min(window.innerHeight * 0.34, 320)
       let current: string = NAV_ITEMS[0].id
       NAV_ITEMS.forEach((item) => {
-        if (item.id === 'ai-experience') return
         const section = document.getElementById(item.id)
         if (section && section.offsetTop <= marker) current = item.id
       })
@@ -78,13 +77,22 @@ export default function Navbar() {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => go('understand')}
-            className="btn btn-primary hidden !px-5 !py-2.5 !text-[14px] sm:inline-flex"
-          >
-            进入展馆
-            <ArrowRight size={16} />
-          </button>
+          <div className="hidden items-center gap-2 sm:flex">
+            <button
+              onClick={() => go('ai-experience')}
+              className="btn btn-ghost !px-4 !py-2.5 !text-[14px]"
+            >
+              <Sparkles size={16} />
+              体验AI之旅
+            </button>
+            <button
+              onClick={() => go('understand')}
+              className="btn btn-primary !px-5 !py-2.5 !text-[14px]"
+            >
+              进入展馆
+              <ArrowRight size={16} />
+            </button>
+          </div>
           <button
             className="rounded-xl p-2 text-ink lg:hidden"
             onClick={() => setOpen((v) => !v)}
@@ -109,6 +117,12 @@ export default function Navbar() {
               {item.label}
             </button>
           ))}
+          <button
+            onClick={() => go('ai-experience')}
+            className="btn btn-ghost mt-2 w-full justify-center"
+          >
+            <Sparkles size={16} /> 体验AI之旅
+          </button>
           <button
             onClick={() => go('understand')}
             className="btn btn-primary mt-2 w-full justify-center"
