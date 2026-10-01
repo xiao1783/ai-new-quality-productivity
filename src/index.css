@@ -220,11 +220,37 @@ body {
 }
 .scene-mechanism::before,
 .scene-dashboard::before,
+.scene-journey::before,
 .scene-lab::before {
   background:
     linear-gradient(180deg, rgba(248,252,255,.9), rgba(229,243,255,.92)),
     radial-gradient(circle at 18% 32%, rgba(15,91,251,.16), transparent 32%),
     radial-gradient(circle at 86% 64%, rgba(19,191,175,.12), transparent 30%);
+}
+.scene-journey::after {
+  right: auto;
+  left: -24vw;
+  top: 18%;
+}
+.journey-visual {
+  min-height: 390px;
+  border-radius: 26px;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.75), rgba(225,242,255,.68)),
+    radial-gradient(circle at 75% 24%, rgba(24,185,234,.2), transparent 34%);
+  border: 1px solid rgba(255,255,255,.92);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.96);
+}
+.journey-nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15,91,251,.25) transparent;
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: .42;
+  transform: none;
+  box-shadow: none;
 }
 .scene-industry::before,
 .scene-future::before {
@@ -359,5 +385,11 @@ input[type='range'].slider::-moz-range-thumb {
   }
   html {
     scroll-behavior: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .journey-visual {
+    min-height: 340px;
   }
 }

@@ -6,6 +6,7 @@ import Industry from './components/Industry'
 import Efficiency from './components/Efficiency'
 import Dashboard from './components/Dashboard'
 import Future from './components/Future'
+import AIJourney from './components/AIJourney'
 import AILab from './components/AILab'
 import Footer from './components/Footer'
 
@@ -21,6 +22,7 @@ export default function App() {
         <Efficiency />
         <Dashboard />
         <Future />
+        <AIJourney />
         <AILab />
       </main>
       <Footer />
