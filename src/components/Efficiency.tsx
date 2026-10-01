@@ -145,7 +145,7 @@ export default function Efficiency() {
   )
 
   return (
-    <section id="efficiency" className="section-pad bg-canvas">
+    <section id="efficiency" className="scene scene-efficiency section-pad bg-canvas">
       <div className="container-x">
         <SectionHeading
           index="04"

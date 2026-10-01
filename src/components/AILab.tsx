@@ -39,27 +39,46 @@ const SAMPLES: Sample[] = [
   { id: 4, defect: false, confidence: 97.2, defects: [] },
 ]
 
-function ProductArt({ s }: { s: Sample }) {
+function ProductArt({ s, analyzed }: { s: Sample; analyzed: boolean }) {
   return (
     <svg viewBox="0 0 120 100" className="h-full w-full">
       <rect x="14" y="14" width="92" height="72" rx="12" fill="#E2E8F0" stroke="#CBD5E1" strokeWidth="1.5" />
       <rect x="24" y="24" width="72" height="52" rx="8" fill="#F8FAFC" />
-      {s.defect &&
+      {analyzed && s.defect &&
         s.defects.map((d, i) => (
+          <g key={i}>
           <path
-            key={i}
             d={`M${d.x - 10} ${d.y} q10 -10 20 0 q-10 10 -20 0`}
             fill="none"
             stroke="#F43F5E"
             strokeWidth="2.4"
           />
+          <motion.rect
+            x={d.x - 15}
+            y={d.y - 15}
+            width="30"
+            height="30"
+            rx="4"
+            fill="none"
+            stroke="#E74E51"
+            strokeWidth="2"
+            initial={{ opacity: 0, scale: 0.75 }}
+            animate={{ opacity: 1, scale: 1 }}
+          />
+          </g>
         ))}
     </svg>
   )
 }
 
 function VisionLab() {
-  const [analyzed, setAnalyzed] = useState<Record<number, boolean>>({})
+  const [status, setStatus] = useState<Record<number, 'scanning' | 'done'>>({})
+  const analyze = (id: number) => {
+    setStatus((current) => ({ ...current, [id]: 'scanning' }))
+    window.setTimeout(() => {
+      setStatus((current) => ({ ...current, [id]: 'done' }))
+    }, 720)
+  }
   return (
     <div>
       <p className="text-[14px] text-body">
@@ -67,25 +86,34 @@ function VisionLab() {
       </p>
       <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {SAMPLES.map((s) => {
-          const done = analyzed[s.id]
+          const scanning = status[s.id] === 'scanning'
+          const done = status[s.id] === 'done'
           return (
             <div key={s.id} className="card card-hover overflow-hidden">
               <div className="relative h-32 p-3">
-                <ProductArt s={s} />
-                {done && (
+                <ProductArt s={s} analyzed={Boolean(done)} />
+                {scanning && (
+                  <motion.span
+                    className="absolute inset-x-5 h-0.5 bg-gradient-to-r from-transparent via-cyan to-transparent shadow-[0_0_16px_#18B9EA]"
+                    initial={{ top: '20%' }}
+                    animate={{ top: ['20%', '78%', '20%'] }}
+                    transition={{ duration: 0.7, ease: 'easeInOut' }}
+                  />
+                )}
+                {done && !s.defect && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute inset-3 rounded-lg"
+                    className="absolute inset-6 rounded-xl"
                     style={{
-                      border: `2.5px solid ${s.defect ? PALETTE.rose : PALETTE.teal}`,
+                      border: `2.5px solid ${PALETTE.teal}`,
                     }}
                   >
                     <span
                       className="absolute -top-6 left-0 rounded-md px-2 py-0.5 text-[11px] font-bold text-white"
-                      style={{ background: s.defect ? PALETTE.rose : PALETTE.teal }}
+                      style={{ background: PALETTE.teal }}
                     >
-                      {s.defect ? 'Defect' : 'Normal'}
+                      Normal
                     </span>
                   </motion.div>
                 )}
@@ -120,9 +148,10 @@ function VisionLab() {
                 ) : (
                   <button
                     className="btn btn-primary mt-3 w-full justify-center !py-2 !text-[13px]"
-                    onClick={() => setAnalyzed((p) => ({ ...p, [s.id]: true }))}
+                    disabled={scanning}
+                    onClick={() => analyze(s.id)}
                   >
-                    <Play size={13} /> AI 检测
+                    <Play size={13} /> {scanning ? '扫描中…' : 'AI 检测'}
                   </button>
                 )}
               </div>
@@ -293,11 +322,27 @@ function DecisionLab() {
   const [done, setDone] = useState(false)
 
   const alloc = useMemo(() => {
-    // 简化教学模型：按设备数量与时间窗口给出三条产线分配
-    const a = Math.round(40 + machines * 0.6 - hours * 0.5)
-    const b = Math.round(35 + hours * 0.4)
-    const c = 100 - a - b
-    return [Math.max(a, 30), Math.max(b, 25), Math.max(c, 15)].map((v) => Math.round((v / (Math.max(a, 30) + Math.max(b, 25) + Math.max(c, 15))) * 100))
+    // 教学模型：订单压力、设备规模与时间窗口共同影响三条产线的负载倾向。
+    const pressure = orders / Math.max(machines * hours, 1)
+    const raw = [
+      30 + pressure * 0.4 + machines * 0.6,
+      35 + hours * 0.7 + (orders / 1000) * 2,
+      28 + machines * 0.3 + Math.max(0, 20 - pressure * 0.2),
+    ]
+    const total = raw.reduce((sum, value) => sum + value, 0)
+    const exact = raw.map((value) => (value / total) * 100)
+    const base = exact.map(Math.floor)
+    let remaining = 100 - base.reduce((sum, value) => sum + value, 0)
+    exact
+      .map((value, index) => ({ index, fraction: value - base[index] }))
+      .sort((a, b) => b.fraction - a.fraction)
+      .forEach(({ index }) => {
+        if (remaining > 0) {
+          base[index] += 1
+          remaining -= 1
+        }
+      })
+    return base
   }, [orders, machines, hours])
 
   const pieOption = useMemo<EChartsOption>(
@@ -371,10 +416,10 @@ function DecisionLab() {
 export default function AILab() {
   const [tab, setTab] = useState('vision')
   return (
-    <section id="lab" className="section-pad bg-canvas">
+    <section id="lab" className="scene scene-lab section-pad bg-canvas">
       <div className="container-x">
         <SectionHeading
-          index="06"
+          index="07"
           en="AI LAB"
           title="亲手体验 AI 如何创造生产力"
           subtitle="四个交互式实验，模拟机器视觉、智能调度、预测性维护与智能决策的完整过程。"

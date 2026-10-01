@@ -19,10 +19,10 @@ interface CoreNode {
 }
 
 const INNER: CoreNode[] = [
-  { id: 'data', zh: '数据', en: 'Data', angle: -90, color: '#2563EB' },
-  { id: 'algo', zh: '算法', en: 'Algorithm', angle: -18, color: '#3B82F6' },
-  { id: 'compute', zh: '算力', en: 'Computing', angle: 54, color: '#06B6D4' },
-  { id: 'scene', zh: '场景', en: 'Application', angle: 126, color: '#14B8A6' },
+  { id: 'data', zh: '数据', en: 'Data', angle: -90, color: '#0F5BFB' },
+  { id: 'algo', zh: '算法', en: 'Algorithm', angle: -18, color: '#257CF4' },
+  { id: 'compute', zh: '算力', en: 'Computing', angle: 54, color: '#18B9EA' },
+  { id: 'scene', zh: '场景', en: 'Application', angle: 126, color: '#13BFAF' },
   { id: 'talent', zh: '人才', en: 'Talent', angle: 198, color: '#0EA5E9' },
 ]
 
@@ -66,8 +66,8 @@ export default function AICoreGraph() {
     <svg viewBox="0 0 720 720" className="h-full w-full" role="img" aria-label="AI 新质生产力引擎">
       <defs>
         <linearGradient id="core-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#2563EB" />
-          <stop offset="1" stopColor="#06B6D4" />
+          <stop offset="0" stopColor="#0F5BFB" />
+          <stop offset="1" stopColor="#18B9EA" />
         </linearGradient>
         <radialGradient id="core-glow" cx="0.5" cy="0.5" r="0.5">
           <stop offset="0" stopColor="#2563EB" stopOpacity="0.18" />
@@ -124,9 +124,10 @@ export default function AICoreGraph() {
 
       {/* 中心 AI Core */}
       <g>
-        <circle cx={CX} cy={CY} r="52" fill="url(#core-g)" />
-        <circle cx={CX} cy={CY} r="52" fill="none" stroke="#2563EB" strokeWidth="2" className="pulse-ring" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
-        <text x={CX} y={CY - 4} textAnchor="middle" fill="#fff" fontSize="19" fontWeight="700">
+        <circle cx={CX} cy={CY} r="74" fill="#0F5BFB" opacity="0.1" />
+        <circle cx={CX} cy={CY} r="61" fill="url(#core-g)" stroke="rgba(255,255,255,.85)" strokeWidth="3" style={{ filter: 'drop-shadow(0 12px 22px rgba(15,91,251,.38))' }} />
+        <circle cx={CX} cy={CY} r="61" fill="none" stroke="#0F5BFB" strokeWidth="2" className="pulse-ring" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+        <text x={CX} y={CY - 4} textAnchor="middle" fill="#fff" fontSize="21" fontWeight="700">
           AI Core
         </text>
         <text x={CX} y={CY + 18} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="11" fontWeight="600" letterSpacing="1.5">
@@ -146,8 +147,8 @@ export default function AICoreGraph() {
             onMouseEnter={() => setHover(n.id)}
             onMouseLeave={() => setHover(null)}
           >
-            <circle cx={p.x} cy={p.y} r="38" fill="#fff" stroke={n.color} strokeWidth="2" />
-            <circle cx={p.x} cy={p.y} r="38" fill={n.color} opacity="0.08" />
+            <circle cx={p.x} cy={p.y} r="40" fill="rgba(255,255,255,.94)" stroke={n.color} strokeWidth="2.5" style={{ filter: 'drop-shadow(0 8px 14px rgba(15,91,251,.14))' }} />
+            <circle cx={p.x} cy={p.y} r="40" fill={n.color} opacity="0.1" />
             <text x={p.x} y={p.y - 2} textAnchor="middle" fill="#0F172A" fontSize="15" fontWeight="700">
               {n.zh}
             </text>

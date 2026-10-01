@@ -180,7 +180,7 @@ export default function Mechanism() {
   useEffect(() => stop, [])
 
   return (
-    <section id="mechanism" className="section-pad bg-canvas">
+    <section id="mechanism" className="scene scene-mechanism section-pad bg-canvas">
       <div className="container-x">
         <SectionHeading
           index="02"

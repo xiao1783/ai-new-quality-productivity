@@ -21,7 +21,8 @@ export default function SectionHeading({
   return (
     <div className={centered ? 'text-center' : 'text-left'}>
       <Reveal>
-        <div className={`flex items-center gap-4 ${centered ? 'justify-center' : ''}`}>
+        <div className={`flex items-center gap-3 ${centered ? 'justify-center' : ''}`}>
+          <span className={`section-kicker ${light ? 'section-kicker-light' : ''}`}>
           <span
             className={`text-sm font-bold tracking-[0.2em] ${
               light ? 'text-cyan-300' : 'text-brand'
@@ -38,6 +39,7 @@ export default function SectionHeading({
             }`}
           >
             {en}
+          </span>
           </span>
         </div>
       </Reveal>

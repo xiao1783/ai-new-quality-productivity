@@ -43,7 +43,7 @@ export default function Industry() {
   const ActiveScene = EXPLORER_TABS.find((t) => t.id === tab)!.Scene
 
   return (
-    <section id="industry" className="section-pad bg-canvas-2">
+    <section id="industry" className="scene scene-industry section-pad bg-canvas-2">
       <div className="container-x">
         <SectionHeading
           index="03"
@@ -101,7 +101,7 @@ export default function Industry() {
                       onMouseEnter={() => setSel(ind.id)}
                     >
                       <circle r="42" fill="#fff" stroke={active ? ind.color : '#E2E8F0'} strokeWidth={active ? 2.4 : 1.4} />
-                      <Icon size={21} color={ind.color} />
+                      <Icon x={-10.5} y={-10.5} size={21} color={ind.color} />
                       <g transform="translate(0,30)">
                         <text textAnchor="middle" fill="#0F172A" fontSize="12.5" fontWeight="700">{ind.name}</text>
                       </g>

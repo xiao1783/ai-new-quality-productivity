@@ -180,10 +180,10 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <section id="dashboard" className="section-pad relative bg-canvas-2">
+    <section id="dashboard" className="scene scene-dashboard section-pad relative bg-canvas-2">
       <div className="container-x">
         <SectionHeading
-          index="07"
+          index="05"
           en="DATA COMMAND CENTER"
           title="AI 生产力数据驾驶舱"
           subtitle="以现代数据中心的方式，总览 AI 的应用版图、能力分布、效率变化与产业热度。"

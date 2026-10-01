@@ -145,7 +145,7 @@ export default function Understand() {
   const [on, setOn] = useState(false)
 
   return (
-    <section id="understand" className="section-pad relative bg-canvas-2">
+    <section id="understand" className="scene scene-understand section-pad relative bg-canvas-2">
       <div className="container-x">
         <SectionHeading
           index="01"

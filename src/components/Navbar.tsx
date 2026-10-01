@@ -11,18 +11,19 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 40)
-      // scrollspy
-      const offset = window.scrollY + window.innerHeight * 0.35
+      const marker = window.scrollY + Math.min(window.innerHeight * 0.34, 320)
       let current: string = NAV_ITEMS[0].id
-      for (const item of NAV_ITEMS) {
-        const el = document.getElementById(item.id)
-        if (el && el.offsetTop <= offset) current = item.id
-      }
+      NAV_ITEMS.forEach((item) => {
+        const section = document.getElementById(item.id)
+        if (section && section.offsetTop <= marker) current = item.id
+      })
       setActive(current)
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
 
   const go = (id: string) => {
@@ -33,7 +34,7 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 sm:px-8">
       <nav
-        className="glass flex w-full items-center justify-between rounded-[20px] transition-all duration-300"
+        className="glass nav-shell flex w-full items-center justify-between rounded-[24px] transition-all duration-300"
         style={{
           maxWidth: 1400,
           marginTop: scrolled ? 8 : 16,

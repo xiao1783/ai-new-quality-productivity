@@ -64,6 +64,16 @@ const EDGE_LABELS: [string, string][] = [
   ['服务', '质量'], ['服务', '协同'],
 ]
 
+/** 具名价值链：悬停只展示包含当前节点的业务路径，避免连通图全部点亮。 */
+const VALUE_PATHS = [
+  ['AI', '数据', '感知', '制造', '质量'],
+  ['AI', '数据', '预测', '物流', '效率'],
+  ['AI', '算法', '决策', '研发', '创新'],
+  ['AI', '算法', '生成', '营销', '协同'],
+  ['AI', '算力', '控制', '制造', '绿色'],
+  ['AI', '模型', '控制', '服务', '质量'],
+] as const
+
 export default function NetworkGraph() {
   const [hover, setHover] = useState<string | null>(null)
 
@@ -79,28 +89,18 @@ export default function NetworkGraph() {
     [],
   )
 
-  // 从 hover 出发的无向连通（BFS）即“整条路径”
   const highlight = useMemo(() => {
     if (!hover) return null
-    const adj: Record<string, string[]> = {}
-    EDGE_LABELS.forEach(([a, b]) => {
-      ;(adj[a] ||= []).push(b)
-      ;(adj[b] ||= []).push(a)
-    })
-    const nodes = new Set<string>([hover])
+    const paths = VALUE_PATHS.filter((path) => path.includes(hover as never))
+    const nodes = new Set<string>()
     const edgeKeys = new Set<string>()
-    const queue = [hover]
-    while (queue.length) {
-      const cur = queue.shift()!
-      for (const nb of adj[cur] || []) {
-        edgeKeys.add(`${cur}|${nb}`)
-        edgeKeys.add(`${nb}|${cur}`)
-        if (!nodes.has(nb)) {
-          nodes.add(nb)
-          queue.push(nb)
-        }
+    paths.forEach((path) => {
+      path.forEach((node) => nodes.add(node))
+      for (let i = 0; i < path.length - 1; i += 1) {
+        edgeKeys.add(`${path[i]}|${path[i + 1]}`)
       }
-    }
+    })
+    if (!paths.length) nodes.add(hover)
     return { nodes, edgeKeys }
   }, [hover])
 

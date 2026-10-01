@@ -130,10 +130,10 @@ function FutureFactory() {
 
 export default function Future() {
   return (
-    <section id="future" className="section-pad bg-canvas-2">
+    <section id="future" className="scene scene-future section-pad bg-canvas-2">
       <div className="container-x">
         <SectionHeading
-          index="05"
+          index="06"
           en="FUTURE"
           title="未来的生产力，将更加智能"
           subtitle="从数字化到 AI 辅助，再到智能协同与自主系统，生产方式持续演进。"

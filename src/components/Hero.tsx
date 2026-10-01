@@ -22,11 +22,17 @@ export default function Hero() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section id="hero" className="relative flex min-h-screen items-center overflow-hidden">
+    <section id="hero" className="hero-scene relative flex min-h-screen items-center overflow-hidden">
+      <div
+        className="hero-photo absolute inset-0"
+        style={{ backgroundImage: `url(${import.meta.env.BASE_URL}assets/scenes/ai-city-campus.webp)` }}
+        aria-hidden="true"
+      />
       {/* 背景：网格 + 光晕 */}
       <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
       <div className="absolute -left-40 top-20 h-[480px] w-[480px] rounded-full bg-brand/10 blur-[130px]" />
       <div className="absolute -right-32 bottom-0 h-[420px] w-[420px] rounded-full bg-cyan/10 blur-[130px]" />
+      <div className="hero-city absolute inset-x-0 bottom-0 h-[45%]" aria-hidden="true" />
 
       <div className="container-x relative z-10 grid items-center gap-10 pt-28 pb-24 lg:grid-cols-[45%_55%]">
         {/* 左侧文案 */}
@@ -82,11 +88,11 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.45 }}
-            className="mt-12 flex gap-8"
+            className="mt-12 grid max-w-[590px] gap-3 sm:grid-cols-3"
           >
             {CONCEPT.map((c) => (
-              <div key={c.label} className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/8 text-brand">
+              <div key={c.label} className="hero-metric flex items-center gap-3 rounded-2xl p-3.5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/8 text-brand">
                   <c.icon size={19} />
                 </span>
                 <span className="flex flex-col">
@@ -104,7 +110,7 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto aspect-square w-full max-w-[680px]"
+          className="hero-core relative mx-auto aspect-square w-full max-w-[680px]"
         >
           <AICoreGraph />
         </motion.div>
