@@ -31,83 +31,112 @@ const STEPS = ['传统生产', '数据接入', 'AI 分析', '智能决策', '智
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
-/* ---------- 微型动态图表 ---------- */
-function MiniSpark() {
+/* ---------- 三特征微型可视化 ---------- */
+function TechnologyVisual({ active }: { active: boolean }) {
+  const points = [[8, 76], [42, 65], [74, 68], [108, 45], [142, 49], [178, 25], [212, 15]]
   return (
-    <svg viewBox="0 0 120 44" className="h-11 w-full">
+    <svg viewBox="0 0 220 100" className="h-[104px] w-full" role="img" aria-label="技术密度增长趋势">
       <defs>
-        <linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2563EB" stopOpacity="0.28" />
+        <linearGradient id="technology-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#2563EB" stopOpacity="0.18" />
           <stop offset="1" stopColor="#2563EB" stopOpacity="0" />
         </linearGradient>
       </defs>
+      {[26, 50, 74].map((y) => <path key={y} d={`M4 ${y} H216`} stroke="#E2E8F0" strokeWidth="1" />)}
       <motion.path
-        d="M2 36 L20 30 L38 32 L56 20 L74 22 L92 10 L118 6"
+        d="M8 76 L42 65 L74 68 L108 45 L142 49 L178 25 L212 15"
         fill="none"
         stroke="#2563EB"
-        strokeWidth="2.4"
+        strokeWidth="3"
         strokeLinecap="round"
-        initial={{ pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.4, ease: 'easeInOut' }}
+        strokeLinejoin="round"
+        animate={{ pathLength: active ? [0, 1] : 1 }}
+        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
       />
       <motion.path
-        d="M2 36 L20 30 L38 32 L56 20 L74 22 L92 10 L118 6 L118 44 L2 44 Z"
-        fill="url(#spark-fill)"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.7, duration: 0.8 }}
+        d="M8 76 L42 65 L74 68 L108 45 L142 49 L178 25 L212 15 L212 90 L8 90 Z"
+        fill="url(#technology-fill)"
+        animate={{ opacity: active ? [0, 1] : 0.75 }}
+        transition={{ duration: 0.8 }}
       />
-    </svg>
-  )
-}
-
-function MiniBars() {
-  const h = [14, 22, 18, 30, 26, 38]
-  return (
-    <svg viewBox="0 0 120 44" className="h-11 w-full">
-      {h.map((v, i) => (
-        <motion.rect
-          key={i}
-          x={8 + i * 19}
-          y={42 - v}
-          width="11"
-          rx="3"
-          fill={i === h.length - 1 ? '#06B6D4' : '#3B82F6'}
-          initial={{ scaleY: 0 }}
-          whileInView={{ scaleY: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.09, duration: 0.5, ease: 'easeOut' }}
-          style={{ transformOrigin: 'bottom' }}
+      {points.map(([x, y], index) => (
+        <motion.circle
+          key={x}
+          cx={x}
+          cy={y}
+          r="4"
+          fill="#fff"
+          stroke="#2563EB"
+          strokeWidth="2"
+          animate={{ scale: active ? [0.75, 1.35, 1] : 1 }}
+          transition={{ delay: active ? index * 0.08 : 0, duration: 0.3 }}
+          style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
         />
       ))}
     </svg>
   )
 }
 
-function MiniRing() {
+function EfficiencyVisual({ active }: { active: boolean }) {
+  const nodes = [
+    { zh: '感知', en: 'Perception' },
+    { zh: '决策', en: 'Decision' },
+    { zh: '执行', en: 'Execution' },
+  ]
   return (
-    <div className="flex h-11 items-center justify-center">
-      <svg viewBox="0 0 48 48" className="h-11 w-11 -rotate-90">
-        <circle cx="24" cy="24" r="19" fill="none" stroke="#E2E8F0" strokeWidth="5" />
+    <div className="relative flex h-[104px] items-center justify-between px-2" role="img" aria-label="感知到决策再到执行的协同流程">
+      <div className="absolute left-[17%] right-[17%] top-1/2 h-px -translate-y-1/2 bg-sky-100" />
+      <motion.div
+        className="absolute left-[17%] right-[17%] top-1/2 h-[2px] origin-left -translate-y-1/2 bg-cyan-500"
+        animate={{ scaleX: active ? [0, 1] : 0.35, opacity: active ? 1 : 0.45 }}
+        transition={{ duration: 0.75, ease: 'easeInOut' }}
+      />
+      {nodes.map((node, index) => (
+        <motion.div
+          key={node.en}
+          className="relative z-10 flex w-[30%] flex-col items-center"
+          animate={{ y: active ? [3, 0] : 0, opacity: active ? [0.48, 1] : 0.72 }}
+          transition={{ delay: active ? index * 0.16 : 0, duration: 0.3 }}
+        >
+          <motion.span
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-cyan-200 bg-white text-[12px] font-bold text-cyan-700 shadow-sm"
+            animate={{ borderColor: active ? ['#BAE6FD', '#06B6D4'] : '#BAE6FD', backgroundColor: active ? ['#FFFFFF', '#ECFEFF'] : '#FFFFFF' }}
+            transition={{ delay: active ? index * 0.16 : 0, duration: 0.3 }}
+          >
+            {index + 1}
+          </motion.span>
+          <span className="mt-2 text-[11px] font-bold text-ink">{node.zh}</span>
+          <span className="text-[8.5px] text-muted">{node.en}</span>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+function QualityVisual({ active }: { active: boolean }) {
+  const circumference = 2 * Math.PI * 32
+  return (
+    <div className="relative flex h-[104px] items-center justify-center" role="img" aria-label="质量稳定性示意指数 84">
+      <svg viewBox="0 0 88 88" className="h-[92px] w-[92px] -rotate-90">
+        <circle cx="44" cy="44" r="32" fill="none" stroke="#E2E8F0" strokeWidth="7" />
         <motion.circle
-          cx="24"
-          cy="24"
-          r="19"
+          cx="44"
+          cy="44"
+          r="32"
           fill="none"
           stroke="#14B8A6"
-          strokeWidth="5"
+          strokeWidth="7"
           strokeLinecap="round"
-          strokeDasharray={2 * Math.PI * 19}
-          initial={{ strokeDashoffset: 2 * Math.PI * 19 }}
-          whileInView={{ strokeDashoffset: 2 * Math.PI * 19 * 0.16 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
+          strokeDasharray={circumference}
+          animate={{ strokeDashoffset: active ? [circumference, circumference * 0.16] : circumference * 0.16 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         />
       </svg>
-      <span className="absolute text-[11px] font-bold text-teal">84%</span>
+      <div className="absolute text-center">
+        <span className="block text-[24px] font-bold leading-none text-teal">84</span>
+        <span className="mt-1 block text-[9px] font-semibold text-muted">示意指数</span>
+      </div>
+      <span className="absolute right-2 top-2 rounded-full bg-teal/8 px-2 py-1 text-[9px] font-semibold text-teal">模拟指标</span>
     </div>
   )
 }
@@ -235,27 +264,100 @@ function ModeItem({ icon: Icon, title, desc, active, dimmed, side, onClick }: Mo
 
 const FEATURES = [
   {
+    index: '01',
     icon: Cpu,
+    en: 'TECHNOLOGY',
     title: '高科技',
-    desc: '以人工智能、数据与算力为核心，技术密度显著提升。',
-    chart: <MiniSpark />,
+    core: '技术密度',
+    desc: '以人工智能、数据与算力为核心，推动技术密度持续提升。',
+    visual: 'technology' as const,
+    keywords: ['AI', 'DATA', 'COMPUTING'],
     color: '#2563EB',
+    glow: 'rgba(37,99,235,.075)',
   },
   {
+    index: '02',
     icon: Zap,
+    en: 'EFFICIENCY',
     title: '高效能',
+    core: '协同效率',
     desc: '智能决策与自动化协同，让全要素生产率持续提高。',
-    chart: <MiniBars />,
+    visual: 'efficiency' as const,
+    keywords: ['实时', '协同', '优化'],
     color: '#06B6D4',
+    glow: 'rgba(6,182,212,.075)',
   },
   {
+    index: '03',
     icon: BadgeCheck,
+    en: 'QUALITY',
     title: '高质量',
-    desc: '从规模扩张转向创新驱动，发展更可持续、更可靠。',
-    chart: <MiniRing />,
+    core: '质量稳定性',
+    desc: '从规模扩张转向创新驱动，发展更加可靠、持续。',
+    visual: 'quality' as const,
+    keywords: ['可靠', '可持续', '高标准'],
     color: '#14B8A6',
+    glow: 'rgba(20,184,166,.075)',
   },
 ]
+
+function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <motion.div
+      tabIndex={0}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      className="card relative flex h-full min-h-[350px] flex-col overflow-hidden border border-white/90 p-7 outline-none transition-[border-color,box-shadow] duration-300 hover:border-sky-200 hover:shadow-[0_18px_44px_rgba(37,99,235,.12)] focus-visible:border-sky-300"
+    >
+      <span className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(circle at 100% 100%, ${feature.glow}, transparent 44%)` }} />
+
+      <div className="relative flex items-center gap-3">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl" style={{ background: `${feature.color}12`, color: feature.color }}>
+          <feature.icon size={21} />
+        </span>
+        <div>
+          <span className="text-[10px] font-bold tracking-[0.18em]" style={{ color: feature.color }}>{feature.index}</span>
+          <p className="mt-0.5 text-[10px] font-bold tracking-[0.16em] text-muted">{feature.en}</p>
+        </div>
+      </div>
+
+      <div className="relative mt-5">
+        <h4 className="text-[19px] font-bold leading-none text-ink">{feature.title}</h4>
+        <p className="mt-3 min-h-[44px] text-[13.5px] leading-relaxed text-body">{feature.desc}</p>
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-[10px] font-semibold tracking-wide text-muted">核心概念</span>
+          <span className="text-[14px] font-bold" style={{ color: feature.color }}>{feature.core}</span>
+        </div>
+      </div>
+
+      <div className="relative mt-5 h-[104px] rounded-2xl border border-slate-100 bg-white/55 px-2">
+        {feature.visual === 'technology' && <TechnologyVisual active={hovered} />}
+        {feature.visual === 'efficiency' && <EfficiencyVisual active={hovered} />}
+        {feature.visual === 'quality' && <QualityVisual active={hovered} />}
+      </div>
+
+      <div className="relative mt-4 flex items-center gap-2">
+        {feature.keywords.map((keyword, index) => (
+          <motion.span
+            key={keyword}
+            animate={{ opacity: hovered ? 1 : 0.72, y: hovered ? [2, 0] : 0 }}
+            transition={{ delay: hovered ? index * 0.08 : 0, duration: 0.22 }}
+            className="rounded-full border bg-white/80 px-2.5 py-1 text-[9.5px] font-bold tracking-wide"
+            style={{ borderColor: `${feature.color}24`, color: feature.color }}
+          >
+            {keyword}
+          </motion.span>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
 
 export default function Understand() {
   const [activePair, setActivePair] = useState<number | null>(null)
@@ -508,19 +610,7 @@ export default function Understand() {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {FEATURES.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.1}>
-              <div className="card card-hover flex h-full flex-col p-7">
-                <div className="flex items-center justify-between">
-                  <span
-                    className="flex h-12 w-12 items-center justify-center rounded-2xl"
-                    style={{ background: `${f.color}16`, color: f.color }}
-                  >
-                    <f.icon size={23} />
-                  </span>
-                </div>
-                <h4 className="mt-5 text-[19px] font-bold text-ink">{f.title}</h4>
-                <p className="mt-2 flex-1 text-[14px] leading-relaxed text-body">{f.desc}</p>
-                <div className="mt-5">{f.chart}</div>
-              </div>
+              <FeatureCard feature={f} />
             </Reveal>
           ))}
         </div>
