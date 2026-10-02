@@ -145,26 +145,26 @@ function DigitCanvas() {
 
   return (
     <div className="journey-visual grid gap-5 p-5 sm:grid-cols-[1fr_.8fr] sm:p-7">
-      <div>
+      <div className="mx-auto w-full max-w-[280px]">
         <canvas
           ref={canvas}
           width="280"
           height="280"
-          className="mx-auto aspect-square w-full max-w-[280px] touch-none rounded-[22px] border border-brand/15 bg-white shadow-inner"
+          className="aspect-square w-full touch-none rounded-[22px] border border-brand/15 bg-white shadow-inner"
           onPointerDown={start}
           onPointerMove={draw}
           onPointerUp={() => (drawing.current = false)}
           onPointerCancel={() => (drawing.current = false)}
           aria-label="手写数字画布"
         />
-        <div className="mt-4 flex justify-center gap-2">
-          <button className="btn btn-primary !px-4 !py-2.5 !text-[13px]" onClick={recognize}>
+        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+          <button className="btn btn-primary !px-3 !py-2.5 !text-[13px]" onClick={recognize}>
             <Play size={14} /> {state === 'loading' ? '识别中…' : '开始识别'}
           </button>
-          <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={clear}>
+          <button className="btn btn-ghost !px-3 !py-2.5 !text-[13px]" onClick={clear}>
             <Eraser size={14} /> 擦除
           </button>
-          <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={example}>
+          <button className="btn btn-ghost !px-3 !py-2.5 !text-[13px]" onClick={example}>
             <Sparkles size={14} /> 示例 0
           </button>
         </div>
