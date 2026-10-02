@@ -58,7 +58,7 @@ export default function Navbar() {
         </button>
 
         {/* Desktop links */}
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden translate-x-6 items-center gap-1 lg:flex">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
