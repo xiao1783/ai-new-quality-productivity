@@ -49,12 +49,7 @@ export default function Navbar() {
         {/* Logo */}
         <button onClick={() => go('hero')} className="flex items-center gap-3">
           <Logo size={scrolled ? 34 : 38} />
-          <span className="flex flex-col leading-none">
-            <span className="text-[16px] font-bold tracking-wide text-ink">智启新质</span>
-            <span className="mt-1 text-[9px] font-semibold tracking-[0.22em] text-muted">
-              AI PRODUCTIVITY LAB
-            </span>
-          </span>
+          <span className="text-[21px] font-black tracking-wide text-ink">智启新质</span>
         </button>
 
         {/* Desktop links */}
