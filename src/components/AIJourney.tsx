@@ -145,7 +145,7 @@ function DigitCanvas() {
 
   return (
     <div className="journey-visual grid gap-5 p-5 sm:grid-cols-[1fr_.8fr] sm:p-7">
-      <div className="mx-auto w-full max-w-[280px]">
+      <div className="mx-auto w-full max-w-[280px] self-center">
         <canvas
           ref={canvas}
           width="280"
