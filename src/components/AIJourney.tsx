@@ -321,7 +321,7 @@ export default function AIJourney({ onBack }: { onBack: () => void }) {
       <header className="experience-header glass">
         <button className="flex items-center gap-3 text-left" onClick={onBack}>
           <Logo size={38} />
-          <span><span className="block text-[16px] font-black text-ink">智启新质</span><span className="block text-[9px] font-bold tracking-[.2em] text-muted">AI EXPERIENCE JOURNEY</span></span>
+          <span className="text-[21px] font-black tracking-wide text-ink">智启新质</span>
         </button>
         <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={onBack}><ArrowLeft size={15} /> 返回数字展馆</button>
       </header>
