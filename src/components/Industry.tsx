@@ -11,6 +11,9 @@ import {
   GraduationCap,
   Check,
   Sparkles,
+  Activity,
+  ArrowRight,
+  CircleDot,
   type LucideIcon,
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
@@ -40,7 +43,8 @@ export default function Industry() {
   const [sel, setSel] = useState(INDUSTRIES[0].id)
   const [tab, setTab] = useState(EXPLORER_TABS[0].id)
   const current = INDUSTRIES.find((i) => i.id === sel)!
-  const ActiveScene = EXPLORER_TABS.find((t) => t.id === tab)!.Scene
+  const activeCase = EXPLORER_TABS.find((t) => t.id === tab)!
+  const ActiveScene = activeCase.Scene
 
   return (
     <section id="industry" className="scene scene-industry section-pad bg-canvas-2">
@@ -101,10 +105,8 @@ export default function Industry() {
                       onMouseEnter={() => setSel(ind.id)}
                     >
                       <circle r="42" fill="#fff" stroke={active ? ind.color : '#E2E8F0'} strokeWidth={active ? 2.4 : 1.4} />
-                      <Icon x={-10.5} y={-10.5} size={21} color={ind.color} />
-                      <g transform="translate(0,30)">
-                        <text textAnchor="middle" fill="#0F172A" fontSize="12.5" fontWeight="700">{ind.name}</text>
-                      </g>
+                      <Icon x={-10.5} y={-21.5} size={21} color={ind.color} />
+                      <text y="18" textAnchor="middle" fill="#0F172A" fontSize="12.5" fontWeight="700">{ind.name}</text>
                     </g>
                   )
                 })}
@@ -173,25 +175,100 @@ export default function Industry() {
         </Reveal>
 
         <Reveal className="mt-7">
-          <div className="card p-5 sm:p-8">
-            <div className="flex flex-wrap gap-2">
+          <div className="card overflow-hidden p-4 sm:p-6">
+            <div className="flex gap-2 overflow-x-auto rounded-2xl bg-canvas-2 p-1.5 sm:w-fit">
               {EXPLORER_TABS.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
-                  className={`rounded-xl px-5 py-2.5 text-[14px] font-semibold transition-all ${
-                    tab === t.id
-                      ? 'bg-gradient-to-r from-brand to-cyan text-white shadow-[0_8px_20px_rgba(37,99,235,0.28)]'
-                      : 'bg-canvas-2 text-body hover:text-ink'
-                  }`}
+                  className={`relative shrink-0 rounded-xl px-6 py-2.5 text-[14px] font-semibold transition-colors ${tab === t.id ? 'text-white' : 'text-body hover:-translate-y-0.5 hover:bg-white hover:text-ink'}`}
                 >
-                  {t.label}
+                  {tab === t.id && (
+                    <motion.span
+                      layoutId="industry-active-tab"
+                      className="absolute inset-0 rounded-xl shadow-[0_8px_20px_rgba(37,99,235,0.22)]"
+                      style={{ background: `linear-gradient(110deg, ${t.accent}, #22B8D8)` }}
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <span className="relative z-10">{t.label}</span>
                 </button>
               ))}
             </div>
-            <div className="mt-6">
-              <ActiveScene />
-            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeCase.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="mt-5 grid gap-4 lg:grid-cols-[1.7fr_0.9fr]"
+              >
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.32 }}
+                  className="overflow-hidden rounded-[24px] border border-line/70 bg-[#F7FBFF]"
+                >
+                  <ActiveScene accent={activeCase.accent} />
+                </motion.div>
+
+                <div className="flex flex-col gap-3">
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
+                    className="rounded-[22px] border border-line/70 bg-white p-5"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] font-bold tracking-[0.18em]" style={{ color: activeCase.accent }}>{activeCase.eyebrow}</p>
+                        <h4 className="mt-1.5 text-[21px] font-bold text-ink">{activeCase.title}</h4>
+                      </div>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ color: activeCase.accent, background: `${activeCase.accent}12` }}>
+                        <Activity size={20} />
+                      </span>
+                    </div>
+                    <p className="mt-3 text-[13px] leading-[1.7] text-body">{activeCase.summary}</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.04 }}
+                    className="rounded-[22px] border border-line/70 bg-canvas-2 p-5"
+                  >
+                    <p className="text-[11px] font-bold tracking-[0.16em] text-muted">AI WORKFLOW</p>
+                    <div className="mt-4 space-y-2.5">
+                      {activeCase.steps.map((step, index) => (
+                        <motion.div
+                          key={step}
+                          initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.06 + index * 0.05 }}
+                          className="flex items-center gap-3"
+                        >
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg text-[10px] font-bold" style={{ color: activeCase.accent, background: `${activeCase.accent}12` }}>{String(index + 1).padStart(2, '0')}</span>
+                          <span className="text-[12.5px] font-semibold text-ink">{step}</span>
+                          {index < activeCase.steps.length - 1 && <ArrowRight size={13} className="ml-auto text-muted/60" />}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.08 }}
+                    className="rounded-[22px] border p-5"
+                    style={{ borderColor: `${activeCase.accent}28`, background: `${activeCase.accent}08` }}
+                  >
+                    <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-muted"><CircleDot size={14} style={{ color: activeCase.accent }} /> RESULT OUTPUT</div>
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <div><p className="text-[10px] text-muted">{activeCase.statusLabel}</p><p className="mt-1 text-[12px] font-bold text-ink">{activeCase.status}</p></div>
+                      <div><p className="text-[10px] text-muted">{activeCase.valueLabel}</p><p className="mt-1 text-[12px] font-bold" style={{ color: activeCase.accent }}>{activeCase.value}</p></div>
+                    </div>
+                  </motion.div>
+
+                  <div className="flex flex-wrap gap-1.5 px-1">
+                    {activeCase.keywords.map((keyword) => <span key={keyword} className="rounded-full border border-line/70 bg-white px-2.5 py-1 text-[10px] font-medium text-body">{keyword}</span>)}
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </Reveal>
       </div>
