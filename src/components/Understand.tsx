@@ -619,10 +619,10 @@ export default function Understand() {
           <div className="grid items-stretch gap-5 lg:grid-cols-[1fr_150px_1fr]">
           {/* 传统 */}
           <Reveal>
-            <div className="card h-full overflow-hidden p-7">
+            <div className="card h-full overflow-hidden p-7 sm:pr-4">
               <p className="text-[13px] font-bold tracking-[0.2em] text-muted">TRADITIONAL</p>
               <h3 className="mt-2 text-[22px] font-bold text-ink">传统生产模式</h3>
-              <div className="mt-5 grid min-h-[330px] grid-cols-1 gap-3 sm:grid-cols-[minmax(175px,.9fr)_minmax(150px,1.1fr)]">
+              <div className="mt-5 grid min-h-[330px] grid-cols-1 gap-3 sm:grid-cols-[minmax(165px,.85fr)_minmax(165px,1.15fr)]">
                 <div className="space-y-1">
                   {TRANSFORM_PAIRS.map((pair, index) => (
                     <ModeItem
@@ -695,11 +695,14 @@ export default function Understand() {
 
           {/* AI 驱动 */}
           <Reveal delay={0.1}>
-            <div className={`card h-full overflow-hidden p-7 transition-all duration-500 ${complete ? 'border-brand/35 shadow-[0_18px_50px_rgba(37,99,235,0.13)] brightness-[1.02]' : ''}`}>
+            <div className={`card h-full overflow-hidden p-7 sm:pl-4 transition-all duration-500 ${complete ? 'border-brand/35 shadow-[0_18px_50px_rgba(37,99,235,0.13)] brightness-[1.02]' : ''}`}>
               <motion.p animate={{ opacity: complete || playing || activePair !== null ? 1 : 0.48 }} className="text-[13px] font-bold tracking-[0.2em] text-brand">AI POWERED</motion.p>
               <h3 className="mt-2 text-[22px] font-bold text-ink">AI 驱动生产模式</h3>
-              <div className="mt-5 grid min-h-[330px] grid-cols-1 gap-3 sm:grid-cols-[minmax(175px,.9fr)_minmax(150px,1.1fr)]">
-                <div className="space-y-1">
+              <div className="mt-5 grid min-h-[330px] grid-cols-1 gap-3 sm:grid-cols-[minmax(165px,1.15fr)_minmax(165px,.85fr)]">
+                <motion.div animate={{ opacity: complete || activePair !== null && phase >= 4 ? 1 : 0.5 }} className="order-2 min-w-0 sm:order-1">
+                  <SmartFactoryScene focus={activePair} active={complete || playing && phase >= 4} />
+                </motion.div>
+                <div className="order-1 space-y-1 sm:order-2">
                 {TRANSFORM_PAIRS.map((pair, index) => {
                   const focused = activePair === index
                   const opacity = complete ? 1 : activePair === null ? 0.42 : focused && phase === 5 ? 1 : focused ? 0.45 : 0.26
@@ -722,13 +725,10 @@ export default function Understand() {
                   )
                 })}
                 </div>
-                <motion.div animate={{ opacity: complete || activePair !== null && phase >= 4 ? 1 : 0.5 }} className="min-w-0">
-                  <SmartFactoryScene focus={activePair} active={complete || playing && phase >= 4} />
-                </motion.div>
               </div>
             </div>
           </Reveal>
-          </div>
+        </div>
 
           {/* 五阶段流程 */}
           <Reveal className="mt-6">

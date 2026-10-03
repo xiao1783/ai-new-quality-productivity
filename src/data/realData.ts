@@ -23,7 +23,7 @@ export interface KpiStat {
 
 export const HERO_STATS: HeroStat[] = [
   { icon: 'users', value: '5.15亿', label: '生成式AI用户规模（2025.6）' },
-  { icon: 'trend', value: '1.2万亿', label: '中国AI产业规模·元（2025）' },
+  { icon: 'trend', value: '1.2万亿', label: 'AI产业规模·元（2025）' },
   { icon: 'badge', value: '70%', label: '生成式AI专利中国占比（WIPO）' },
 ]
 
