@@ -222,7 +222,11 @@ function AgricultureScene({ accent }: SceneProps) {
     <g transform="translate(40 113) skewX(-12)">
       {[0,1,2,3,4,5].map(r=><path key={r} d={`M0 ${r*48+24}H450`} stroke="#fff" strokeWidth="1" opacity=".14" />)}
       {[0,1,2,3,4].map(r=>[0,1,2,3,4,5].map(c=>{const bad=(r===1&&c===3)||(r===2&&c===3);return <motion.rect key={`${r}-${c}`} x={c*75} y={r*48} width="65" height="38" rx="5" fill={bad?'#FBBF24':(r+c)%2?'#86D6A4':'#63C58A'} stroke="#fff" strokeWidth="2" animate={{opacity:bad?[.6,.95,.6]:[.7,.82,.7]}} transition={{duration:bad?1.6:3.4,repeat:Infinity,delay:(r+c)*.12}} />}))}
-      {[257,257].map((x,i)=><motion.g key={i} animate={{ y: [0, -3, 0] }} transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.4 }}><path d={`M${x} ${67+i*48}c-5-7-8-10-8-14a8 8 0 0 1 16 0c0 4-3 7-8 14Z`} fill="#fff" opacity=".85" /></motion.g>)}
+      {/* 缺水选区：与单元格同组斜切，自动对齐 */}
+      <motion.g animate={{ opacity: [0.45, 1, 0.45] }} transition={{ duration: 1.5, repeat: Infinity }}>
+        <rect x="222" y="44" width="71" height="94" rx="8" fill="none" stroke="#F59E0B" strokeWidth="2.5" strokeDasharray="7 5" />
+        <path d="M222 55V44h11M282 44h11v11M222 127v11h11M282 138h11v-11" fill="none" stroke="#F59E0B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      </motion.g>
     </g>
     {/* 无人机投影 */}
     <motion.ellipse cx="243" cy="384" rx="34" ry="6" fill="#0F172A" animate={{ cx: [243, 508, 243], opacity: [.05, .1, .05] }} transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }} />
@@ -240,13 +244,10 @@ function AgricultureScene({ accent }: SceneProps) {
       <motion.path d="M105 116L78 254H170L131 116Z" fill={accent} animate={{ opacity: [.07, .16, .07] }} transition={{ duration: 1.8, repeat: Infinity }} />
     </motion.g>
     {/* 缺水选区 */}
-    <motion.rect x="287" y="153" width="72" height="86" rx="8" fill="none" stroke="#F59E0B" strokeWidth="2.5" strokeDasharray="7 5" animate={{opacity:[.4,1,.4]}} transition={{duration:1.5,repeat:Infinity}} />
-    {[[284,150,1,1],[362,150,-1,1],[284,242,1,-1],[362,242,-1,-1]].map(([bx,by,dx,dy],i)=>(
-      <motion.path key={i} d={`M${bx+dx*5} ${by}h${-dx*11}M${bx} ${by+dy*5}v${-dy*11}`} stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" animate={{opacity:[.4,1,.4]}} transition={{duration:1.5,repeat:Infinity,delay:i*.15}} />
-    ))}
+    {/* 缺水定位钉 */}
     <motion.g animate={{ y: [0, -4, 0] }} transition={{ duration: 1.8, repeat: Infinity }}>
-      <path d="M323 178c-6-8-9-12-9-16a9 9 0 0 1 18 0c0 4-3 8-9 16Z" fill="#FBBF24" />
-      <circle cx="323" cy="162" r="2" fill="#fff" opacity=".9" />
+      <path d="M287 161c-6-8-9.5-12-9.5-16.5a9.5 9.5 0 0 1 19 0c0 4.5-3.5 8.5-9.5 16.5Z" fill="#F59E0B" stroke="#fff" strokeWidth="2" />
+      <circle cx="287" cy="144.5" r="3" fill="#fff" />
     </motion.g>
     {/* 巡检分析卡 */}
     <g transform="translate(524 108)" filter="url(#case-shadow)"><rect width="158" height="174" rx="20" fill="#fff" stroke="#CCE7DE" /><text x="20" y="28" fill="#0F172A" fontSize="12" fontWeight="700">巡检分析</text><circle cx="32" cy="52" r="9" fill="#FBBF24" opacity=".25" /><text x="50" y="56" fill="#92400E" fontSize="10" fontWeight="700">缺水区域 · 2</text><rect x="50" y="62" width="88" height="5" rx="2.5" fill="#F1F5F9" /><motion.rect x="50" y="62" width="30" height="5" rx="2.5" fill="#FBBF24" initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'50px 64px'}} transition={{duration:.9}} /><circle cx="32" cy="88" r="9" fill="#34D399" opacity=".25" /><text x="50" y="92" fill="#166534" fontSize="10" fontWeight="700">长势良好 · 86%</text><rect x="50" y="98" width="88" height="5" rx="2.5" fill="#F1F5F9" /><motion.rect x="50" y="98" width="76" height="5" rx="2.5" fill="#34D399" initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'50px 100px'}} transition={{duration:.9,delay:.15}} /><path d="M20 118H138" stroke="#E2E8F0" /><text x="20" y="140" fill="#64748B" fontSize="9">RECOMMENDATION</text><text x="20" y="158" fill={accent} fontSize="11" fontWeight="700">精准灌溉 + 定点巡检</text></g>
