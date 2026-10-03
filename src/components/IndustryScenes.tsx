@@ -71,20 +71,20 @@ function ManufacturingScene({ accent }: SceneProps) {
     ))}
 
     {/* 相机 */}
-    <path d="M258 78v70" stroke="#7895B1" strokeWidth="7" />
-    <rect x="216" y="145" width="84" height="52" rx="14" fill="#fff" stroke={accent} strokeWidth="2" filter="url(#case-shadow)" />
-    <circle cx="258" cy="171" r="15" fill="#0F172A" />
-    <circle cx="258" cy="171" r="7" fill="#38BDF8" />
-    <motion.circle cx="258" cy="171" r="11" fill="none" stroke="#38BDF8" strokeWidth="2" animate={{ scale: [1, 1.9], opacity: [0.55, 0] }} transition={{ duration: 1.6, repeat: Infinity }} style={{ transformOrigin: '258px 171px' }} />
-    <motion.circle cx="290" cy="154" r="3" fill="#10B981" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.2, repeat: Infinity }} />
-    <text x="243" y="192" fill="#94A3B8" fontSize="7" fontWeight="700">CAM-01</text>
+    <path d="M363 78v70" stroke="#7895B1" strokeWidth="7" />
+    <rect x="321" y="145" width="84" height="52" rx="14" fill="#fff" stroke={accent} strokeWidth="2" filter="url(#case-shadow)" />
+    <circle cx="363" cy="171" r="15" fill="#0F172A" />
+    <circle cx="363" cy="171" r="7" fill="#38BDF8" />
+    <motion.circle cx="363" cy="171" r="11" fill="none" stroke="#38BDF8" strokeWidth="2" animate={{ scale: [1, 1.9], opacity: [0.55, 0] }} transition={{ duration: 1.6, repeat: Infinity }} style={{ transformOrigin: '363px 171px' }} />
+    <motion.circle cx="395" cy="154" r="3" fill="#10B981" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.2, repeat: Infinity }} />
+    <text x="348" y="192" fill="#94A3B8" fontSize="7" fontWeight="700">CAM-01</text>
 
     {/* 扫描光锥 */}
-    <motion.path d="M226 197L198 280H318L290 197Z" fill={accent} animate={{opacity:[.06,.2,.06]}} transition={{duration:1.6,repeat:Infinity}} />
-    <motion.line x1="202" x2="314" stroke="#38BDF8" strokeWidth="2" animate={{y1:[214,272,214],y2:[214,272,214]}} transition={{duration:2.1,repeat:Infinity}} />
+    <motion.path d="M331 197L303 280H423L395 197Z" fill={accent} animate={{opacity:[.06,.2,.06]}} transition={{duration:1.6,repeat:Infinity}} />
+    <motion.line x1="307" x2="419" stroke="#38BDF8" strokeWidth="2" animate={{y1:[214,272,214],y2:[214,272,214]}} transition={{duration:2.1,repeat:Infinity}} />
     {[0,1].map(i=>(
       <motion.circle key={i} r="2.5" fill="#38BDF8" animate={{opacity:[.2,.9,.2]}}>
-        <animateMotion dur={`${1.4+i*0.5}s`} repeatCount="indefinite" path="M258 200L258 276" />
+        <animateMotion dur={`${1.4+i*0.5}s`} repeatCount="indefinite" path="M363 200L363 276" />
       </motion.circle>
     ))}
 
@@ -98,10 +98,10 @@ function ManufacturingScene({ accent }: SceneProps) {
     <text x="638" y="360" fill="#64748B" fontSize="10">PASS</text><text x="667" y="225" fill="#E11D48" fontSize="10" fontWeight="700">REJECT</text>
 
     {/* 数据流与 AI 判定卡 */}
-    <motion.path d="M302 170C390 118 470 130 548 174" fill="none" stroke={accent} strokeWidth="2" strokeDasharray="6 8" animate={{strokeDashoffset:[28,0]}} transition={{duration:1.4,repeat:Infinity,ease:'linear'}} />
+    <motion.path d="M407 170C470 118 505 130 548 174" fill="none" stroke={accent} strokeWidth="2" strokeDasharray="6 8" animate={{strokeDashoffset:[28,0]}} transition={{duration:1.4,repeat:Infinity,ease:'linear'}} />
     {[0,1].map(i=>(
       <motion.circle key={i} r="3" fill={accent} animate={{opacity:[.2,.9,.2]}}>
-        <animateMotion dur={`${2.2+i*0.7}s`} repeatCount="indefinite" path="M302 170C390 118 470 130 548 174" />
+        <animateMotion dur={`${2.2+i*0.7}s`} repeatCount="indefinite" path="M407 170C470 118 505 130 548 174" />
       </motion.circle>
     ))}
     <g transform="translate(535 132)" filter="url(#case-shadow)"><rect width="142" height="86" rx="18" fill="#fff" stroke="#CFE0F1" /><circle cx="33" cy="34" r="18" fill={accent} opacity=".12" /><text x="33" y="39" textAnchor="middle" fill={accent} fontSize="14" fontWeight="800">AI</text><text x="62" y="32" fill="#0F172A" fontSize="12" fontWeight="700">缺陷已识别</text><motion.circle cx="135" cy="27" r="3" fill="#10B981" animate={{opacity:[.25,1,.25]}} transition={{duration:1.2,repeat:Infinity}} /><text x="62" y="52" fill="#64748B" fontSize="10">置信度 96%</text><rect x="20" y="67" width="102" height="5" rx="3" fill="#E2E8F0" /><motion.rect x="20" y="67" height="5" rx="3" fill={accent} animate={{ width: [10, 96, 96] }} transition={{ duration: 2.4, times: [0, 0.45, 1], repeat: Infinity, repeatDelay: 0.6 }} /></g>
