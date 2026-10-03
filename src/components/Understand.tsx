@@ -99,6 +99,19 @@ function EfficiencyVisual({ active }: { active: boolean }) {
           opacity: { duration: 2, repeat: Infinity },
         }}
       />
+      {[32.5, 67.5].map((x) => (
+        <motion.span
+          key={x}
+          className="absolute top-1/2 z-10 -translate-y-1/2"
+          style={{ left: `${x}%` }}
+          animate={{ opacity: active ? 1 : [0.45, 0.85, 0.45] }}
+          transition={{ duration: 2, repeat: Infinity, delay: x === 32.5 ? 0 : 0.25 }}
+        >
+          <svg width="11" height="11" viewBox="0 0 10 10" aria-hidden="true">
+            <path d="M2.5 1l5 4-5 4" fill="none" stroke="#06B6D4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </motion.span>
+      ))}
       {nodes.map((node, index) => (
         <motion.div
           key={node.en}
@@ -124,28 +137,32 @@ function EfficiencyVisual({ active }: { active: boolean }) {
 function QualityVisual({ active }: { active: boolean }) {
   const circumference = 2 * Math.PI * 32
   return (
-    <div className="relative flex h-[104px] items-center justify-center" role="img" aria-label="全球灯塔工厂中国占比 42%（85 / 201 家）">
-      <svg viewBox="0 0 88 88" className="h-[92px] w-[92px] -rotate-90">
-        <motion.circle cx="44" cy="44" r="38" fill="#14B8A6" animate={{ opacity: active ? [0.05, 0.14, 0.05] : [0.04, 0.1, 0.04] }} transition={{ duration: 2.4, repeat: Infinity }} />
-        <circle cx="44" cy="44" r="32" fill="none" stroke="#E2E8F0" strokeWidth="7" />
-        <motion.circle
-          cx="44"
-          cy="44"
-          r="32"
-          fill="none"
-          stroke="#14B8A6"
-          strokeWidth="7"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          animate={{ strokeDashoffset: active ? [circumference, circumference * 0.58] : circumference * 0.58 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </svg>
-      <div className="absolute text-center">
-        <span className="block text-[22px] font-bold leading-none text-teal">42%</span>
-        <span className="mt-1 block text-[8.5px] font-semibold text-muted">灯塔工厂中国占比</span>
+    <div className="relative flex h-[104px] items-center justify-center gap-5" role="img" aria-label="全球灯塔工厂中国占比 42%（85 / 201 家）">
+      <div className="relative shrink-0">
+        <svg viewBox="0 0 88 88" className="h-[96px] w-[96px] -rotate-90">
+          <motion.circle cx="44" cy="44" r="38" fill="#14B8A6" animate={{ opacity: active ? [0.05, 0.14, 0.05] : [0.04, 0.1, 0.04] }} transition={{ duration: 2.4, repeat: Infinity }} />
+          <circle cx="44" cy="44" r="32" fill="none" stroke="#E2E8F0" strokeWidth="7" />
+          <motion.circle
+            cx="44"
+            cy="44"
+            r="32"
+            fill="none"
+            stroke="#14B8A6"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            animate={{ strokeDashoffset: active ? [circumference, circumference * 0.58] : circumference * 0.58 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-[20px] font-bold leading-none text-teal">42%</span>
+        </div>
       </div>
-      <span className="absolute right-2 top-2 rounded-full bg-teal/8 px-2 py-1 text-[9px] font-semibold text-teal">WEF 2025.10</span>
+      <div className="min-w-0">
+        <p className="text-[13px] font-bold leading-tight text-ink">灯塔工厂中国占比</p>
+        <p className="mt-1.5 text-[11px] leading-tight text-muted">85 / 201 家 · 居全球首位</p>
+      </div>
     </div>
   )
 }
