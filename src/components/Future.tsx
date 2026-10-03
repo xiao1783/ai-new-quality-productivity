@@ -132,7 +132,16 @@ function FutureFactory() {
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-[24px] border border-line/70 bg-[#F7FBFF] shadow-[0_18px_48px_rgba(38,103,169,.08)]">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h3 className="text-[24px] font-bold text-ink">未来智能工厂 · 自主互联的生产系统</h3>
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" disabled={isPlaying} onClick={()=>{setSelectedNode(null);setPlayingStep(0)}} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-65"><Play size={14}/>{isPlaying?`闭环演示 ${playingStep!+1} / ${DEMO_STEPS.length}`:'演示智能工厂闭环'}</button>
+          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-2.5 text-[12px] font-semibold text-body"><RotateCcw size={13}/>重置</button>
+          {isPlaying&&<span className="text-[11px] font-bold text-brand">STEP {String(playingStep!+1).padStart(2,'0')} / 07 · {DEMO_STEPS[playingStep!].label}</span>}
+        </div>
+      </div>
+
+      <div className="relative mt-6 overflow-hidden rounded-[24px] border border-line/70 bg-[#F7FBFF] shadow-[0_18px_48px_rgba(38,103,169,.08)]">
       <div className="absolute inset-0 opacity-50" style={{ backgroundImage: 'radial-gradient(#B8D5EA 1px,transparent 1px)', backgroundSize: '24px 24px' }} />
       <div className="relative min-h-[680px] sm:min-h-[640px] lg:min-h-[600px]">
         <div className="absolute left-5 top-5 z-30 max-w-[310px] text-[11px] leading-relaxed text-muted">Robot、Camera、Sensor、AI、Cloud 与 Digital Twin 构成实时协同的智能生产网络。</div>
@@ -170,14 +179,8 @@ function FutureFactory() {
 
         <AnimatePresence>{displayNode&&<motion.div key={displayNode} initial={{opacity:0,y:5}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="absolute bottom-[20%] left-1/2 z-30 w-[210px] -translate-x-1/2 rounded-xl border border-line bg-white/95 px-3 py-2 text-center shadow-sm"><p className="text-[9px] font-bold text-brand">{FACTORY_NODES[displayNode].role}</p><p className="mt-0.5 text-[9px] text-body">{FACTORY_NODES[displayNode].detail}</p></motion.div>}</AnimatePresence>
 
+        <div className="absolute bottom-5 right-5 z-30 hidden items-center gap-1.5 text-[8px] text-muted md:flex"><Database size={11}/><span>Physical World</span><span>↔</span><span>AI</span><span>↔</span><span>Digital World</span></div>
       </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <button type="button" disabled={isPlaying} onClick={()=>{setSelectedNode(null);setPlayingStep(0)}} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-65"><Play size={14}/>{isPlaying?`闭环演示 ${playingStep!+1} / ${DEMO_STEPS.length}`:'演示智能工厂闭环'}</button>
-        <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-2.5 text-[12px] font-semibold text-body"><RotateCcw size={13}/>重置</button>
-        {isPlaying&&<span className="text-[11px] font-bold text-brand">STEP {String(playingStep!+1).padStart(2,'0')} / 07 · {DEMO_STEPS[playingStep!].label}</span>}
-        <span className="ml-auto hidden items-center gap-1.5 text-[10px] text-muted md:flex"><Database size={11}/><span>Physical World</span><span>↔</span><span>AI</span><span>↔</span><span>Digital World</span></span>
       </div>
     </div>
   )
@@ -257,9 +260,6 @@ export default function Future() {
 
         {/* 未来智能工厂 */}
         <Reveal className="mt-14">
-          <h3 className="text-[24px] font-bold text-ink">未来智能工厂 · 自主互联的生产系统</h3>
-        </Reveal>
-        <Reveal className="mt-6">
           <FutureFactory />
         </Reveal>
       </div>
