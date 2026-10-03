@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 
 const CX = 360
 const CY = 360
@@ -71,10 +72,21 @@ export default function AICoreGraph() {
         </radialGradient>
       </defs>
 
-      {/* 轨道环 */}
-      <circle cx={CX} cy={CY} r={INNER_R} fill="none" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 7" />
-      <circle cx={CX} cy={CY} r={OUTER_R} fill="none" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 7" />
-      <circle cx={CX} cy={CY} r={120} fill="url(#core-glow)" />
+      {/* 轨道环（缓慢旋转） */}
+      <motion.g animate={{ rotate: 360 }} transition={{ duration: 90, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: `${CX}px ${CY}px` }}>
+        <circle cx={CX} cy={CY} r={INNER_R} fill="none" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 7" />
+      </motion.g>
+      <motion.g animate={{ rotate: 360 }} transition={{ duration: 140, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: `${CX}px ${CY}px` }}>
+        <circle cx={CX} cy={CY} r={OUTER_R} fill="none" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 7" />
+      </motion.g>
+      <motion.circle cx={CX} cy={CY} r={120} fill="url(#core-glow)" animate={{ scale: [1, 1.06, 1] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: `${CX}px ${CY}px` }} />
+      {/* 轨道卫星点 */}
+      <motion.circle r="4" fill="#2563EB" opacity="0.55">
+        <animateMotion dur="20s" repeatCount="indefinite" path={`M${CX} ${CY - INNER_R}a${INNER_R} ${INNER_R} 0 1 1 -0.1 0`} />
+      </motion.circle>
+      <motion.circle r="3.5" fill="#06B6D4" opacity="0.5">
+        <animateMotion dur="28s" repeatCount="indefinite" path={`M${CX} ${CY - OUTER_R}a${OUTER_R} ${OUTER_R} 0 1 1 -0.1 0`} />
+      </motion.circle>
 
       {/* 中心 → 要素 */}
       {INNER.map((n) => {
@@ -118,11 +130,42 @@ export default function AICoreGraph() {
         }),
       )}
 
+      {/* 待机数据粒子：核心 → 要素 */}
+      {hover === null && INNER.map((n, i) => {
+        const p = innerPos[n.id]
+        return (
+          <motion.circle key={`p-${n.id}`} r="3" fill={n.color} opacity="0.6">
+            <animateMotion dur={`${2.8 + i * 0.5}s`} repeatCount="indefinite" path={`M${CX} ${CY}L${p.x} ${p.y}`} />
+          </motion.circle>
+        )
+      })}
+      {/* 悬停：沿激活链路冲刺的粒子 */}
+      {hover && (() => {
+        const isInner = INNER.some((n) => n.id === hover)
+        const sources = isInner ? [hover] : linkedInner
+        return sources.flatMap((inId) => {
+          const a = innerPos[inId]
+          const outs = isInner ? LINKS[inId] ?? [] : [hover]
+          const centerPart = isInner
+            ? [<motion.circle key={`h-c-${inId}`} r="3.2" fill="#0F5BFB"><animateMotion dur="0.9s" repeatCount="indefinite" path={`M${CX} ${CY}L${a.x} ${a.y}`} /></motion.circle>]
+            : []
+          return [
+            ...centerPart,
+            ...outs.map((outId, j) => (
+              <motion.circle key={`h-${inId}-${outId}`} r="3.2" fill="#06B6D4">
+                <animateMotion dur={`${1.1 + j * 0.2}s`} repeatCount="indefinite" path={`M${a.x} ${a.y}L${outerPos[outId].x} ${outerPos[outId].y}`} />
+              </motion.circle>
+            )),
+          ]
+        })
+      })()}
+
       {/* 中心 AI Core */}
       <g>
         <circle cx={CX} cy={CY} r="76" fill="#0F5BFB" opacity="0.18" />
         <circle cx={CX} cy={CY} r="61" fill="#0B52D6" stroke="rgba(255,255,255,.96)" strokeWidth="3" style={{ filter: 'drop-shadow(0 12px 24px rgba(15,91,251,.5))' }} />
         <circle cx={CX} cy={CY} r="61" fill="none" stroke="#0647D8" strokeWidth="2.5" className="pulse-ring" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+        <motion.circle cx={CX} cy={CY} r="61" fill="none" stroke="#60A5FA" strokeWidth="1.5" animate={{ scale: [1, 1.5], opacity: [0.4, 0] }} transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' }} style={{ transformOrigin: `${CX}px ${CY}px` }} />
         <text x={CX} y={CY - 4} textAnchor="middle" fill="#fff" fontSize="21" fontWeight="700">
           AI Core
         </text>

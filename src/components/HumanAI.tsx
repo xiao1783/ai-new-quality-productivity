@@ -162,8 +162,8 @@ export default function HumanAI() {
                 <motion.svg className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full lg:block" viewBox="0 0 1000 300" preserveAspectRatio="none" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
                   {activeHuman && <motion.path d="M325 150C390 150 420 132 486 150" fill="none" stroke="#2563EB" strokeWidth="2" strokeDasharray="6 7" initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:.45}} />}
                   {activeAI && <motion.path d="M675 150C610 150 580 132 514 150" fill="none" stroke="#06B6D4" strokeWidth="2" strokeDasharray="6 7" initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:.45}} />}
-                  {activeHuman && <motion.circle r="4" fill="#2563EB" animate={{cx:[325,486],cy:[150,150]}} transition={{duration:.7,repeat:selectedResult?1:0}} />}
-                  {activeAI && <motion.circle r="4" fill="#06B6D4" animate={{cx:[675,514],cy:[150,150]}} transition={{duration:.7,repeat:selectedResult?1:0}} />}
+                  {activeHuman && <motion.circle r="4" fill="#2563EB"><animateMotion dur="1.5s" repeatCount="indefinite" path="M325 150C390 150 420 132 486 150" /></motion.circle>}
+                  {activeAI && <motion.circle r="4" fill="#06B6D4"><animateMotion dur="1.5s" repeatCount="indefinite" path="M675 150C610 150 580 132 514 150" /></motion.circle>}
                 </motion.svg>
               )}
             </AnimatePresence>

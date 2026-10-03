@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import Reveal from './ui/Reveal'
 
 interface NNode {
@@ -161,6 +162,7 @@ export default function NetworkGraph() {
             })}
 
             {/* 中心 */}
+            <motion.circle cx={CC} cy={CC} r="64" fill="#06B6D4" animate={{ opacity: [0.05, 0.12, 0.05], scale: [1, 1.07, 1] }} transition={{ duration: 3, repeat: Infinity }} style={{ transformOrigin: `${CC}px ${CC}px` }} />
             <circle cx={CC} cy={CC} r="52" fill="url(#net-g)" />
             <defs>
               <linearGradient id="net-g" x1="0" y1="0" x2="1" y2="1">
@@ -171,6 +173,16 @@ export default function NetworkGraph() {
             <text x={CC} y={CC + 6} textAnchor="middle" fill="#fff" fontSize="20" fontWeight="700">
               人工智能
             </text>
+
+            {/* 待机粒子：核心 → 技术要素辐条 */}
+            {!highlight && N1.map((n, i) => {
+              const p = polar(n.ring, n.angle)
+              return (
+                <motion.circle key={`flow-${n.id}`} r="2.6" fill="#06B6D4" opacity="0.65" style={{ pointerEvents: 'none' }}>
+                  <animateMotion dur={`${3 + i * 0.7}s`} repeatCount="indefinite" path={`M${CC} ${CC}L${p.x} ${p.y}`} />
+                </motion.circle>
+              )
+            })}
 
             {N1.map((n) => renderNode(n, '#2563EB', 34))}
             {N2.map((n) => renderNode(n, '#3B82F6', 34))}

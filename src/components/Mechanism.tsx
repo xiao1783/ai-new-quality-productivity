@@ -80,11 +80,13 @@ function PerceptionArt({ active }: { active: boolean }) {
           <stop offset="0" stopColor="#2563EB" />
           <stop offset="1" stopColor="#06B6D4" />
         </linearGradient>
+        <clipPath id="p-eye"><path d="M48 95 Q160 24 272 95 Q160 166 48 95 Z" /></clipPath>
       </defs>
       <path d="M48 95 Q160 24 272 95 Q160 166 48 95 Z" fill="#F8FBFF" stroke="url(#p-g)" strokeWidth="2.5" />
+      <motion.line x1="160" x2="160" y1="40" y2="150" stroke="#93C5FD" strokeWidth="1.5" clipPath="url(#p-eye)" animate={{ x: [-70, 70] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }} opacity="0.65" />
       <path d="M70 95 Q160 46 250 95 Q160 144 70 95 Z" fill="none" stroke="#BFDBFE" strokeWidth="1.3" strokeDasharray="5 7" />
-      <motion.circle cx="160" cy="95" r="31" fill="#EFF6FF" stroke="#2563EB" strokeWidth="2.5" animate={{ scale: active ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.55, ease: 'easeOut' }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
-      <motion.circle cx="160" cy="95" r="13" fill="#2563EB" animate={{ opacity: active ? [0.75, 1, 0.82] : 0.82, scale: active ? [1, 1.18, 1] : 1 }} transition={{ duration: 0.55 }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+      <motion.circle cx="160" cy="95" r="31" fill="#EFF6FF" stroke="#2563EB" strokeWidth="2.5" animate={{ scale: active ? [1, 1.1, 1] : [1, 1.03, 1] }} transition={{ duration: active ? 0.55 : 2.6, repeat: Infinity, ease: 'easeOut' }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+      <motion.circle cx="160" cy="95" r="13" fill="#2563EB" animate={{ opacity: active ? [0.75, 1, 0.82] : [0.6, 0.88, 0.6], scale: active ? [1, 1.18, 1] : [1, 1.07, 1] }} transition={{ duration: active ? 0.55 : 2.4, repeat: Infinity }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
       {[42, 55].map((radius, index) => (
         <motion.circle
           key={radius}
@@ -94,8 +96,8 @@ function PerceptionArt({ active }: { active: boolean }) {
           fill="none"
           stroke="#60A5FA"
           strokeWidth="1.5"
-          animate={{ scale: active ? [0.78, 1.18] : 0.92, opacity: active ? [0.45, 0] : 0.12 }}
-          transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }}
+          animate={{ scale: [0.8, active ? 1.22 : 1.06], opacity: [0.4, 0] }}
+          transition={{ duration: active ? 0.7 : 2.2, repeat: Infinity, delay: index * 0.12, ease: 'easeOut' }}
           style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
         />
       ))}
@@ -104,8 +106,8 @@ function PerceptionArt({ active }: { active: boolean }) {
           key={i}
           d={`M${278 + i * 9} 80 q8 15 0 30`}
           fill="none" stroke="#14B8A6" strokeWidth="2" strokeLinecap="round"
-          animate={{ opacity: active ? [0.18, 1, 0.18] : 0.22, x: active ? [0, 3, 0] : 0 }}
-          transition={{ duration: 0.55, delay: i * 0.1 }}
+          animate={{ opacity: active ? [0.18, 1, 0.18] : [0.12, 0.5, 0.12], x: active ? [0, 3, 0] : 0 }}
+          transition={{ duration: active ? 0.55 : 1.8, repeat: Infinity, delay: i * 0.1 }}
         />
       ))}
       <path d="M20 58 H70 M250 132 H300" stroke="#93C5FD" strokeWidth="1.3" strokeDasharray="4 5" />
@@ -129,20 +131,29 @@ function CognitionArt({ active }: { active: boolean }) {
           key={i}
           x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
           stroke="#38BDF8" strokeWidth="1.8"
-          animate={{ pathLength: active ? [0, 1] : 1, opacity: active ? [0.24, 0.9] : 0.32 }}
-          transition={{ duration: 0.32, delay: active ? i * 0.07 : 0 }}
+          animate={{ pathLength: active ? [0, 1] : 1, opacity: active ? [0.24, 0.9] : [0.2, 0.5, 0.2] }}
+          transition={active
+            ? { pathLength: { duration: 0.32, delay: i * 0.07 }, opacity: { duration: 0.3 } }
+            : { opacity: { duration: 2.6, repeat: Infinity, delay: (i % 4) * 0.4 } }}
         />
+      ))}
+      {[[1, 3], [3, 5], [0, 2]].map(([a, b], i) => (
+        <motion.circle key={`pt-${i}`} r="2.4" fill="#22D3EE" opacity="0.5">
+          <animateMotion dur={`${2.2 + i * 0.8}s`} repeatCount="indefinite" path={`M${nodes[a].x} ${nodes[a].y}L${nodes[b].x} ${nodes[b].y}`} />
+        </motion.circle>
       ))}
       {nodes.map((n, i) => (
         <motion.circle
           key={i} cx={n.x} cy={n.y} r={n.r}
           fill={i === 3 ? '#06B6D4' : '#fff'} stroke={i === 3 ? '#0891B2' : '#38BDF8'} strokeWidth="2"
-          animate={{ scale: active ? [0.82, i === 3 ? 1.14 : 1.04, 1] : 1, opacity: active ? [0.45, 1] : 0.85 }}
-          transition={{ duration: 0.36, delay: active ? i * 0.1 : 0 }}
+          animate={{ scale: active ? [0.82, i === 3 ? 1.14 : 1.04, 1] : [1, 1.05, 1], opacity: active ? [0.45, 1] : [0.7, 0.95, 0.7] }}
+          transition={active
+            ? { duration: 0.36, delay: i * 0.1 }
+            : { duration: 2.4, repeat: Infinity, delay: i * 0.18 }}
           style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
         />
       ))}
-      <motion.circle cx="170" cy="95" r="31" fill="none" stroke="#22D3EE" strokeWidth="1.5" animate={{ scale: active ? [0.7, 1.25] : 0.9, opacity: active ? [0.4, 0] : 0.12 }} transition={{ duration: 0.8 }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+      <motion.circle cx="170" cy="95" r="31" fill="none" stroke="#22D3EE" strokeWidth="1.5" animate={{ scale: [0.8, active ? 1.3 : 1.12], opacity: [0.4, 0] }} transition={{ duration: active ? 0.8 : 2, repeat: Infinity, ease: 'easeOut' }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
       <text x="170" y="99" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="800">AI CORE</text>
       <text x="30" y="118" fill="#64748B" fontSize="9" fontWeight="700">INPUT</text>
       <text x="250" y="154" fill="#64748B" fontSize="9" fontWeight="700">INSIGHT</text>
@@ -155,8 +166,8 @@ function ActionArt({ active }: { active: boolean }) {
     <svg viewBox="0 0 320 190" className="h-[190px] w-full" role="img" aria-label="执行控制系统">
       <motion.g
         style={{ transformBox: 'fill-box', transformOrigin: '82px 95px' }}
-        animate={{ rotate: active ? [0, 28, 18] : 0 }}
-        transition={{ duration: 0.65, ease: 'easeOut' }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: active ? 3.5 : 9, repeat: Infinity, ease: 'linear' }}
       >
         <g stroke="#2563EB" strokeWidth="6" strokeLinecap="round">
           {[0, 60, 120, 180, 240, 300].map((d) => {
@@ -168,7 +179,7 @@ function ActionArt({ active }: { active: boolean }) {
         <circle cx="82" cy="95" r="9" fill="#14B8A6" />
       </motion.g>
       <path d="M126 95 H165" stroke="#14B8A6" strokeWidth="2" strokeDasharray="6 6" />
-      <motion.circle r="4" fill="#0EA5E9" animate={{ x: active ? [126, 165] : 126, y: 95, opacity: active ? [0, 1, 0] : 0.35 }} transition={{ duration: 0.7, ease: 'easeInOut' }} />
+      <motion.circle r="4" fill="#0EA5E9" cy="95" animate={{ x: [126, 165], opacity: [0, 1, 0] }} transition={{ duration: active ? 0.7 : 1.6, repeat: Infinity, ease: 'easeInOut' }} />
       <rect x="165" y="43" width="125" height="104" rx="14" fill="#fff" stroke="#BFE7E5" strokeWidth="1.8" />
       <text x="180" y="64" fill="#0F766E" fontSize="9" fontWeight="800">TASK CONTROL</text>
       {[0, 1, 2].map((i) => (
@@ -178,8 +189,11 @@ function ActionArt({ active }: { active: boolean }) {
             x="180" y={78 + i * 22} width={[68, 82, 58][i]} height="9" rx="4.5"
             fill={['#2563EB', '#06B6D4', '#14B8A6'][i]}
             style={{ transformOrigin: '180px center' }}
-            animate={{ scaleX: active ? [0.12, 1] : 0.58 }}
-            transition={{ duration: 0.45, delay: active ? i * 0.14 : 0, ease: 'easeOut' }}
+            animate={{ scaleX: active ? [0.12, 1] : 0.58, opacity: active ? 1 : [0.65, 1, 0.65] }}
+            transition={{
+              scaleX: { duration: 0.45, delay: active ? i * 0.14 : 0, ease: 'easeOut' },
+              opacity: { duration: 1.8, repeat: Infinity, delay: i * 0.2 },
+            }}
           />
         </g>
       ))}
@@ -350,6 +364,10 @@ export default function Mechanism() {
                 </defs>
 
                 <circle cx={CC} cy={CC} r={R} fill="none" stroke="#E2E8F0" strokeWidth="1.2" opacity="0.42" />
+                {/* 环境粒子：沿闭环缓慢巡游 */}
+                <motion.circle r="3" fill="#93C5FD" opacity="0.55">
+                  <animateMotion dur="14s" repeatCount="indefinite" path={`M ${CC} ${CC - R}a ${R} ${R} 0 1 1 -0.1 0`} />
+                </motion.circle>
                 {NODES.map((_, i) => (
                   <motion.path
                     key={i}
@@ -405,6 +423,7 @@ export default function Mechanism() {
                   style={{ cursor: 'pointer', outline: 'none', transformBox: 'fill-box', transformOrigin: 'center' }}
                 >
                   <circle cx={CC} cy={CC} r="86" fill="#F8FAFC" stroke={centerHovered || isPlaying ? '#60A5FA' : '#D8E2EE'} strokeWidth={centerHovered || isPlaying ? 2 : 1.2} />
+                  <motion.circle cx={CC} cy={CC} r="98" fill="none" stroke="#BFDBFE" strokeWidth="1" strokeDasharray="3 9" animate={{ rotate: 360 }} transition={{ duration: 26, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: `${CC}px ${CC}px` }} opacity="0.7" />
                   <AnimatePresence mode="wait">
                     <motion.g
                       key={isPlaying ? `playing-${displayNode}` : displayNode}
