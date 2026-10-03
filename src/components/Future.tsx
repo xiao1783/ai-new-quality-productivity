@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
+import { FUTURE_FORECASTS } from '@/data/realData'
 
 const TIMELINE = [
   {
@@ -188,7 +189,7 @@ export default function Future() {
 
         <Reveal className="mt-6">
           <span className="inline-flex items-center gap-2 rounded-xl bg-brand/8 px-4 py-2 text-[12.5px] font-semibold text-brand">
-            <Info size={15} /> 概念性未来趋势展示，非确定性预测
+            <Info size={15} /> 概念性未来趋势展示，非确定性预测；权威机构量化预测见下方卡片
           </span>
         </Reveal>
 
@@ -231,6 +232,20 @@ export default function Future() {
               </Reveal>
             ))}
           </div>
+        </div>
+
+        {/* 权威机构量化预测 */}
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {FUTURE_FORECASTS.map((f, i) => (
+            <Reveal key={f.label} delay={i * 0.1}>
+              <div className="card card-hover flex h-full flex-col p-7">
+                <p className="text-gradient text-[30px] font-bold leading-none">{f.value}</p>
+                <p className="mt-3 text-[15px] font-bold text-ink">{f.label}</p>
+                <p className="mt-2 flex-1 text-[13px] leading-relaxed text-body">{f.desc}</p>
+                <p className="mt-4 border-t border-line/70 pt-3 text-[11px] leading-relaxed text-muted">来源：{f.source}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
 
         {/* 未来智能工厂 */}

@@ -1,29 +1,41 @@
 import { useMemo } from 'react'
-import { LayoutGrid, CircleDot, Link2, Gauge, Info } from 'lucide-react'
+import { TrendingUp, Users, Building2, FileCheck2, Database, Info } from 'lucide-react'
 import type { EChartsOption } from 'echarts'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import CountUp from './ui/CountUp'
 import EChart from './charts/EChart'
+import SourceNote from './ui/SourceNote'
 import { PALETTE } from '@/data/site'
 import { INDUSTRIES } from '@/data/industryData'
+import {
+  DASHBOARD_KPIS,
+  AI_INVESTMENT,
+  ROBOT_DENSITY,
+  LABOR_PRODUCTIVITY,
+  INDUSTRY_SCALE,
+  GENAI_USERS,
+  COMPUTING_POWER,
+} from '@/data/realData'
 
-const KPI = [
-  { icon: LayoutGrid, label: 'AI 应用领域', value: 8, suffix: '', color: PALETTE.brand },
-  { icon: CircleDot, label: '应用节点', value: 24, suffix: '', color: PALETTE.cyan },
-  { icon: Link2, label: '产业环节', value: 15, suffix: '', color: PALETTE.teal },
-  { icon: Gauge, label: '智能化指标', value: 83, suffix: '%', color: PALETTE.brand2 },
-]
+const KPI_ICONS = { trend: TrendingUp, globe: Users, factory: Building2, gauge: FileCheck2 } as const
 
 const ts = { fontFamily: "Inter,'PingFang SC','Microsoft YaHei',sans-serif", color: PALETTE.body }
 
 export default function Dashboard() {
-  const donutOption = useMemo<EChartsOption>(
-    () => ({
+  const donutOption = useMemo<EChartsOption>(() => {
+    const colors = ['#2563EB', '#CBD5E1', '#06B6D4', '#14B8A6']
+    return {
       textStyle: ts,
-      tooltip: { trigger: 'item', valueFormatter: (v) => `${v}%` },
+      tooltip: {
+        trigger: 'item',
+        formatter: (p) => {
+          const d = p as { name: string; value: number; percent: number }
+          return `${d.name}：${d.value} ${AI_INVESTMENT.unit}（${d.percent}%）`
+        },
+      },
       legend: { type: 'scroll', bottom: 0, textStyle: { color: PALETTE.body, fontSize: 11 } },
-      color: ['#2563EB', '#3B82F6', '#06B6D4', '#14B8A6', '#0EA5E9', '#6366F1', '#0891B2', '#2DD4BF'],
+      color: colors,
       series: [
         {
           type: 'pie',
@@ -32,60 +44,22 @@ export default function Dashboard() {
           avoidLabelOverlap: true,
           itemStyle: { borderColor: '#fff', borderWidth: 2, borderRadius: 4 },
           label: { show: false },
-          data: INDUSTRIES.map((ind, i) => ({ name: ind.name, value: [18, 15, 13, 12, 12, 11, 10, 9][i] })),
+          data: AI_INVESTMENT.items.map((it) => ({ name: it.name, value: it.value })),
         },
       ],
-    }),
-    [],
-  )
+    }
+  }, [])
 
-  const radarOption = useMemo<EChartsOption>(
-    () => ({
+  const robotOption = useMemo<EChartsOption>(() => {
+    const colors = ['#CBD5E1', PALETTE.cyan, '#93C5FD', '#2563EB']
+    return {
       textStyle: ts,
-      tooltip: {},
-      radar: {
-        radius: '64%',
-        center: ['50%', '50%'],
-        indicator: [
-          { name: '感知', max: 100 },
-          { name: '认知', max: 100 },
-          { name: '决策', max: 100 },
-          { name: '生成', max: 100 },
-          { name: '控制', max: 100 },
-          { name: '协同', max: 100 },
-        ],
-        axisName: { color: PALETTE.body, fontSize: 12 },
-        splitLine: { lineStyle: { color: PALETTE.line } },
-        splitArea: { areaStyle: { color: ['#fff', '#F8FAFC'] } },
-        axisLine: { lineStyle: { color: PALETTE.line } },
-      },
-      series: [
-        {
-          type: 'radar',
-          data: [
-            {
-              value: [86, 82, 79, 74, 80, 77],
-              name: 'AI 能力分布',
-              lineStyle: { color: PALETTE.brand, width: 2.4 },
-              itemStyle: { color: PALETTE.cyan },
-              areaStyle: { color: 'rgba(37,99,235,0.16)' },
-            },
-          ],
-        },
-      ],
-    }),
-    [],
-  )
-
-  const barOption = useMemo<EChartsOption>(
-    () => ({
-      textStyle: ts,
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: (v) => `${v}%` },
-      grid: { left: 8, right: 12, top: 16, bottom: 4, containLabel: true },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: (v) => `${v} 台/万人` },
+      grid: { left: 8, right: 40, top: 16, bottom: 4, containLabel: true },
       xAxis: { type: 'value', splitLine: { lineStyle: { color: PALETTE.grid } }, axisLabel: { color: PALETTE.muted, fontSize: 10 } },
       yAxis: {
         type: 'category',
-        data: ['教育', '金融', '农业', '交通', '能源', '制造', '医疗', '科研'],
+        data: ROBOT_DENSITY.categories,
         axisLine: { lineStyle: { color: PALETTE.line } },
         axisTick: { show: false },
         axisLabel: { color: PALETTE.body, fontSize: 11 },
@@ -93,43 +67,140 @@ export default function Dashboard() {
       series: [
         {
           type: 'bar',
-          barWidth: 11,
-          data: [20, 22, 24, 28, 30, 32, 35, 40],
+          barWidth: 14,
+          label: { show: true, position: 'right', fontWeight: 700, fontSize: 11.5, color: PALETTE.ink, formatter: (p) => String(p.value) },
           itemStyle: {
             borderRadius: [0, 6, 6, 0],
-            color: { type: 'linear', x: 0, y: 0, x2: 1, y2: 0, colorStops: [{ offset: 0, color: PALETTE.brand }, { offset: 1, color: PALETTE.cyan }] },
+            color: (p) => colors[p.dataIndex as number] ?? PALETTE.brand,
           },
+          data: ROBOT_DENSITY.values,
+        },
+      ],
+    }
+  }, [])
+
+  const laborOption = useMemo<EChartsOption>(
+    () => ({
+      textStyle: ts,
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: (v) => `${v} 万元/人` },
+      grid: { left: 8, right: 12, top: 34, bottom: 4, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: LABOR_PRODUCTIVITY.years,
+        axisLine: { lineStyle: { color: PALETTE.line } },
+        axisTick: { show: false },
+        axisLabel: { color: PALETTE.body, fontSize: 12 },
+      },
+      yAxis: {
+        type: 'value',
+        min: 16,
+        max: 19.5,
+        splitLine: { lineStyle: { color: PALETTE.grid } },
+        axisLabel: { color: PALETTE.muted, fontSize: 10 },
+      },
+      series: [
+        {
+          type: 'bar',
+          barWidth: 44,
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 700,
+            fontSize: 12.5,
+            color: PALETTE.ink,
+            formatter: (p) => `${p.value} 万`,
+          },
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: PALETTE.teal }, { offset: 1, color: PALETTE.cyan }] },
+          },
+          data: LABOR_PRODUCTIVITY.values.map((v) => Number((v / 10000).toFixed(2))),
         },
       ],
     }),
     [],
   )
 
-  const lineOption = useMemo<EChartsOption>(
+  const scaleOption = useMemo<EChartsOption>(
     () => ({
       textStyle: ts,
-      tooltip: { trigger: 'axis' },
-      grid: { left: 8, right: 16, top: 20, bottom: 4, containLabel: true },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        formatter: (p) => `${(p as { name: string }[])[0].name} 年：${INDUSTRY_SCALE.labels[(p as { dataIndex: number }[])[0].dataIndex]}`,
+      },
+      grid: { left: 8, right: 12, top: 34, bottom: 4, containLabel: true },
       xAxis: {
         type: 'category',
-        boundaryGap: false,
-        data: ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+        data: INDUSTRY_SCALE.years,
         axisLine: { lineStyle: { color: PALETTE.line } },
-        axisLabel: { color: PALETTE.muted, fontSize: 11 },
+        axisTick: { show: false },
+        axisLabel: { color: PALETTE.body, fontSize: 12 },
       },
-      yAxis: { type: 'value', splitLine: { lineStyle: { color: PALETTE.grid } }, axisLabel: { color: PALETTE.muted, fontSize: 11 }, name: '应用指数', nameTextStyle: { color: PALETTE.muted } },
+      yAxis: {
+        type: 'value',
+        max: 1.4,
+        splitLine: { lineStyle: { color: PALETTE.grid } },
+        axisLabel: { color: PALETTE.muted, fontSize: 10 },
+      },
       series: [
         {
-          name: 'AI 应用趋势',
-          type: 'line',
-          smooth: true,
-          symbolSize: 8,
-          lineStyle: { width: 3.2, color: PALETTE.brand },
-          itemStyle: { color: PALETTE.cyan },
-          areaStyle: {
-            color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(37,99,235,0.22)' }, { offset: 1, color: 'rgba(6,182,212,0.02)' }] },
+          type: 'bar',
+          barWidth: 44,
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 700,
+            fontSize: 12,
+            color: PALETTE.ink,
+            formatter: (p) => INDUSTRY_SCALE.labels[p.dataIndex as number],
           },
-          data: [8, 12, 17, 23, 31, 40, 52, 66],
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: PALETTE.brand2 }, { offset: 1, color: PALETTE.brand }] },
+          },
+          data: INDUSTRY_SCALE.values.map((v) => v / 10000),
+        },
+      ],
+    }),
+    [],
+  )
+
+  const genaiOption = useMemo<EChartsOption>(
+    () => ({
+      textStyle: ts,
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: (v) => `${v} ${GENAI_USERS.unit}` },
+      grid: { left: 8, right: 12, top: 34, bottom: 4, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: GENAI_USERS.points,
+        axisLine: { lineStyle: { color: PALETTE.line } },
+        axisTick: { show: false },
+        axisLabel: { color: PALETTE.body, fontSize: 12 },
+      },
+      yAxis: {
+        type: 'value',
+        max: 6,
+        splitLine: { lineStyle: { color: PALETTE.grid } },
+        axisLabel: { color: PALETTE.muted, fontSize: 10 },
+      },
+      series: [
+        {
+          type: 'bar',
+          barWidth: 44,
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 700,
+            fontSize: 12.5,
+            color: PALETTE.ink,
+            formatter: (p) => `${p.value} 亿`,
+          },
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: PALETTE.cyan }, { offset: 1, color: PALETTE.teal }] },
+          },
+          data: GENAI_USERS.values,
         },
       ],
     }),
@@ -186,76 +257,118 @@ export default function Dashboard() {
           index="05"
           en="DATA COMMAND CENTER"
           title="AI 生产力数据驾驶舱"
-          subtitle="以现代数据中心的方式，总览 AI 的应用版图、能力分布、效率变化与产业热度。"
+          subtitle="关键指标来自国家统计局、中国信通院、CNNIC、国家数据局、斯坦福 HAI 与 IFR 等权威机构公开发布。"
         />
         <Reveal className="mt-6">
-          <span className="inline-flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2 text-[12.5px] font-semibold text-amber-600">
-            <Info size={15} /> 全部为模拟数据 / 教学可视化口径，不代表真实统计
+          <span className="inline-flex items-center gap-2 rounded-xl bg-teal/8 px-4 py-2 text-[12.5px] font-semibold text-teal">
+            <Info size={15} /> 权威数据 · 各图表下方均标注来源；产业热力图为编者定性整理
           </span>
         </Reveal>
 
         {/* KPI */}
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {KPI.map((k, i) => (
-            <Reveal key={k.label} delay={i * 0.08}>
-              <div className="card card-hover flex items-center gap-4 p-6">
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ background: `${k.color}16`, color: k.color }}>
-                  <k.icon size={22} />
-                </span>
-                <div>
-                  <p className="text-[12.5px] text-muted">{k.label}</p>
-                  <p className="mt-1 text-[28px] font-bold leading-none text-ink">
-                    <CountUp end={k.value} suffix={k.suffix} />
-                  </p>
+          {DASHBOARD_KPIS.map((k, i) => {
+            const Icon = KPI_ICONS[k.icon]
+            const color = [PALETTE.brand, PALETTE.cyan, PALETTE.teal, PALETTE.brand2][i]
+            return (
+              <Reveal key={k.label} delay={i * 0.08}>
+                <div className="card card-hover flex items-center gap-4 p-6">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ background: `${color}16`, color }}>
+                    <Icon size={22} />
+                  </span>
+                  <div>
+                    <p className="text-[12.5px] text-muted">{k.label}</p>
+                    <p className="mt-1 text-[26px] font-bold leading-none text-ink">
+                      <CountUp end={k.value as number} decimals={k.decimals ?? 0} suffix={k.suffix} />
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            )
+          })}
         </div>
 
         {/* 三图 */}
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
           <Reveal>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">产业应用比例</h4>
-              <div className="mt-2 h-[300px]">
+              <h4 className="text-[15px] font-bold text-ink">全球私人 AI 投资分布</h4>
+              <p className="mt-1 text-[12px] text-muted">{AI_INVESTMENT.year} 年 · 全球总额 {AI_INVESTMENT.total.toLocaleString()} 亿美元</p>
+              <div className="mt-2 h-[280px]">
                 <EChart option={donutOption} />
               </div>
+              <SourceNote>{AI_INVESTMENT.source}</SourceNote>
             </div>
           </Reveal>
           <Reveal delay={0.08}>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">AI 能力分布</h4>
-              <div className="mt-2 h-[300px]">
-                <EChart option={radarOption} />
+              <h4 className="text-[15px] font-bold text-ink">制造业机器人密度对比</h4>
+              <p className="mt-1 text-[12px] text-muted">台 / 万名员工（2023）</p>
+              <div className="mt-2 h-[280px]">
+                <EChart option={robotOption} />
               </div>
+              <SourceNote>{ROBOT_DENSITY.source}</SourceNote>
             </div>
           </Reveal>
           <Reveal delay={0.16}>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">各领域效率提升</h4>
-              <div className="mt-2 h-[300px]">
-                <EChart option={barOption} />
+              <h4 className="text-[15px] font-bold text-ink">中国全员劳动生产率</h4>
+              <p className="mt-1 text-[12px] text-muted">2025 年达 184,413 元/人，同比 {LABOR_PRODUCTIVITY.growth}</p>
+              <div className="mt-2 h-[280px]">
+                <EChart option={laborOption} />
               </div>
+              <SourceNote>{LABOR_PRODUCTIVITY.source}</SourceNote>
             </div>
           </Reveal>
         </div>
 
-        {/* 趋势 */}
-        <Reveal className="mt-6">
-          <div className="card p-6">
-            <h4 className="text-[15px] font-bold text-ink">AI 应用趋势</h4>
-            <div className="mt-2 h-[300px]">
-              <EChart option={lineOption} />
+        {/* 中国动态 */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-3">
+          <Reveal>
+            <div className="card h-full p-6">
+              <h4 className="text-[15px] font-bold text-ink">中国 AI 产业规模跃升</h4>
+              <p className="mt-1 text-[12px] text-muted">一年间由 9,000 亿元级迈上 1.2 万亿元级（同比 {INDUSTRY_SCALE.growth}）</p>
+              <div className="mt-2 h-[240px]">
+                <EChart option={scaleOption} />
+              </div>
+              <SourceNote>{INDUSTRY_SCALE.source}</SourceNote>
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <div className="card h-full p-6">
+              <h4 className="text-[15px] font-bold text-ink">生成式 AI 用户规模爆发</h4>
+              <p className="mt-1 text-[12px] text-muted">{GENAI_USERS.note}</p>
+              <div className="mt-2 h-[240px]">
+                <EChart option={genaiOption} />
+              </div>
+              <SourceNote>{GENAI_USERS.source}</SourceNote>
+            </div>
+          </Reveal>
+          <Reveal delay={0.16}>
+            <div className="card flex h-full flex-col justify-between p-6">
+              <div>
+                <h4 className="text-[15px] font-bold text-ink">中国算力总规模</h4>
+                <p className="mt-1 text-[12px] text-muted">{COMPUTING_POWER.note}</p>
+              </div>
+              <div className="my-6 flex items-center gap-4">
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                  <Database size={26} />
+                </span>
+                <p className="text-[40px] font-bold leading-none text-ink">
+                  <CountUp end={COMPUTING_POWER.value} suffix=" " />
+                  <span className="text-[18px] font-bold text-muted">{COMPUTING_POWER.unit}</span>
+                </p>
+              </div>
+              <SourceNote>{COMPUTING_POWER.source}</SourceNote>
+            </div>
+          </Reveal>
+        </div>
 
         {/* 热力图 */}
         <Reveal className="mt-6">
           <div className="card p-6">
             <h4 className="text-[15px] font-bold text-ink">产业智能化热力图</h4>
-            <p className="mt-1 text-[12px] text-muted">产业 × 维度的综合热度（模拟）</p>
+            <p className="mt-1 text-[12px] text-muted">产业 × 维度的综合热度 · 编者综合公开资料定性整理（非统计口径）</p>
             <div className="mt-2 h-[420px]">
               <EChart option={heatOption} />
             </div>

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
+import SourceNote from './ui/SourceNote'
 
 const TRANSFORM_PAIRS = [
   { leftIcon: User, left: '人工经验', leftDesc: '判断依赖个人经历', rightIcon: Database, right: '数据驱动', rightDesc: '以实时数据支持判断' },
@@ -116,7 +117,7 @@ function EfficiencyVisual({ active }: { active: boolean }) {
 function QualityVisual({ active }: { active: boolean }) {
   const circumference = 2 * Math.PI * 32
   return (
-    <div className="relative flex h-[104px] items-center justify-center" role="img" aria-label="质量稳定性示意指数 84">
+    <div className="relative flex h-[104px] items-center justify-center" role="img" aria-label="全球灯塔工厂中国占比 42%（85 / 201 家）">
       <svg viewBox="0 0 88 88" className="h-[92px] w-[92px] -rotate-90">
         <circle cx="44" cy="44" r="32" fill="none" stroke="#E2E8F0" strokeWidth="7" />
         <motion.circle
@@ -128,15 +129,15 @@ function QualityVisual({ active }: { active: boolean }) {
           strokeWidth="7"
           strokeLinecap="round"
           strokeDasharray={circumference}
-          animate={{ strokeDashoffset: active ? [circumference, circumference * 0.16] : circumference * 0.16 }}
+          animate={{ strokeDashoffset: active ? [circumference, circumference * 0.58] : circumference * 0.58 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         />
       </svg>
       <div className="absolute text-center">
-        <span className="block text-[24px] font-bold leading-none text-teal">84</span>
-        <span className="mt-1 block text-[9px] font-semibold text-muted">示意指数</span>
+        <span className="block text-[22px] font-bold leading-none text-teal">42%</span>
+        <span className="mt-1 block text-[8.5px] font-semibold text-muted">灯塔工厂中国占比</span>
       </div>
-      <span className="absolute right-2 top-2 rounded-full bg-teal/8 px-2 py-1 text-[9px] font-semibold text-teal">模拟指标</span>
+      <span className="absolute right-2 top-2 rounded-full bg-teal/8 px-2 py-1 text-[9px] font-semibold text-teal">WEF 2025.10</span>
     </div>
   )
 }
@@ -274,6 +275,7 @@ const FEATURES = [
     keywords: ['AI', 'DATA', 'COMPUTING'],
     color: '#2563EB',
     glow: 'rgba(37,99,235,.075)',
+    source: '2014–2023 年全球生成式AI专利申请中中国约占 70% · WIPO（2024.7）',
   },
   {
     index: '02',
@@ -286,6 +288,7 @@ const FEATURES = [
     keywords: ['实时', '协同', '优化'],
     color: '#06B6D4',
     glow: 'rgba(6,182,212,.075)',
+    source: '2025 年中国全员劳动生产率 184,413 元/人，同比 +6.1% · 国家统计局（2026.2）',
   },
   {
     index: '03',
@@ -298,6 +301,7 @@ const FEATURES = [
     keywords: ['可靠', '可持续', '高标准'],
     color: '#14B8A6',
     glow: 'rgba(20,184,166,.075)',
+    source: '全球灯塔工厂 201 家中中国占 85 家（42%），居全球首位 · WEF（2025.10）',
   },
 ]
 
@@ -355,6 +359,8 @@ function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
           </motion.span>
         ))}
       </div>
+
+      <SourceNote className="mt-3">{feature.source}</SourceNote>
     </motion.div>
   )
 }

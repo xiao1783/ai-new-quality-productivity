@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
+import { BookOpen } from 'lucide-react'
 import Logo from './Logo'
+import { DATA_SOURCES } from '@/data/realData'
 
 const WORDS = ['效率', '创新', '协同', '未来']
 
@@ -57,6 +59,33 @@ export default function Footer() {
             </motion.span>
           ))}
         </div>
+
+        {/* 数据来源 */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="mx-auto mt-20 max-w-4xl rounded-3xl border border-white/10 bg-white/[0.04] p-7 text-left backdrop-blur sm:p-9"
+        >
+          <p className="flex items-center gap-2 text-[12px] font-bold tracking-[0.2em] text-cyan-300">
+            <BookOpen size={14} /> DATA SOURCES · 数据来源
+          </p>
+          <p className="mt-3 text-[13px] leading-relaxed text-slate-400">
+            本站各展区图表的关键数据，均来自以下权威机构公开发布的报告与统计公报：
+          </p>
+          <ul className="mt-5 grid gap-x-10 gap-y-2.5 text-[12.5px] leading-relaxed text-slate-300 sm:grid-cols-2">
+            {DATA_SOURCES.map((s) => (
+              <li key={s} className="flex gap-2">
+                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/70" />
+                <span>{s}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 border-t border-white/10 pt-4 text-[11.5px] leading-relaxed text-slate-500">
+            以上数据仅用于教学可视化展示；「AI 生产力模拟器」与「AI 实验室」为前端交互模拟实验，不构成任何统计结论；产业智能化热力图与三模式雷达图为编者综合公开资料整理的概念模型。
+          </p>
+        </motion.div>
 
         <div className="mt-20 flex flex-col items-center gap-4 border-t border-white/10 pt-10">
           <div className="flex items-center gap-3">

@@ -77,14 +77,19 @@ npm run preview
 ├── vite.config.ts           # Vite 配置（别名 @、分包策略）
 ├── tsconfig.json
 ├── public/
-│   └── favicon.svg
+│   ├── favicon.png
+│   ├── logo.png
+│   └── assets/              # Lottie 动画、MNIST 权重、场景图
 └── src/
     ├── main.tsx             # 应用入口
-    ├── App.tsx              # 展区组装与叙事顺序
+    ├── App.tsx              # hash 路由（主展馆 / AI Journey）
     ├── index.css            # Tailwind 与设计系统（配色 / 卡片 / 动画）
     ├── data/
     │   ├── site.ts          # 导航配置与图表配色
-    │   └── industryData.ts  # 八大产业数据
+    │   ├── industryData.ts  # 八大产业数据
+    │   └── realData.ts      # 权威真实数据集（含来源标注）
+    ├── utils/
+    │   └── mnistNetwork.ts  # 浏览器端 MNIST 推理
     └── components/
         ├── Navbar.tsx       # 悬浮玻璃导航（滚动定位 + active）
         ├── Hero.tsx         # 首页
@@ -93,32 +98,36 @@ npm run preview
         ├── Mechanism.tsx    # 02 机制
         ├── Industry.tsx     # 03 产业地图
         ├── IndustryScenes.tsx   # 产业案例场景
-        ├── Efficiency.tsx   # 04 效率看板
+        ├── Efficiency.tsx   # 04 效率看板（真实数据）
         ├── ProductivitySimulator.tsx
         ├── HumanAI.tsx
         ├── BeforeAfter.tsx
         ├── NetworkGraph.tsx
-        ├── Dashboard.tsx    # 数据驾驶舱
+        ├── Dashboard.tsx    # 数据驾驶舱（真实数据）
         ├── Future.tsx       # 05 未来
         ├── AILab.tsx        # 06 AI 实验室
-        ├── Footer.tsx       # 总结页
+        ├── AIJourney.tsx    # 独立页 · AI 学习之旅
+        ├── Logo.tsx
+        ├── Footer.tsx       # 总结页 + 数据来源清单
         ├── charts/
         │   └── EChart.tsx   # ECharts 通用封装
         └── ui/
             ├── Reveal.tsx       # 滚动进入动画
             ├── CountUp.tsx      # 数字增长动画
+            ├── SourceNote.tsx   # 图表数据来源标注
             └── SectionHeading.tsx
 ```
 
 ---
 
-## 数据与真实性声明
+## 数据来源与真实性声明
 
-本项目为教学可视化作品：
+本项目为教学可视化作品，数据使用遵循以下原则：
 
-- 网站中出现的 KPI、百分比、指数、趋势等，**均为示意数据 / 模拟数据**，并已在页面显著位置标注；
-- AI 实验室中的「检测、调度、维护、决策」均为前端交互模拟，**不调用真实 AI 模型，也不构成任何真实产业预测或统计结论**；
-- 未来展区内容仅为概念性趋势展示。
+- **关键图表均为真实数据**：首页指标、效率展区、数据驾驶舱、未来展区预测卡片的数据，来自权威机构公开发布——国家统计局、中国信通院、CNNIC、国家网信办、国家数据局、世界经济论坛（WEF）、麦肯锡全球研究院（MGI）、普华永道（PwC）、斯坦福 HAI《AI Index Report 2025》、IDC、高盛、IFR、WIPO 等，每张图表下方均标注了具体来源与发布时间，完整清单见网站页尾「数据来源」；
+- **概念模型明确标注**：三种生产模式雷达图、产业智能化热力图为编者综合公开资料整理的概念模型，已在图下注明「非统计口径」；
+- **交互实验为前端模拟**：AI 实验室中的「检测、调度、维护、决策」与「AI 生产力模拟器」均为前端交互模拟，不调用真实 AI 模型，不构成任何真实产业预测或统计结论；
+- 手写数字识别实验使用真实的 MNIST 预训练权重在浏览器本地推理。
 
 ---
 

@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, BarChart3, Gauge, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, BarChart3, BadgeCheck, TrendingUp, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 import AICoreGraph from './AICoreGraph'
+import { HERO_STATS, HERO_STATS_SOURCE } from '@/data/realData'
 
-const CONCEPT = [
-  { icon: Gauge, value: '50%+', label: '效率提升潜力' },
-  { icon: Users, value: '24/7', label: '智能连续生产' },
-  { icon: Sparkles, value: 'N×', label: '创新迭代速度' },
-]
+const HERO_ICONS = { users: Users, trend: TrendingUp, badge: BadgeCheck } as const
 
 export default function Hero() {
   const [hintOpacity, setHintOpacity] = useState(1)
@@ -83,26 +80,29 @@ export default function Hero() {
             </button>
           </motion.div>
 
-          {/* 概念指标 */}
+          {/* 关键指标（真实数据） */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.45 }}
             className="mt-12 grid max-w-[590px] gap-3 sm:grid-cols-3"
           >
-            {CONCEPT.map((c) => (
-              <div key={c.label} className="hero-metric flex items-center gap-3 rounded-2xl p-3.5">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/8 text-brand">
-                  <c.icon size={19} />
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-[22px] font-bold leading-none text-ink">{c.value}</span>
-                  <span className="mt-1.5 text-[12.5px] text-muted">{c.label}</span>
-                </span>
-              </div>
-            ))}
+            {HERO_STATS.map((c) => {
+              const Icon = HERO_ICONS[c.icon]
+              return (
+                <div key={c.label} className="hero-metric flex items-center gap-3 rounded-2xl p-3.5">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/8 text-brand">
+                    <Icon size={19} />
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-[22px] font-bold leading-none text-ink">{c.value}</span>
+                    <span className="mt-1.5 text-[12.5px] text-muted">{c.label}</span>
+                  </span>
+                </div>
+              )
+            })}
           </motion.div>
-          <p className="mt-3 text-[11px] tracking-wide text-muted">* 以上为概念性指标，用于表达方向，非真实统计数据</p>
+          <p className="mt-3 max-w-[560px] text-[11px] leading-relaxed tracking-wide text-muted">* {HERO_STATS_SOURCE}</p>
         </div>
 
         {/* 右侧引擎 */}
