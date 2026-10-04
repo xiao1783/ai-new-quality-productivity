@@ -289,7 +289,7 @@ function CapabilityCard({ capability }: { capability: (typeof CAPABILITIES)[numb
 export default function Mechanism() {
   const { lang, t, ta } = useLanguage()
   const [hoveredNode, setHoveredNode] = useState<LoopNodeId | null>(null)
-  const [selectedNode, setSelectedNode] = useState<LoopNodeId>('analysis')
+  const [selectedNode, setSelectedNode] = useState<LoopNodeId>('data')
   const [playingNode, setPlayingNode] = useState<LoopNodeId | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [centerHovered, setCenterHovered] = useState(false)
@@ -336,7 +336,7 @@ export default function Mechanism() {
   const reset = () => {
     stop()
     setHoveredNode(null)
-    setSelectedNode('analysis')
+    setSelectedNode('data')
   }
 
   const handleParallax = (event: React.MouseEvent<HTMLDivElement>) => {
