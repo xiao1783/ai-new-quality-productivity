@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
+import TakeawayNote from './ui/TakeawayNote'
 import { INDUSTRIES } from '@/data/industryData'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { EXPLORER_TABS } from './IndustryScenes'
@@ -277,6 +278,7 @@ export default function Industry() {
               </motion.div>
             </AnimatePresence>
           </div>
+          <TakeawayNote className="mx-4 mt-5 sm:mx-6" accent={activeCase.accent}>{t('i.tkExplorer')}</TakeawayNote>
         </Reveal>
       </div>
     </section>

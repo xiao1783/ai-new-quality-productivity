@@ -19,6 +19,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import SourceNote from './ui/SourceNote'
+import TakeawayNote from './ui/TakeawayNote'
 import { useLanguage } from '@/i18n/LanguageContext'
 
 const TRANSFORM_PAIRS = [
@@ -679,7 +680,7 @@ const FEATURES = [
   },
 ]
 
-function FeatureCard({ feature, text }: { feature: (typeof FEATURES)[number]; text: { title: string; desc: string; core: string; keys: string[]; src: string } }) {
+function FeatureCard({ feature, text }: { feature: (typeof FEATURES)[number]; text: { title: string; desc: string; core: string; keys: string[]; src: string; takeaway: string } }) {
   const { lang } = useLanguage()
   const [hovered, setHovered] = useState(false)
 
@@ -735,6 +736,7 @@ function FeatureCard({ feature, text }: { feature: (typeof FEATURES)[number]; te
         ))}
       </div>
 
+      <TakeawayNote className="mt-3" accent={feature.color}>{text.takeaway}</TakeawayNote>
       <SourceNote className="mt-3">{text.src}</SourceNote>
     </motion.div>
   )
@@ -764,9 +766,9 @@ export default function Understand() {
   }))
   const STEPS = ta('u.steps')
   const featureTexts = [
-    { title: t('u.f1t'), desc: t('u.f1d'), core: t('u.f1core'), keys: ta('u.f1keys'), src: t('u.f1src') },
-    { title: t('u.f2t'), desc: t('u.f2d'), core: t('u.f2core'), keys: ta('u.f2keys'), src: t('u.f2src') },
-    { title: t('u.f3t'), desc: t('u.f3d'), core: t('u.f3core'), keys: ta('u.f3keys'), src: t('u.f3src') },
+    { title: t('u.f1t'), desc: t('u.f1d'), core: t('u.f1core'), keys: ta('u.f1keys'), src: t('u.f1src'), takeaway: t('u.tk1') },
+    { title: t('u.f2t'), desc: t('u.f2d'), core: t('u.f2core'), keys: ta('u.f2keys'), src: t('u.f2src'), takeaway: t('u.tk2') },
+    { title: t('u.f3t'), desc: t('u.f3d'), core: t('u.f3core'), keys: ta('u.f3keys'), src: t('u.f3src'), takeaway: t('u.tk3') },
   ]
 
   useEffect(() => () => { playbackRef.current += 1 }, [])

@@ -6,6 +6,7 @@ import Reveal from './ui/Reveal'
 import CountUp from './ui/CountUp'
 import EChart from './charts/EChart'
 import SourceNote from './ui/SourceNote'
+import TakeawayNote from './ui/TakeawayNote'
 import { PALETTE } from '@/data/site'
 import { INDUSTRIES } from '@/data/industryData'
 import {
@@ -303,6 +304,7 @@ export default function Dashboard() {
               <div className="mt-2 h-[280px]">
                 <EChart option={donutOption} />
               </div>
+              <TakeawayNote accent={PALETTE.brand}>{t('d.tkInvest')}</TakeawayNote>
               <SourceNote>{AI_INVESTMENT.source}</SourceNote>
             </div>
           </Reveal>
@@ -313,6 +315,7 @@ export default function Dashboard() {
               <div className="mt-2 h-[280px]">
                 <EChart option={robotOption} />
               </div>
+              <TakeawayNote accent={PALETTE.cyan}>{t('d.tkRobot')}</TakeawayNote>
               <SourceNote>{ROBOT_DENSITY.source}</SourceNote>
             </div>
           </Reveal>
@@ -323,6 +326,7 @@ export default function Dashboard() {
               <div className="mt-2 h-[280px]">
                 <EChart option={laborOption} />
               </div>
+              <TakeawayNote accent={PALETTE.teal}>{t('d.tkLabor')}</TakeawayNote>
               <SourceNote>{LABOR_PRODUCTIVITY.source}</SourceNote>
             </div>
           </Reveal>
@@ -337,6 +341,7 @@ export default function Dashboard() {
               <div className="mt-2 h-[240px]">
                 <EChart option={scaleOption} />
               </div>
+              <TakeawayNote accent={PALETTE.brand2}>{t('d.tkScale')}</TakeawayNote>
               <SourceNote>{INDUSTRY_SCALE.source}</SourceNote>
             </div>
           </Reveal>
@@ -347,6 +352,7 @@ export default function Dashboard() {
               <div className="mt-2 h-[240px]">
                 <EChart option={genaiOption} />
               </div>
+              <TakeawayNote accent={PALETTE.brand}>{t('d.tkUsers')}</TakeawayNote>
               <SourceNote>{GENAI_USERS.source}</SourceNote>
             </div>
           </Reveal>
@@ -365,6 +371,7 @@ export default function Dashboard() {
                   <span className="text-[18px] font-bold text-muted">{COMPUTING_POWER.unit}</span>
                 </p>
               </div>
+              <TakeawayNote accent={PALETTE.cyan}>{t('d.tkCompute')}</TakeawayNote>
               <SourceNote>{COMPUTING_POWER.source}</SourceNote>
             </div>
           </Reveal>
@@ -378,6 +385,7 @@ export default function Dashboard() {
             <div className="mt-2 h-[420px]">
               <EChart option={heatOption} />
             </div>
+            <TakeawayNote className="mt-4" accent={PALETTE.teal}>{t('d.tkHeat')}</TakeawayNote>
           </div>
         </Reveal>
       </div>

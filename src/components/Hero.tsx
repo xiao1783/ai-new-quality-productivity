@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, BarChart3, BadgeCheck, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, BarChart3, BadgeCheck, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 import AICoreGraph from './AICoreGraph'
 import { useLanguage } from '@/i18n/LanguageContext'
@@ -70,6 +70,19 @@ export default function Hero() {
             {t('h.para')}
           </motion.p>
 
+          {/* 核心论点：老师第一眼就能看到的题眼 */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.26 }}
+            className="mt-6 max-w-[560px] rounded-2xl border border-brand/18 bg-white/72 px-4 py-3.5 shadow-[0_12px_34px_rgba(37,111,179,.08)] backdrop-blur"
+          >
+            <p className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] text-brand">
+              <Sparkles size={12} /> {lang === 'en' ? 'THESIS' : '核心论点'}
+            </p>
+            <p className="mt-2 text-[15px] font-semibold leading-[1.75] text-ink">{t('h.thesis')}</p>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -114,9 +127,12 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="hero-core relative mx-auto aspect-square w-full max-w-[680px]"
+          className="relative mx-auto w-full max-w-[680px]"
         >
-          <AICoreGraph />
+          <div className="hero-core relative aspect-square w-full">
+            <AICoreGraph />
+          </div>
+          <p className="hero-metric mx-auto mt-4 max-w-[560px] rounded-2xl px-4 py-2.5 text-center text-[11.5px] leading-relaxed text-body">{t('h.coreNote')}</p>
         </motion.div>
       </div>
 

@@ -20,6 +20,8 @@ import {
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
+import TakeawayNote from './ui/TakeawayNote'
+import { PALETTE } from '@/data/site'
 import { FUTURE_FORECASTS } from '@/data/realData'
 import { useLanguage } from '@/i18n/LanguageContext'
 
@@ -261,6 +263,9 @@ export default function Future() {
             </Reveal>
           ))}
         </div>
+        <Reveal className="mt-5">
+          <TakeawayNote accent={PALETTE.brand}>{t('f.tkForecast')}</TakeawayNote>
+        </Reveal>
 
         {/* 未来智能工厂 */}
         <Reveal className="mt-14">

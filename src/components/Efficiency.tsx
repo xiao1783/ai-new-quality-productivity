@@ -6,6 +6,7 @@ import Reveal from './ui/Reveal'
 import CountUp from './ui/CountUp'
 import EChart from './charts/EChart'
 import SourceNote from './ui/SourceNote'
+import TakeawayNote from './ui/TakeawayNote'
 import ProductivitySimulator from './ProductivitySimulator'
 import HumanAI from './HumanAI'
 import BeforeAfter from './BeforeAfter'
@@ -212,6 +213,7 @@ export default function Efficiency() {
               <div className="mt-3 h-[320px]">
                 <EChart option={barOption} />
               </div>
+              <TakeawayNote accent={PALETTE.brand}>{t('e.tkJobs')}</TakeawayNote>
               <SourceNote>{t('e.jobsSource')}</SourceNote>
             </div>
           </Reveal>
@@ -222,6 +224,7 @@ export default function Efficiency() {
               <div className="mt-3 h-[320px]">
                 <EChart option={radarOption} />
               </div>
+              <TakeawayNote accent={PALETTE.teal}>{t('e.tkRadar')}</TakeawayNote>
               <SourceNote>{t('e.radarSource')}</SourceNote>
             </div>
           </Reveal>
@@ -234,6 +237,7 @@ export default function Efficiency() {
             <div className="mt-3 h-[240px]">
               <EChart option={estimateOption} />
             </div>
+            <TakeawayNote accent={PALETTE.cyan}>{t('e.tkEst')}</TakeawayNote>
             <SourceNote>{t('e.estSource')}</SourceNote>
           </div>
         </Reveal>

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
+import TakeawayNote from './ui/TakeawayNote'
 import { useLanguage } from '@/i18n/LanguageContext'
 
 type LoopNodeId = 'data' | 'perception' | 'analysis' | 'prediction' | 'decision' | 'execution' | 'feedback' | 'optimization'
@@ -518,6 +519,7 @@ export default function Mechanism() {
                   <RotateCcw size={15} /> {t('c.reset')}
                 </button>
               </div>
+              <TakeawayNote className="mx-1 mt-5 sm:mx-2" accent="#0F5BFB">{t('m.tkLoop')}</TakeawayNote>
             </div>
           </Reveal>
 
