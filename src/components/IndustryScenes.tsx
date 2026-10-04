@@ -272,6 +272,38 @@ function AgricultureScene({ accent }: SceneProps) {
   </Frame>
 }
 
+const ENERGY_CORE: [number, number] = [355, 175]
+const ENERGY_SOURCES: [number, number][] = [[95, 194], [245, 270], [555, 282], [645, 255]]
+
+/**
+ * 能量流路径：保持原来的弧线走向，但在进入核心圆之前按 de Casteljau 精确截断，
+ * 让虚线和小圆点都停在圆外，不再压到圆心的 AI / ENERGY CORE 文字。
+ */
+function energyFlowPath(source: [number, number], radius = 49) {
+  const [sx, sy] = source
+  const [cx, cy] = ENERGY_CORE
+  const px = (sx + cx) / 2
+  const py = sy - 55
+  const at = (t: number): [number, number] => {
+    const u = 1 - t
+    return [u * u * sx + 2 * t * u * px + t * t * cx, u * u * sy + 2 * t * u * py + t * t * cy]
+  }
+  const steps = 240
+  let t = 1
+  for (let i = 1; i <= steps; i += 1) {
+    const candidate = i / steps
+    const [x, y] = at(candidate)
+    if (Math.hypot(x - cx, y - cy) <= radius) {
+      t = (i - 1) / steps
+      break
+    }
+  }
+  const [ex, ey] = at(t)
+  const mx = sx + (px - sx) * t
+  const my = sy + (py - sy) * t
+  return `M${sx} ${sy}Q${mx.toFixed(1)} ${my.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`
+}
+
 function EnergyScene({ accent }: SceneProps) {
   const { t } = useLanguage()
   return <Frame label="AI 汇聚风光储和负荷数据，预测需求并动态调度能源">
@@ -338,14 +370,17 @@ function EnergyScene({ accent }: SceneProps) {
       <animateMotion dur="3.6s" repeatCount="indefinite" path="M355 119a56 56 0 1 1 -0.1 0" />
     </motion.circle>
     {/* 能量流 */}
-    {[[95,194],[245,270],[555,282],[645,255]].map(([x,y],i)=>(
-      <g key={i}>
-        <motion.path d={`M${x} ${y}Q${(x+355)/2} ${y-55} 355 175`} fill="none" stroke={i===3?'#06B6D4':accent} strokeWidth="2.5" strokeDasharray="5 7" animate={{strokeDashoffset:[24,0],opacity:[.45,1,.45]}} transition={{duration:1.4,repeat:Infinity,ease:'linear',delay:i*.12}} />
-        <motion.circle r="3" fill={i===3?'#06B6D4':accent} animate={{opacity:[.2,.9,.2]}}>
-          <animateMotion dur={`${2+i*0.4}s`} repeatCount="indefinite" path={`M${x} ${y}Q${(x+355)/2} ${y-55} 355 175`} />
-        </motion.circle>
-      </g>
-    ))}
+    {ENERGY_SOURCES.map((source, i) => {
+      const d = energyFlowPath(source)
+      return (
+        <g key={i}>
+          <motion.path d={d} fill="none" stroke={i===3?'#06B6D4':accent} strokeWidth="2.5" strokeDasharray="5 7" animate={{strokeDashoffset:[24,0],opacity:[.45,1,.45]}} transition={{duration:1.4,repeat:Infinity,ease:'linear',delay:i*.12}} />
+          <motion.circle r="3" fill={i===3?'#06B6D4':accent} animate={{opacity:[.2,.9,.2]}}>
+            <animateMotion dur={`${2+i*0.4}s`} repeatCount="indefinite" path={d} />
+          </motion.circle>
+        </g>
+      )
+    })}
     {/* 负荷预测卡 */}
     <g transform="translate(246 80)"><rect width="218" height="52" rx="15" fill="#fff" stroke="#CFE2EF" /><text x="18" y="23" fill="#64748B" fontSize="9">LOAD FORECAST</text><motion.path d="M18 39 52 31 84 34 116 20 150 26 198 14" fill="none" stroke={accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 1, ease: 'easeInOut' }} /><motion.circle cx="198" cy="14" r="3" fill="#10B981" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity }} /><text x="196" y="38" textAnchor="end" fill="#10B981" fontSize="9" fontWeight="700">BALANCED</text></g>
   </Frame>
