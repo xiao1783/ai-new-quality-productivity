@@ -19,6 +19,8 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import Logo from './Logo'
+import { useLanguage } from '@/i18n/LanguageContext'
+import LanguageToggle from './ui/LanguageToggle'
 import { loadWeights, recognizeDigit, type Recognition } from '@/utils/mnistNetwork'
 
 interface Chapter {
@@ -62,6 +64,7 @@ function DigitIntro() {
 }
 
 function DigitCanvas() {
+  const { t } = useLanguage()
   const canvas = useRef<HTMLCanvasElement>(null)
   const paths = useRef<Point[][]>([])
   const drawing = useRef(false)
@@ -155,17 +158,17 @@ function DigitCanvas() {
           onPointerMove={draw}
           onPointerUp={() => (drawing.current = false)}
           onPointerCancel={() => (drawing.current = false)}
-          aria-label="手写数字画布"
+          aria-label={t('j.canvas')}
         />
         <div className="mt-4 flex flex-wrap justify-center gap-1.5">
           <button className="btn btn-primary !px-3 !py-2.5 !text-[13px]" onClick={recognize}>
-            <Play size={14} /> {state === 'loading' ? '识别中…' : '开始识别'}
+            <Play size={14} /> {state === 'loading' ? t('j.recognizing') : t('j.start')}
           </button>
           <button className="btn btn-ghost !px-3 !py-2.5 !text-[13px]" onClick={clear}>
-            <Eraser size={14} /> 擦除
+            <Eraser size={14} /> {t('j.erase')}
           </button>
           <button className="btn btn-ghost !px-3 !py-2.5 !text-[13px]" onClick={example}>
-            <Sparkles size={14} /> 示例 0
+            <Sparkles size={14} /> {t('j.sample')}
           </button>
         </div>
       </div>
@@ -174,7 +177,7 @@ function DigitCanvas() {
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
             <p className="text-[12px] font-bold tracking-[.2em] text-muted">NEURAL NETWORK OUTPUT</p>
             <p className="mt-2 text-[82px] font-black leading-none text-gradient">{result.digit}</p>
-            <p className="mt-3 text-[14px] text-body">最高概率 {result.confidence.toFixed(1)}%</p>
+            <p className="mt-3 text-[14px] text-body">{t('j.topProb')} {result.confidence.toFixed(1)}%</p>
             <div className="mt-4 flex items-end justify-center gap-1">
               {result.probabilities.map((value, digit) => (
                 <span key={digit} className="flex flex-col items-center gap-1 text-[9px] text-muted">
@@ -189,9 +192,9 @@ function DigitCanvas() {
             <BrainCircuit size={42} className="text-brand" />
             <p className="mt-4 text-[15px] font-bold text-ink">等待输入</p>
             <p className="mt-2 text-[12.5px] leading-relaxed text-muted">
-              在左侧写下一个数字。识别使用迁移自原项目的 784–200–10 教学神经网络。
+              {t('j.waitingSub')}
             </p>
-            {state === 'error' && <p className="mt-3 text-[12px] text-red-500">模型权重加载失败，请刷新后重试。</p>}
+            {state === 'error' && <p className="mt-3 text-[12px] text-red-500">{t('j.loadFail')}</p>}
           </>
         )}
       </div>
@@ -200,6 +203,7 @@ function DigitCanvas() {
 }
 
 function LottieScrollVisual({ file, active }: { file: string; active: boolean }) {
+  const { t } = useLanguage()
   const container = useRef<HTMLDivElement>(null)
   const animation = useRef<AnimationItem | null>(null)
   const pauseTimer = useRef<number | undefined>(undefined)
@@ -254,7 +258,7 @@ function LottieScrollVisual({ file, active }: { file: string; active: boolean })
   return (
     <div className="journey-visual journey-lottie-shell" onWheel={scrub}>
       <div ref={container} className="journey-lottie-canvas" />
-      <div className="journey-lottie-hint"><span>↕</span> 滑动鼠标控制动画</div>
+      <div className="journey-lottie-hint"><span>↕</span> {t('j.wheelHint')}</div>
     </div>
   )
 }
@@ -300,6 +304,7 @@ function ChapterVisual({ index, active }: { index: number; active: boolean }) {
 }
 
 export default function AIJourney({ onBack }: { onBack: () => void }) {
+  const { lang, t } = useLanguage()
   const [chapter, setChapter] = useState(0)
   const wheelLock = useRef(false)
   const go = (next: number) => {
@@ -319,21 +324,22 @@ export default function AIJourney({ onBack }: { onBack: () => void }) {
   return (
     <div className="experience-page" onWheel={onWheel}>
       <header className="experience-header glass">
-        <button className="flex items-center gap-3 text-left" onClick={onBack}>
+        <div className="flex items-center gap-3"><LanguageToggle compact /></div>
+        <div className="flex items-center gap-3 text-left">
           <Logo size={38} />
           <span className="text-[21px] font-black tracking-wide text-ink">智启新质</span>
-        </button>
-        <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={onBack}><ArrowLeft size={15} /> 返回数字展馆</button>
+        </div>
+        <button className="btn btn-ghost !px-4 !py-2.5 !text-[13px]" onClick={onBack}><ArrowLeft size={15} /> {t('j.back')}</button>
       </header>
 
       <div className="experience-pages" style={{ transform: `translate3d(0, -${chapter * 100}svh, 0)` }}>
         {CHAPTERS.map((item, index) => (
           <main key={item.en} className="experience-stage" aria-hidden={chapter !== index}>
             <div className="experience-copy">
-              <span className="chip">CHAPTER {String(index + 1).padStart(2, '0')} × {item.en.toUpperCase()}</span>
-              <h1>{item.title}</h1>
-              <p className="experience-lead">{item.summary}</p>
-              <div className="experience-body">{item.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+              <span className="chip">CHAPTER {String(index + 1).padStart(2, '0')} × {(lang === 'en' ? item.en : item.title).toUpperCase()}</span>
+              <h1>{lang === 'en' ? item.en : item.title}</h1>
+              <p className="experience-lead">{lang === 'en' ? t(((['j.c1s','j.c2s','j.c3s','j.c4s','j.c5s','j.c6s','j.c7s','j.c8s','j.c9s']) as const)[index]) : item.summary}</p>
+              <div className="experience-body">{(lang === 'en' ? [['j.c1b1','j.c1b2'],['j.c2b1','j.c2b2'],['j.c3b1','j.c3b2'],['j.c4b1','j.c4b2'],['j.c5b1','j.c5b2'],['j.c6b1','j.c6b2'],['j.c7b1','j.c7b2'],['j.c8b1','j.c8b2'],['j.c9b1','j.c9b2']][index].map((k) => t(k as Parameters<typeof t>[0])) : item.body).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
             </div>
             <ChapterVisual index={index} active={chapter === index} />
           </main>
@@ -346,10 +352,10 @@ export default function AIJourney({ onBack }: { onBack: () => void }) {
       </nav>
 
       <div className="experience-controls">
-        <button className="btn btn-ghost !py-2.5" disabled={chapter === 0} onClick={() => go(chapter - 1)}><ArrowLeft size={16} /> 上一章</button>
-        <button className="btn btn-primary !py-2.5" disabled={chapter === CHAPTERS.length - 1} onClick={() => go(chapter + 1)}>下一章 <ArrowRight size={16} /></button>
+        <button className="btn btn-ghost !py-2.5" disabled={chapter === 0} onClick={() => go(chapter - 1)}><ArrowLeft size={16} /> {t('j.prev')}</button>
+        <button className="btn btn-primary !py-2.5" disabled={chapter === CHAPTERS.length - 1} onClick={() => go(chapter + 1)}>{t('j.next')} <ArrowRight size={16} /></button>
       </div>
-      <p className="experience-wheel-hint">滚动切换章节</p>
+      <p className="experience-wheel-hint">{t('j.scroll')}</p>
     </div>
   )
 }

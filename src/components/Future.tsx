@@ -21,6 +21,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import { FUTURE_FORECASTS } from '@/data/realData'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const TIMELINE = [
   {
@@ -69,6 +70,7 @@ const FACTORY_NODES: Record<FactoryNodeId, { title: string; en: string; role: st
   agv: { title: '智能物流', en: 'AGV', role: '自主搬运', detail: '完成物料运输与路径调度' },
 }
 
+const FACTORY_KEYS: FactoryNodeId[] = ['cloud', 'twin', 'ai', 'camera', 'sensor', 'robot', 'agv']
 const DEMO_STEPS: { label: string; nodes: FactoryNodeId[] }[] = [
   { label: '现场感知', nodes: ['camera', 'sensor'] },
   { label: '数据上传', nodes: ['camera', 'sensor', 'ai'] },
@@ -80,6 +82,7 @@ const DEMO_STEPS: { label: string; nodes: FactoryNodeId[] }[] = [
 ]
 
 function FutureFactory() {
+  const { t, ta } = useLanguage()
   const [hoveredNode, setHoveredNode] = useState<FactoryNodeId | null>(null)
   const [selectedNode, setSelectedNode] = useState<FactoryNodeId | null>(null)
   const [playingStep, setPlayingStep] = useState<number | null>(null)
@@ -133,19 +136,19 @@ function FutureFactory() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-[24px] font-bold text-ink">未来智能工厂 · 自主互联的生产系统</h3>
+        <h3 className="text-[24px] font-bold text-ink">{t('f.factoryTitle')}</h3>
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button" disabled={isPlaying} onClick={()=>{setSelectedNode(null);setPlayingStep(0)}} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-65"><Play size={14}/>{isPlaying?`闭环演示 ${playingStep!+1} / ${DEMO_STEPS.length}`:'演示智能工厂闭环'}</button>
-          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-2.5 text-[12px] font-semibold text-body"><RotateCcw size={13}/>重置</button>
-          {isPlaying&&<span className="text-[11px] font-bold text-brand">STEP {String(playingStep!+1).padStart(2,'0')} / 07 · {DEMO_STEPS[playingStep!].label}</span>}
+          <button type="button" disabled={isPlaying} onClick={()=>{setSelectedNode(null);setPlayingStep(0)}} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-65"><Play size={14}/>{isPlaying?`${t('f.demoPlaying')} ${playingStep! + 1} / ${DEMO_STEPS.length}`:t('f.demo')}</button>
+          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-2.5 text-[12px] font-semibold text-body"><RotateCcw size={13}/>{t('c.reset')}</button>
+          {isPlaying&&<span className="text-[11px] font-bold text-brand">STEP {String(playingStep!+1).padStart(2,'0')} / 07 · {ta('f.steps')[playingStep!]}</span>}
         </div>
       </div>
 
       <div className="relative mt-6 overflow-hidden rounded-[24px] border border-line/70 bg-[#F7FBFF] shadow-[0_18px_48px_rgba(38,103,169,.08)]">
       <div className="absolute inset-0 opacity-50" style={{ backgroundImage: 'radial-gradient(#B8D5EA 1px,transparent 1px)', backgroundSize: '24px 24px' }} />
       <div className="relative min-h-[680px] sm:min-h-[640px] lg:min-h-[600px]">
-        <div className="absolute left-5 top-5 z-30 max-w-[310px] text-[11px] leading-relaxed text-muted">Robot、Camera、Sensor、AI、Cloud 与 Digital Twin 构成实时协同的智能生产网络。</div>
-        <div className="absolute right-5 top-5 z-30 text-right"><p className="text-[8px] font-bold tracking-[.18em] text-muted">SYSTEM STATUS</p><p className="mt-1 flex items-center justify-end gap-1.5 text-[10px] font-bold text-teal"><motion.i className="h-2 w-2 rounded-full bg-teal" animate={{ opacity: [.35,1,.35] }} transition={{ duration: 2, repeat: Infinity }} />AUTONOMOUS · 自主协同运行</p><div className="mt-2 hidden gap-1.5 sm:flex"><span className="rounded-full bg-white px-2 py-1 text-[8px] text-body">Data Flow ACTIVE</span><span className="rounded-full bg-white px-2 py-1 text-[8px] text-body">Twin Sync ONLINE</span><span className="rounded-full bg-white px-2 py-1 text-[8px] text-body">AI Engine RUNNING</span></div></div>
+        <div className="absolute left-5 top-5 z-30 max-w-[310px] text-[11px] leading-relaxed text-muted">{t('f.sceneIntro')}</div>
+        <div className="absolute right-5 top-5 z-30 text-right"><p className="text-[8px] font-bold tracking-[.18em] text-muted">SYSTEM STATUS</p><p className="mt-1 flex items-center justify-end gap-1.5 text-[10px] font-bold text-teal"><motion.i className="h-2 w-2 rounded-full bg-teal" animate={{ opacity: [.35,1,.35] }} transition={{ duration: 2, repeat: Infinity }} />{t('f.autonomous')}</p><div className="mt-2 hidden gap-1.5 sm:flex"><span className="rounded-full bg-white px-2 py-1 text-[8px] text-body">Data Flow ACTIVE</span><span className="rounded-full bg-white px-2 py-1 text-[8px] text-body">Twin Sync ONLINE</span><span className="rounded-full bg-white px-2 py-1 text-[8px] text-body">AI Engine RUNNING</span></div></div>
 
         <svg viewBox="0 0 1000 600" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="none">
           <defs>{['2563EB','06B6D4','14B8A6'].map(c=><marker key={c} id={`arrow-${c}`} markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto-start-reverse"><path d="M0 0L7 3.5L0 7Z" fill={`#${c}`} opacity=".75" /></marker>)}</defs>
@@ -163,7 +166,7 @@ function FutureFactory() {
         </Node>
 
         <Node id="ai" className="left-1/2 top-[39%] w-48 -translate-x-1/2">
-          <motion.div animate={activeNodes.includes('ai')?{scale:[1,1.045,1]}:{}} className="rounded-[22px] border border-brand/20 bg-white/85 px-5 py-4 shadow-[0_12px_32px_rgba(37,99,235,.13)] backdrop-blur"><span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand"><Cpu size={22}/></span><p className="mt-2 text-[11px] font-bold tracking-[.12em] text-brand">AI CORE</p><p className="text-[13px] font-bold text-ink">智能决策中枢</p><div className="mt-2 flex justify-center gap-2">{['感知','分析','决策'].map((t,i)=><span key={t} className="flex items-center gap-1 text-[8px] text-muted"><i className="h-1.5 w-1.5 rounded-full" style={{background:['#3B82F6','#06B6D4','#14B8A6'][i]}}/>{t}</span>)}</div></motion.div>
+          <motion.div animate={activeNodes.includes('ai')?{scale:[1,1.045,1]}:{}} className="rounded-[22px] border border-brand/20 bg-white/85 px-5 py-4 shadow-[0_12px_32px_rgba(37,99,235,.13)] backdrop-blur"><span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand"><Cpu size={22}/></span><p className="mt-2 text-[11px] font-bold tracking-[.12em] text-brand">AI CORE</p><p className="text-[13px] font-bold text-ink">{t('f.coreTitle')}</p><div className="mt-2 flex justify-center gap-2">{ta('f.aiDots').map((dot,i)=><span key={dot} className="flex items-center gap-1 text-[8px] text-muted"><i className="h-1.5 w-1.5 rounded-full" style={{background:['#3B82F6','#06B6D4','#14B8A6'][i]}}/>{dot}</span>)}</div></motion.div>
         </Node>
 
         <Node id="twin" className="right-[7%] top-[19%] w-52">
@@ -177,7 +180,7 @@ function FutureFactory() {
 
         <div className="absolute inset-x-[4%] bottom-[5%] z-10 h-[92px] rounded-[22px] border border-[#DCE7EF] bg-[#EAF1F6]"><div className="absolute inset-x-[6%] top-4 h-8 rounded-xl border border-[#B8CBD9] bg-[#D7E4ED]"><motion.div className="h-full rounded-xl opacity-30" style={{backgroundImage:'repeating-linear-gradient(90deg,transparent 0 24px,#7CA6BE 24px 30px)'}} animate={{backgroundPositionX:[0,60]}} transition={{duration:6,repeat:Infinity,ease:'linear'}}/></div><div className="absolute bottom-3 left-[8%] right-[8%] h-4 rounded-full border border-dashed border-[#AFC4D3]"/><div className="absolute left-[47%] top-2 text-[7px] font-bold tracking-[.18em] text-muted">PHYSICAL FACTORY</div>{[150,310,470,630].map(x=><span key={x} className="absolute top-6 h-4 w-8 rounded-md border border-[#94B4C8] bg-white" style={{left:`${x/10}%`}}/>)}</div>
 
-        <AnimatePresence>{displayNode&&<motion.div key={displayNode} initial={{opacity:0,y:5}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="absolute bottom-[20%] left-1/2 z-30 w-[210px] -translate-x-1/2 rounded-xl border border-line bg-white/95 px-3 py-2 text-center shadow-sm"><p className="text-[9px] font-bold text-brand">{FACTORY_NODES[displayNode].role}</p><p className="mt-0.5 text-[9px] text-body">{FACTORY_NODES[displayNode].detail}</p></motion.div>}</AnimatePresence>
+        <AnimatePresence>{displayNode&&<motion.div key={displayNode} initial={{opacity:0,y:5}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="absolute bottom-[20%] left-1/2 z-30 w-[210px] -translate-x-1/2 rounded-xl border border-line bg-white/95 px-3 py-2 text-center shadow-sm"><p className="text-[9px] font-bold text-brand">{t(['f.cloudRole','f.twinRole','f.coreRole','f.cameraRole','f.sensorRole','f.robotRole','f.agvRole'][FACTORY_KEYS.indexOf(displayNode)] as 'f.cloudRole')}</p><p className="mt-0.5 text-[9px] text-body">{t(['f.cloudDetail','f.twinDetail','f.coreDetail','f.cameraDetail','f.sensorDetail','f.robotDetail','f.agvDetail'][FACTORY_KEYS.indexOf(displayNode)] as 'f.cloudDetail')}</p></motion.div>}</AnimatePresence>
 
         <div className="absolute bottom-5 right-5 z-30 hidden items-center gap-1.5 text-[8px] text-muted md:flex"><Database size={11}/><span>Physical World</span><span>↔</span><span>AI</span><span>↔</span><span>Digital World</span></div>
       </div>
@@ -187,19 +190,20 @@ function FutureFactory() {
 }
 
 export default function Future() {
+  const { lang, t, ta } = useLanguage()
   return (
     <section id="future" className="scene scene-future section-pad bg-canvas-2">
       <div className="container-x">
         <SectionHeading
           index="06"
           en="FUTURE"
-          title="未来的生产力，将更加智能"
-          subtitle="从数字化到 AI 辅助，再到智能协同与自主系统，生产方式持续演进。"
+          title={t('f.title')}
+          subtitle={t('f.sub')}
         />
 
         <Reveal className="mt-6">
           <span className="inline-flex items-center gap-2 rounded-xl bg-brand/8 px-4 py-2 text-[12.5px] font-semibold text-brand">
-            <Info size={15} /> 概念性未来趋势展示，非确定性预测；权威机构量化预测见下方卡片
+            <Info size={15} /> {t('f.banner')}
           </span>
         </Reveal>
 
@@ -214,8 +218,8 @@ export default function Future() {
             transition={{ duration: 2, ease: 'easeInOut' }}
           />
           <div className="grid gap-8 lg:grid-cols-4">
-            {TIMELINE.map((t, i) => (
-              <Reveal key={t.year} delay={i * 0.12}>
+            {TIMELINE.map((item, i) => (
+              <Reveal key={item.year} delay={i * 0.12}>
                 <div>
                   <motion.span
                     className="relative z-10 mx-auto flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-brand bg-white text-brand lg:mx-0"
@@ -223,15 +227,15 @@ export default function Future() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 + i * 0.25, duration: 0.6 }}
                   >
-                    <t.icon size={23} />
+                    <item.icon size={23} />
                   </motion.span>
                   <div className="card card-hover mt-5 p-6">
-                    <p className="text-[13px] font-bold tracking-[0.16em] text-brand">{t.year}</p>
-                    <h4 className="mt-2 text-[19px] font-bold text-ink">{t.title}</h4>
-                    <p className="mt-1 text-[11px] font-semibold tracking-widest text-muted">{t.en}</p>
-                    <p className="mt-3 text-[13.5px] leading-relaxed text-body">{t.desc}</p>
+                    <p className="text-[13px] font-bold tracking-[0.16em] text-brand">{item.year}</p>
+                    <h4 className="mt-2 text-[19px] font-bold text-ink">{ta('f.tTitles')[i]}</h4>
+                    <p className="mt-1 text-[11px] font-semibold tracking-widest text-muted">{item.en}</p>
+                    <p className="mt-3 text-[13.5px] leading-relaxed text-body">{ta('f.tDescs')[i]}</p>
                     <div className="mt-4 flex flex-wrap gap-1.5">
-                      {t.tags.map((tag) => (
+                      {[ta('f.tTags1'), ta('f.tTags2'), ta('f.tTags3'), ta('f.tTags4')][i].map((tag) => (
                         <span key={tag} className="rounded-md bg-canvas-2 px-2 py-1 text-[11.5px] text-body">
                           {tag}
                         </span>
@@ -246,13 +250,13 @@ export default function Future() {
 
         {/* 权威机构量化预测 */}
         <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {FUTURE_FORECASTS.map((f, i) => (
-            <Reveal key={f.label} delay={i * 0.1}>
+          {FUTURE_FORECASTS.map((fc, i) => (
+            <Reveal key={fc.label} delay={i * 0.1}>
               <div className="card card-hover flex h-full flex-col p-7">
-                <p className="text-gradient text-[30px] font-bold leading-none">{f.value}</p>
-                <p className="mt-3 text-[15px] font-bold text-ink">{f.label}</p>
-                <p className="mt-2 flex-1 text-[13px] leading-relaxed text-body">{f.desc}</p>
-                <p className="mt-4 border-t border-line/70 pt-3 text-[11px] leading-relaxed text-muted">来源：{f.source}</p>
+                <p className="text-gradient text-[30px] font-bold leading-none">{lang === 'en' ? ['+78M', 'US$632B', '+7%'][i] : fc.value}</p>
+                <p className="mt-3 text-[15px] font-bold text-ink">{t(['f.fc1l', 'f.fc2l', 'f.fc3l'][i] as 'f.fc1l')}</p>
+                <p className="mt-2 flex-1 text-[13px] leading-relaxed text-body">{t(['f.fc1d', 'f.fc2d', 'f.fc3d'][i] as 'f.fc1d')}</p>
+                <p className="mt-4 border-t border-line/70 pt-3 text-[11px] leading-relaxed text-muted">来源：{t(['f.fc1s', 'f.fc2s', 'f.fc3s'][i] as 'f.fc1s')}</p>
               </div>
             </Reveal>
           ))}

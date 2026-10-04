@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import Reveal from './ui/Reveal'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 interface NNode {
   id: string
   label: string
+  en: string
   ring: number
   angle: number
 }
@@ -16,18 +18,28 @@ const polar = (r: number, deg: number) => {
   return { x: CC + r * Math.cos(a), y: CC + r * Math.sin(a) }
 }
 
-const L1 = ['数据', '算法', '算力', '模型']
-const L2 = ['感知', '预测', '决策', '生成', '控制']
-const L3 = ['研发', '制造', '物流', '营销', '服务']
-const L4 = ['效率', '质量', '创新', '绿色', '协同']
-
-const build = (labels: string[], ringIdx: number, start = -90): NNode[] =>
-  labels.map((label, i) => ({
+const build = (pairs: [string, string][], ringIdx: number, start = -90): NNode[] =>
+  pairs.map(([label, en], i) => ({
     id: `${ringIdx}-${i}`,
     label,
+    en,
     ring: RINGS[ringIdx],
-    angle: start + (360 / labels.length) * i,
+    angle: start + (360 / pairs.length) * i,
   }))
+
+/** 标签的中文形式同时作为关联键（边与价值路径按它匹配） */
+const L1: [string, string][] = [
+  ['数据', 'Data'], ['算法', 'Algorithms'], ['算力', 'Computing'], ['模型', 'Models'],
+]
+const L2: [string, string][] = [
+  ['感知', 'Perceive'], ['预测', 'Predict'], ['决策', 'Decide'], ['生成', 'Generate'], ['控制', 'Control'],
+]
+const L3: [string, string][] = [
+  ['研发', 'R&D'], ['制造', 'Manufacturing'], ['物流', 'Logistics'], ['营销', 'Marketing'], ['服务', 'Service'],
+]
+const L4: [string, string][] = [
+  ['效率', 'Efficiency'], ['质量', 'Quality'], ['创新', 'Innovation'], ['绿色', 'Green'], ['协同', 'Collaboration'],
+]
 
 const N1 = build(L1, 0)
 const N2 = build(L2, 1)
@@ -65,7 +77,7 @@ const EDGE_LABELS: [string, string][] = [
   ['服务', '质量'], ['服务', '协同'],
 ]
 
-/** 具名价值链：悬停只展示包含当前节点的业务路径，避免连通图全部点亮。 */
+/** 具名价值链：悬停只展示包含当前节点的业务路径 */
 const VALUE_PATHS = [
   ['AI', '数据', '感知', '制造', '质量'],
   ['AI', '数据', '预测', '物流', '效率'],
@@ -76,6 +88,7 @@ const VALUE_PATHS = [
 ] as const
 
 export default function NetworkGraph() {
+  const { lang, t, ta } = useLanguage()
   const [hover, setHover] = useState<string | null>(null)
 
   const edges = useMemo(
@@ -112,6 +125,7 @@ export default function NetworkGraph() {
   const renderNode = (n: NNode, color: string, r: number) => {
     const p = polar(n.ring, n.angle)
     const on = nodeOn(n.label)
+    const label = lang === 'en' ? n.en : n.label
     return (
       <g
         key={n.id}
@@ -121,8 +135,8 @@ export default function NetworkGraph() {
         onMouseLeave={() => setHover(null)}
       >
         <circle r={r} fill={on ? color : '#E2E8F0'} />
-        <text textAnchor="middle" y={4} fill="#fff" fontSize={r * 0.62} fontWeight="700">
-          {n.label}
+        <text textAnchor="middle" y={4} fill="#fff" fontSize={label.length > 5 ? r * 0.42 : r * 0.55} fontWeight="700">
+          {label}
         </text>
       </g>
     )
@@ -131,10 +145,8 @@ export default function NetworkGraph() {
   return (
     <div className="mt-20">
       <Reveal>
-        <h3 className="text-center text-[26px] font-bold text-ink">AI 生产力网络 · Productivity Network</h3>
-        <p className="mt-3 text-center text-[15px] text-body">
-          从技术要素到能力、产业环节，再到最终价值。将鼠标移到节点上，高亮整条价值路径。
-        </p>
+        <h3 className="text-center text-[26px] font-bold text-ink">{t('n.title')}</h3>
+        <p className="mt-3 text-center text-[15px] text-body">{t('n.sub')}</p>
       </Reveal>
 
       <Reveal className="mt-8">
@@ -162,7 +174,6 @@ export default function NetworkGraph() {
             })}
 
             {/* 中心 */}
-            <motion.circle cx={CC} cy={CC} r="64" fill="#06B6D4" animate={{ opacity: [0.05, 0.12, 0.05], scale: [1, 1.07, 1] }} transition={{ duration: 3, repeat: Infinity }} style={{ transformOrigin: `${CC}px ${CC}px` }} />
             <circle cx={CC} cy={CC} r="52" fill="url(#net-g)" />
             <defs>
               <linearGradient id="net-g" x1="0" y1="0" x2="1" y2="1">
@@ -171,10 +182,9 @@ export default function NetworkGraph() {
               </linearGradient>
             </defs>
             <text x={CC} y={CC + 6} textAnchor="middle" fill="#fff" fontSize="20" fontWeight="700">
-              人工智能
+              {t('n.center')}
             </text>
 
-            {/* 待机粒子：核心 → 技术要素辐条 */}
             {!highlight && N1.map((n, i) => {
               const p = polar(n.ring, n.angle)
               return (

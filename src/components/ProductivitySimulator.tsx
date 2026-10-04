@@ -4,6 +4,7 @@ import { RotateCcw, Info } from 'lucide-react'
 import Reveal from './ui/Reveal'
 import EChart from './charts/EChart'
 import { PALETTE } from '@/data/site'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const SLIDERS = [
   { id: 'auto', label: 'AI 自动化率', color: PALETTE.brand },
@@ -74,6 +75,7 @@ function TweenNumber({ to, suffix, color }: { to: number; suffix?: string; color
 }
 
 export default function ProductivitySimulator() {
+  const { t, ta } = useLanguage()
   const [v, setV] = useState<Values>(DEFAULTS)
   const r = model(v)
 
@@ -130,20 +132,20 @@ export default function ProductivitySimulator() {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-7 py-5">
             <div>
               <h3 className="text-[20px] font-bold text-ink">AI Productivity Simulator</h3>
-              <p className="mt-1 text-[13px] text-muted">拖动滑块，实时观察生产指标如何变化</p>
+              <p className="mt-1 text-[13px] text-muted">{t('s.sub')}</p>
             </div>
             <button className="btn btn-ghost !py-2 !text-[13px]" onClick={() => setV(DEFAULTS)}>
-              <RotateCcw size={14} /> 恢复默认
+              <RotateCcw size={14} /> {t('s.reset')}
             </button>
           </div>
 
           <div className="grid gap-8 p-7 lg:grid-cols-[1fr_1fr]">
             {/* 滑块 */}
             <div className="space-y-7">
-              {SLIDERS.map((s) => (
+              {SLIDERS.map((s, si) => (
                 <div key={s.id}>
                   <div className="mb-3 flex items-center justify-between">
-                    <label className="text-[14.5px] font-semibold text-ink">{s.label}</label>
+                    <label className="text-[14.5px] font-semibold text-ink">{ta('s.sliders')[si]}</label>
                     <span className="rounded-lg px-2.5 py-1 text-[13.5px] font-bold" style={{ background: `${s.color}14`, color: s.color }}>
                       {v[s.id]}%
                     </span>
@@ -161,16 +163,16 @@ export default function ProductivitySimulator() {
               ))}
               <p className="flex items-start gap-2 text-[12px] leading-relaxed text-muted">
                 <Info size={14} className="mt-0.5 shrink-0" />
-                本模型为教学可视化模型，采用简化加权公式，不代表真实产业预测。
+                {t('s.note')}
               </p>
             </div>
 
             {/* 输出 */}
             <div>
               <div className="grid grid-cols-2 gap-4">
-                {outputs.map((o) => (
+                {outputs.map((o, oi) => (
                   <div key={o.label} className="rounded-2xl border border-line/80 bg-canvas p-5">
-                    <p className="text-[12.5px] text-muted">{o.label}</p>
+                    <p className="text-[12.5px] text-muted">{ta('s.outputs')[oi]}</p>
                     <div className="mt-2.5">
                       <TweenNumber to={o.to} suffix={o.suffix} color={o.color} />
                     </div>

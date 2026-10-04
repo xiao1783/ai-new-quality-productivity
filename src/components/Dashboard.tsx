@@ -17,12 +17,14 @@ import {
   GENAI_USERS,
   COMPUTING_POWER,
 } from '@/data/realData'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const KPI_ICONS = { trend: TrendingUp, globe: Users, factory: Building2, gauge: FileCheck2 } as const
 
 const ts = { fontFamily: "Inter,'PingFang SC','Microsoft YaHei',sans-serif", color: PALETTE.body }
 
 export default function Dashboard() {
+  const { lang, t, ta } = useLanguage()
   const donutOption = useMemo<EChartsOption>(() => {
     const colors = ['#2563EB', '#CBD5E1', '#06B6D4', '#14B8A6']
     return {
@@ -59,7 +61,7 @@ export default function Dashboard() {
       xAxis: { type: 'value', splitLine: { lineStyle: { color: PALETTE.grid } }, axisLabel: { color: PALETTE.muted, fontSize: 10 } },
       yAxis: {
         type: 'category',
-        data: ROBOT_DENSITY.categories,
+        data: ta('d.robotCats'),
         axisLine: { lineStyle: { color: PALETTE.line } },
         axisTick: { show: false },
         axisLabel: { color: PALETTE.body, fontSize: 11 },
@@ -153,7 +155,7 @@ export default function Dashboard() {
             fontWeight: 700,
             fontSize: 12,
             color: PALETTE.ink,
-            formatter: (p) => INDUSTRY_SCALE.labels[p.dataIndex as number],
+            formatter: (p) => (lang === 'en' ? ['> ¥900B', '> ¥1.2T'][p.dataIndex as number] : ta('d.scaleLabels')[p.dataIndex as number]),
           },
           itemStyle: {
             borderRadius: [8, 8, 0, 0],
@@ -208,7 +210,7 @@ export default function Dashboard() {
   )
 
   const heatOption = useMemo<EChartsOption>(() => {
-    const dims = ['应用广度', '数据成熟', '自动化', '价值显现']
+    const dims = ta('d.heatDims')
     const matrix: [number, number, number][] = []
     const table = [
       [82, 76, 88, 85],
@@ -256,12 +258,12 @@ export default function Dashboard() {
         <SectionHeading
           index="05"
           en="DATA COMMAND CENTER"
-          title="AI 生产力数据驾驶舱"
-          subtitle="关键指标来自国家统计局、中国信通院、CNNIC、国家数据局、斯坦福 HAI 与 IFR 等权威机构公开发布。"
+          title={t('d.title')}
+          subtitle={t('d.sub')}
         />
         <Reveal className="mt-6">
           <span className="inline-flex items-center gap-2 rounded-xl bg-teal/8 px-4 py-2 text-[12.5px] font-semibold text-teal">
-            <Info size={15} /> 权威数据 · 各图表下方均标注来源；产业热力图为编者定性整理
+            <Info size={15} /> {t('d.banner')}
           </span>
         </Reveal>
 
@@ -277,9 +279,13 @@ export default function Dashboard() {
                     <Icon size={22} />
                   </span>
                   <div>
-                    <p className="text-[12.5px] text-muted">{k.label}</p>
+                    <p className="text-[12.5px] text-muted">{t(['d.k1', 'd.k2', 'd.k3', 'd.k4'][i] as 'd.k1')}</p>
                     <p className="mt-1 text-[26px] font-bold leading-none text-ink">
-                      <CountUp end={k.value as number} decimals={k.decimals ?? 0} suffix={k.suffix} />
+                      <CountUp
+                        end={lang === 'en' ? [1.2, 515, 6600, 611][i] : (k.value as number)}
+                        decimals={lang === 'en' ? [1, 0, 0, 0][i] : (k.decimals ?? 0)}
+                        suffix={lang === 'en' ? ['', ' M', '+', ''][i] : k.suffix}
+                      />
                     </p>
                   </div>
                 </div>
@@ -292,8 +298,8 @@ export default function Dashboard() {
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
           <Reveal>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">全球私人 AI 投资分布</h4>
-              <p className="mt-1 text-[12px] text-muted">{AI_INVESTMENT.year} 年 · 全球总额 {AI_INVESTMENT.total.toLocaleString()} 亿美元</p>
+              <h4 className="text-[15px] font-bold text-ink">{t('d.invTitle')}</h4>
+              <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? '2024 · global total US$252.3B' : `${AI_INVESTMENT.year} 年 · 全球总额 ${AI_INVESTMENT.total.toLocaleString()} 亿美元`}</p>
               <div className="mt-2 h-[280px]">
                 <EChart option={donutOption} />
               </div>
@@ -302,8 +308,8 @@ export default function Dashboard() {
           </Reveal>
           <Reveal delay={0.08}>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">制造业机器人密度对比</h4>
-              <p className="mt-1 text-[12px] text-muted">台 / 万名员工（2023）</p>
+              <h4 className="text-[15px] font-bold text-ink">{t('d.robotTitle')}</h4>
+              <p className="mt-1 text-[12px] text-muted">{t('d.robotUnit')}</p>
               <div className="mt-2 h-[280px]">
                 <EChart option={robotOption} />
               </div>
@@ -312,8 +318,8 @@ export default function Dashboard() {
           </Reveal>
           <Reveal delay={0.16}>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">中国全员劳动生产率</h4>
-              <p className="mt-1 text-[12px] text-muted">2025 年达 184,413 元/人，同比 {LABOR_PRODUCTIVITY.growth}</p>
+              <h4 className="text-[15px] font-bold text-ink">{t('d.laborTitle')}</h4>
+              <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? '¥184,413 per person in 2025, +6.1% YoY' : `2025 年达 184,413 元/人，同比 ${LABOR_PRODUCTIVITY.growth}`}</p>
               <div className="mt-2 h-[280px]">
                 <EChart option={laborOption} />
               </div>
@@ -326,8 +332,8 @@ export default function Dashboard() {
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
           <Reveal>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">中国 AI 产业规模跃升</h4>
-              <p className="mt-1 text-[12px] text-muted">一年间由 9,000 亿元级迈上 1.2 万亿元级（同比 {INDUSTRY_SCALE.growth}）</p>
+              <h4 className="text-[15px] font-bold text-ink">{t('d.scaleTitle')}</h4>
+              <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? 'From ¥900B to ¥1.2T in one year (+40% YoY)' : `一年间由 9,000 亿元级迈上 1.2 万亿元级（同比 ${INDUSTRY_SCALE.growth}）`}</p>
               <div className="mt-2 h-[240px]">
                 <EChart option={scaleOption} />
               </div>
@@ -336,8 +342,8 @@ export default function Dashboard() {
           </Reveal>
           <Reveal delay={0.08}>
             <div className="card h-full p-6">
-              <h4 className="text-[15px] font-bold text-ink">生成式 AI 用户规模爆发</h4>
-              <p className="mt-1 text-[12px] text-muted">{GENAI_USERS.note}</p>
+              <h4 className="text-[15px] font-bold text-ink">{t('d.usersTitle')}</h4>
+              <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? '+266M users in six months; 36.5% penetration' : GENAI_USERS.note}</p>
               <div className="mt-2 h-[240px]">
                 <EChart option={genaiOption} />
               </div>
@@ -347,8 +353,8 @@ export default function Dashboard() {
           <Reveal delay={0.16}>
             <div className="card flex h-full flex-col justify-between p-6">
               <div>
-                <h4 className="text-[15px] font-bold text-ink">中国算力总规模</h4>
-                <p className="mt-1 text-[12px] text-muted">{COMPUTING_POWER.note}</p>
+                <h4 className="text-[15px] font-bold text-ink">{t('d.computeTitle')}</h4>
+                <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? '32% intelligent computing · end of 2024' : COMPUTING_POWER.note}</p>
               </div>
               <div className="my-6 flex items-center gap-4">
                 <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand">
@@ -367,8 +373,8 @@ export default function Dashboard() {
         {/* 热力图 */}
         <Reveal className="mt-6">
           <div className="card p-6">
-            <h4 className="text-[15px] font-bold text-ink">产业智能化热力图</h4>
-            <p className="mt-1 text-[12px] text-muted">产业 × 维度的综合热度 · 编者综合公开资料定性整理（非统计口径）</p>
+            <h4 className="text-[15px] font-bold text-ink">{t('d.heatTitle')}</h4>
+            <p className="mt-1 text-[12px] text-muted">{t('d.heatSub')}</p>
             <div className="mt-2 h-[420px]">
               <EChart option={heatOption} />
             </div>

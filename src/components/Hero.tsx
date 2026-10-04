@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react'
 import { ArrowRight, BarChart3, BadgeCheck, TrendingUp, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 import AICoreGraph from './AICoreGraph'
+import { useLanguage } from '@/i18n/LanguageContext'
 import { HERO_STATS, HERO_STATS_SOURCE } from '@/data/realData'
 
 const HERO_ICONS = { users: Users, trend: TrendingUp, badge: BadgeCheck } as const
+const HERO_LABEL_KEYS = ['h.s1', 'h.s2', 'h.s3'] as const
+const HERO_STATS_SOURCE_EN = 'Sources: CNNIC Generative AI Report (2025) · CAICT (Aug 2026) · WIPO GenAI Patent Report (2024)'
 
 export default function Hero() {
+  const { lang, t } = useLanguage()
   const [hintOpacity, setHintOpacity] = useState(1)
 
   useEffect(() => {
@@ -48,13 +52,13 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="mt-7 font-bold leading-[1.08] tracking-tight text-ink"
-            style={{ fontSize: 'clamp(44px, 5.2vw, 76px)' }}
+            style={{ fontSize: 'clamp(40px, 5.2vw, 76px)' }}
           >
-            <span className="text-gradient">人工智能</span>
+            <span className="text-gradient">{t('h.t1')}</span>
             <br />
-            正在重新定义
+            {t('h.t2')}
             <br />
-            <span className="text-gradient">生产力</span>
+            <span className="text-gradient">{t('h.t3')}</span>
           </motion.h1>
 
           <motion.p
@@ -63,7 +67,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-7 max-w-[520px] text-[17px] leading-[1.85] text-body"
           >
-            从算法、数据与算力，到研发、制造、能源与服务，人工智能正在从「数字工具」成长为推动生产方式变革的重要力量。
+            {t('h.para')}
           </motion.p>
 
           <motion.div
@@ -73,10 +77,10 @@ export default function Hero() {
             className="mt-9 flex flex-wrap gap-4"
           >
             <button className="btn btn-primary" onClick={() => go('understand')}>
-              开始探索 <ArrowRight size={17} />
+              {t('h.explore')} <ArrowRight size={17} />
             </button>
             <button className="btn btn-ghost" onClick={() => go('dashboard')}>
-              <BarChart3 size={17} /> 查看数据
+              <BarChart3 size={17} /> {t('h.data')}
             </button>
           </motion.div>
 
@@ -87,7 +91,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.45 }}
             className="mt-12 grid max-w-[590px] gap-3 sm:grid-cols-3"
           >
-            {HERO_STATS.map((c) => {
+            {HERO_STATS.map((c, index) => {
               const Icon = HERO_ICONS[c.icon]
               return (
                 <div key={c.label} className="hero-metric flex items-center gap-3 rounded-2xl p-3.5">
@@ -95,14 +99,14 @@ export default function Hero() {
                     <Icon size={19} />
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-[22px] font-bold leading-none text-ink">{c.value}</span>
-                    <span className="mt-1.5 text-[12.5px] text-muted">{c.label}</span>
+                    <span className="whitespace-nowrap text-[21px] font-bold leading-none text-ink">{c.value}</span>
+                    <span className="mt-1.5 text-[12px] leading-snug text-muted">{t(HERO_LABEL_KEYS[index])}</span>
                   </span>
                 </div>
               )
             })}
           </motion.div>
-          <p className="mt-3 max-w-[560px] text-[11px] leading-relaxed tracking-wide text-muted">* {HERO_STATS_SOURCE}</p>
+          <p className="mt-3 max-w-[560px] text-[11px] leading-relaxed tracking-wide text-muted">* {lang === 'en' ? HERO_STATS_SOURCE_EN : HERO_STATS_SOURCE}</p>
         </div>
 
         {/* 右侧引擎 */}

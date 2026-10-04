@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/i18n/LanguageContext'
 import type { ComponentType, ReactNode } from 'react'
 
 type SceneProps = { accent: string }
@@ -6,6 +7,15 @@ type SceneProps = { accent: string }
 export type IndustryCase = {
   id: string
   label: string
+  enLabel: string
+  enTitle: string
+  enSummary: string
+  enSteps: string[]
+  enStatusL: string
+  enStatus: string
+  enValueL: string
+  enValue: string
+  enKeywords: string[]
   eyebrow: string
   title: string
   summary: string
@@ -42,8 +52,9 @@ const SceneTitle = ({ title, caption }: { title: string; caption: string }) => <
 </>
 
 function ManufacturingScene({ accent }: SceneProps) {
+  const { t } = useLanguage()
   return <Frame label="工业相机采集图像、AI 检测缺陷并自动分拣的流水线">
-    <SceneTitle title="AI 视觉质检 · 流水线" caption="CAMERA INPUT · DEFECT DETECTION · AUTO SORTING" />
+    <SceneTitle title={t('i.tMfg')} caption="CAMERA INPUT · DEFECT DETECTION · AUTO SORTING" />
     {/* 传送带 */}
     <rect x="35" y="280" width="610" height="58" rx="18" fill="#DDE9F5" />
     <rect x="52" y="292" width="576" height="30" rx="15" fill="#B9CBDE" />
@@ -104,14 +115,15 @@ function ManufacturingScene({ accent }: SceneProps) {
         <animateMotion dur={`${2.2+i*0.7}s`} repeatCount="indefinite" path="M407 170C470 118 505 130 548 174" />
       </motion.circle>
     ))}
-    <g transform="translate(535 132)" filter="url(#case-shadow)"><rect width="142" height="86" rx="18" fill="#fff" stroke="#CFE0F1" /><circle cx="33" cy="34" r="18" fill={accent} opacity=".12" /><text x="33" y="39" textAnchor="middle" fill={accent} fontSize="14" fontWeight="800">AI</text><text x="62" y="32" fill="#0F172A" fontSize="12" fontWeight="700">缺陷已识别</text><motion.circle cx="135" cy="27" r="3" fill="#10B981" animate={{opacity:[.25,1,.25]}} transition={{duration:1.2,repeat:Infinity}} /><text x="62" y="52" fill="#64748B" fontSize="10">置信度 96%</text><rect x="20" y="67" width="102" height="5" rx="3" fill="#E2E8F0" /><motion.rect x="20" y="67" height="5" rx="3" fill={accent} animate={{ width: [10, 96, 96] }} transition={{ duration: 2.4, times: [0, 0.45, 1], repeat: Infinity, repeatDelay: 0.6 }} /></g>
+    <g transform="translate(535 132)" filter="url(#case-shadow)"><rect width="142" height="86" rx="18" fill="#fff" stroke="#CFE0F1" /><circle cx="33" cy="34" r="18" fill={accent} opacity=".12" /><text x="33" y="39" textAnchor="middle" fill={accent} fontSize="14" fontWeight="800">AI</text><text x="62" y="32" fill="#0F172A" fontSize="12" fontWeight="700">{t('i.defectFound')}</text><motion.circle cx="135" cy="27" r="3" fill="#10B981" animate={{opacity:[.25,1,.25]}} transition={{duration:1.2,repeat:Infinity}} /><text x="62" y="52" fill="#64748B" fontSize="10">{t('i.confidence')}</text><rect x="20" y="67" width="102" height="5" rx="3" fill="#E2E8F0" /><motion.rect x="20" y="67" height="5" rx="3" fill={accent} animate={{ width: [10, 96, 96] }} transition={{ duration: 2.4, times: [0, 0.45, 1], repeat: Infinity, repeatDelay: 0.6 }} /></g>
   </Frame>
 }
 
 function TransportScene({ accent }: SceneProps) {
+  const { t } = useLanguage()
   const cars=[[70,192],[150,192],[500,192],[575,192],[120,246],[430,246],[345,108],[345,292]]
   return <Frame label="AI 感知道路拥堵并优化交通信号和行驶路径">
-    <SceneTitle title="智能交通调度 · 城市路网" caption="TRAFFIC SENSING · CONGESTION PREDICTION · ROUTE CONTROL" />
+    <SceneTitle title={t('i.tTra')} caption="TRAFFIC SENSING · CONGESTION PREDICTION · ROUTE CONTROL" />
     <rect x="45" y="137" width="630" height="142" rx="26" fill="#DCE8F3" /><rect x="285" y="80" width="150" height="286" rx="26" fill="#DCE8F3" />
     <rect x="45" y="188" width="630" height="42" fill="#F8FBFD" /><rect x="45" y="242" width="630" height="36" fill="#F8FBFD" /><rect x="339" y="80" width="43" height="286" fill="#F8FBFD" />
     <path d="M55 209H665M360 88V356" stroke="#AFC2D4" strokeWidth="2" strokeDasharray="15 12" />
@@ -121,7 +133,7 @@ function TransportScene({ accent }: SceneProps) {
     {[0,1,2,3,4].map(i=><rect key={i} x="342" y={112+i*9} width="38" height="5" rx="2" fill="#fff" opacity=".55" />)}
     {/* 拥堵趋势 */}
     <motion.rect x="440" y="188" width="225" height="42" fill="#FB923C" animate={{opacity:[.12,.22,.12]}} transition={{duration:2,repeat:Infinity}} />
-    <text x="514" y="180" fill="#EA580C" fontSize="10" fontWeight="700">拥堵趋势</text>
+    <text x="514" y="180" fill="#EA580C" fontSize="10" fontWeight="700">{t('i.congestion')}</text>
     <motion.path d="M470 176l14-8 10 4 16-12" fill="none" stroke="#EA580C" strokeWidth="2" strokeLinecap="round" animate={{ y: [0, -3, 0] }} transition={{ duration: 1.8, repeat: Infinity }} />
     {/* 绿色优化路径 */}
     <motion.path d="M58 209H267Q310 209 310 254V352" fill="none" stroke="#10B981" strokeWidth="5" strokeLinecap="round" initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:1.4}} />
@@ -161,13 +173,14 @@ function TransportScene({ accent }: SceneProps) {
       <motion.circle key={i} cx="254" cy="209" r="6" fill="none" stroke={accent} strokeWidth="1.5" animate={{ scale: [1, 2.6], opacity: [0.55, 0] }} transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.9 }} style={{ transformOrigin: '254px 209px' }} />
     ))}
     {[110,182,254,326,398,470,542].map((x,i)=><motion.circle key={x} cx={x} cy="209" r="3.5" fill={accent} animate={{opacity:[.15,1,.15]}} transition={{duration:1.2,repeat:Infinity,delay:i*.12}} />)}
-    <g transform="translate(82 88)" filter="url(#case-shadow)"><rect width="169" height="64" rx="16" fill="#fff" stroke="#D5E4F2" /><motion.circle cx="31" cy="32" r="21" fill={accent} opacity=".1" animate={{scale:[.9,1.12,.9]}} transition={{duration:2,repeat:Infinity}} style={{transformOrigin:'31px 32px'}} /><circle cx="31" cy="32" r="18" fill={accent} opacity=".12" /><text x="31" y="37" textAnchor="middle" fill={accent} fontSize="13" fontWeight="800">AI</text><text x="59" y="28" fill="#0F172A" fontSize="11" fontWeight="700">绿灯延长 18s</text><text x="59" y="46" fill="#64748B" fontSize="10">分流路径已生成</text></g>
+    <g transform="translate(82 88)" filter="url(#case-shadow)"><rect width="169" height="64" rx="16" fill="#fff" stroke="#D5E4F2" /><motion.circle cx="31" cy="32" r="21" fill={accent} opacity=".1" animate={{scale:[.9,1.12,.9]}} transition={{duration:2,repeat:Infinity}} style={{transformOrigin:'31px 32px'}} /><circle cx="31" cy="32" r="18" fill={accent} opacity=".12" /><text x="31" y="37" textAnchor="middle" fill={accent} fontSize="13" fontWeight="800">AI</text><text x="59" y="28" fill="#0F172A" fontSize="11" fontWeight="700">{t('i.greenExtended')}</text><text x="59" y="46" fill="#64748B" fontSize="10">{t('i.reroute')}</text></g>
   </Frame>
 }
 
 function MedicalScene({ accent }: SceneProps) {
+  const { t } = useLanguage()
   return <Frame label="AI 扫描医学影像、定位病灶并输出风险分析">
-    <SceneTitle title="AI 影像辅助诊断 · CT 分析" caption="IMAGE INPUT · LESION LOCALIZATION · RISK ANALYSIS" />
+    <SceneTitle title={t('i.tMed')} caption="IMAGE INPUT · LESION LOCALIZATION · RISK ANALYSIS" />
     <defs>
       <radialGradient id="med-vign" cx=".5" cy=".45" r=".75">
         <stop offset=".55" stopColor="#0B1420" stopOpacity="0" />
@@ -189,7 +202,7 @@ function MedicalScene({ accent }: SceneProps) {
         <motion.path key={i} d={`M${bx+dx*4} ${by}h${-dx*9}M${bx} ${by+dy*4}v${-dy*9}`} stroke="#67E8F9" strokeWidth="2.5" strokeLinecap="round" animate={{opacity:[.35,1,.35]}} transition={{duration:1.4,repeat:Infinity,delay:i*.15}} />
       ))}
       <path d="M256 130h30v-16h28" fill="none" stroke="#67E8F9" strokeWidth="1.2" opacity=".8" />
-      <text x="290" y="110" fill="#67E8F9" fontSize="8.5" fontWeight="700">结节 · 8mm</text>
+      <text x="290" y="110" fill="#67E8F9" fontSize="8.5" fontWeight="700">{t('i.nodule')}</text>
       {/* 扫描线与拖影 */}
       <motion.rect x="34" width="302" height="26" fill="#22D3EE" animate={{ y: [42, 240, 42], opacity: [0, 0.13, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }} />
       <motion.line x1="34" x2="336" stroke="#67E8F9" strokeWidth="2" animate={{y1:[47,248,47],y2:[47,248,47]}} transition={{duration:3.2,repeat:Infinity,ease:'easeInOut'}} />
@@ -199,7 +212,7 @@ function MedicalScene({ accent }: SceneProps) {
       <motion.rect x="110" y="283" width="34" height="4" rx="2" fill="#22D3EE" animate={{ opacity: [.55, 1, .55] }} transition={{ duration: 1.6, repeat: Infinity }} />
       <motion.text x="276" y="290" fill="#67E8F9" fontSize="10" fontWeight="700" animate={{ opacity: [0.45, 1, 0.45] }} transition={{ duration: 1.4, repeat: Infinity }}>● AI SCANNING</motion.text>
     </g>
-    <g transform="translate(448 102)"><rect width="230" height="134" rx="18" fill="#fff" stroke="#CCE2EF" /><text x="20" y="31" fill="#0F172A" fontSize="12" fontWeight="700">病灶定位结果</text><text x="20" y="57" fill="#64748B" fontSize="10">异常区域</text><motion.circle cx="185" cy="53" r="3.5" fill={accent} animate={{opacity:[.3,1,.3]}} transition={{duration:1.2,repeat:Infinity}} /><text x="197" y="57" textAnchor="end" fill={accent} fontSize="11" fontWeight="700">已发现</text><text x="20" y="83" fill="#64748B" fontSize="10">风险评分</text><rect x="84" y="75" width="108" height="8" rx="4" fill="#E2E8F0" /><motion.rect x="84" y="75" width="79" height="8" rx="4" fill={accent} initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'84px 79px'}} transition={{duration:1}} /><motion.rect x="84" y="75" width="14" height="8" rx="4" fill="#fff" animate={{ x: [84, 149, 149], opacity: [0, .6, 0] }} transition={{ duration: 2, times: [0, 0.25, 1], repeat: Infinity, repeatDelay: 1.2 }} /><rect x="20" y="101" width="190" height="22" rx="8" fill="#ECFEFF" /><text x="115" y="116" textAnchor="middle" fill="#0E7490" fontSize="10" fontWeight="700">建议：结合临床进一步检查</text></g>
+    <g transform="translate(448 102)"><rect width="230" height="134" rx="18" fill="#fff" stroke="#CCE2EF" /><text x="20" y="31" fill="#0F172A" fontSize="12" fontWeight="700">{t('i.lesionPanel')}</text><text x="20" y="57" fill="#64748B" fontSize="10">{t('i.abnormal')}</text><motion.circle cx="185" cy="53" r="3.5" fill={accent} animate={{opacity:[.3,1,.3]}} transition={{duration:1.2,repeat:Infinity}} /><text x="197" y="57" textAnchor="end" fill={accent} fontSize="11" fontWeight="700">{t('i.found')}</text><text x="20" y="83" fill="#64748B" fontSize="10">{t('i.riskScore')}</text><rect x="84" y="75" width="108" height="8" rx="4" fill="#E2E8F0" /><motion.rect x="84" y="75" width="79" height="8" rx="4" fill={accent} initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'84px 79px'}} transition={{duration:1}} /><motion.rect x="84" y="75" width="14" height="8" rx="4" fill="#fff" animate={{ x: [84, 149, 149], opacity: [0, .6, 0] }} transition={{ duration: 2, times: [0, 0.25, 1], repeat: Infinity, repeatDelay: 1.2 }} /><rect x="20" y="101" width="190" height="22" rx="8" fill="#ECFEFF" /><text x="115" y="116" textAnchor="middle" fill="#0E7490" fontSize="10" fontWeight="700">{t('i.advice')}</text></g>
     <g transform="translate(448 258)">{[0,1,2].map(i=>(
       <g key={i} transform={`translate(${i*74} 0)`}>
         <motion.rect width="62" height="70" rx="12" fill="#E8F2F8" stroke={i===1?accent:'#C7DAE8'} strokeWidth={i===1?2:1.2} animate={i===1?{opacity:[.7,1,.7]}:{}} transition={{duration:1.6,repeat:Infinity}} />
@@ -216,8 +229,9 @@ function MedicalScene({ accent }: SceneProps) {
 }
 
 function AgricultureScene({ accent }: SceneProps) {
+  const { t } = useLanguage()
   return <Frame label="无人机采集农田影像、识别异常并提供精准干预建议">
-    <SceneTitle title="智慧农业巡检 · 精准干预" caption="AERIAL CAPTURE · CROP ANALYSIS · PRECISE INTERVENTION" />
+    <SceneTitle title={t('i.tAgr')} caption="AERIAL CAPTURE · CROP ANALYSIS · PRECISE INTERVENTION" />
     {/* 农田 */}
     <g transform="translate(40 113) skewX(-12)">
       {[0,1,2,3,4,5].map(r=><path key={r} d={`M0 ${r*48+24}H450`} stroke="#fff" strokeWidth="1" opacity=".14" />)}
@@ -250,7 +264,7 @@ function AgricultureScene({ accent }: SceneProps) {
       <circle cx="287" cy="144.5" r="3" fill="#fff" />
     </motion.g>
     {/* 巡检分析卡 */}
-    <g transform="translate(524 108)" filter="url(#case-shadow)"><rect width="158" height="174" rx="20" fill="#fff" stroke="#CCE7DE" /><text x="20" y="28" fill="#0F172A" fontSize="12" fontWeight="700">巡检分析</text><circle cx="32" cy="52" r="9" fill="#FBBF24" opacity=".25" /><text x="50" y="56" fill="#92400E" fontSize="10" fontWeight="700">缺水区域 · 2</text><rect x="50" y="62" width="88" height="5" rx="2.5" fill="#F1F5F9" /><motion.rect x="50" y="62" width="30" height="5" rx="2.5" fill="#FBBF24" initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'50px 64px'}} transition={{duration:.9}} /><circle cx="32" cy="88" r="9" fill="#34D399" opacity=".25" /><text x="50" y="92" fill="#166534" fontSize="10" fontWeight="700">长势良好 · 86%</text><rect x="50" y="98" width="88" height="5" rx="2.5" fill="#F1F5F9" /><motion.rect x="50" y="98" width="76" height="5" rx="2.5" fill="#34D399" initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'50px 100px'}} transition={{duration:.9,delay:.15}} /><path d="M20 118H138" stroke="#E2E8F0" /><text x="20" y="140" fill="#64748B" fontSize="9">RECOMMENDATION</text><text x="20" y="158" fill={accent} fontSize="11" fontWeight="700">精准灌溉 + 定点巡检</text></g>
+    <g transform="translate(524 108)" filter="url(#case-shadow)"><rect width="158" height="174" rx="20" fill="#fff" stroke="#CCE7DE" /><text x="20" y="28" fill="#0F172A" fontSize="12" fontWeight="700">{t('i.analysisCard')}</text><circle cx="32" cy="52" r="9" fill="#FBBF24" opacity=".25" /><text x="50" y="56" fill="#92400E" fontSize="10" fontWeight="700">{t('i.waterAreas')}</text><rect x="50" y="62" width="88" height="5" rx="2.5" fill="#F1F5F9" /><motion.rect x="50" y="62" width="30" height="5" rx="2.5" fill="#FBBF24" initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'50px 64px'}} transition={{duration:.9}} /><circle cx="32" cy="88" r="9" fill="#34D399" opacity=".25" /><text x="50" y="92" fill="#166534" fontSize="10" fontWeight="700">{t('i.healthy')}</text><rect x="50" y="98" width="88" height="5" rx="2.5" fill="#F1F5F9" /><motion.rect x="50" y="98" width="76" height="5" rx="2.5" fill="#34D399" initial={{scaleX:0}} animate={{scaleX:1}} style={{transformOrigin:'50px 100px'}} transition={{duration:.9,delay:.15}} /><path d="M20 118H138" stroke="#E2E8F0" /><text x="20" y="140" fill="#64748B" fontSize="9">RECOMMENDATION</text><text x="20" y="158" fill={accent} fontSize="11" fontWeight="700">{t('i.recommend')}</text></g>
     <motion.path d="M358 194C428 158 465 166 522 178" fill="none" stroke={accent} strokeWidth="2" strokeDasharray="5 7" animate={{strokeDashoffset:[24,0]}} transition={{duration:1.3,repeat:Infinity,ease:'linear'}} />
     <motion.circle r="3" fill={accent} animate={{opacity:[.2,.9,.2]}}>
       <animateMotion dur="2s" repeatCount="indefinite" path="M358 194C428 158 465 166 522 178" />
@@ -259,8 +273,9 @@ function AgricultureScene({ accent }: SceneProps) {
 }
 
 function EnergyScene({ accent }: SceneProps) {
+  const { t } = useLanguage()
   return <Frame label="AI 汇聚风光储和负荷数据，预测需求并动态调度能源">
-    <SceneTitle title="智能能源调度 · 风光储协同" caption="MULTI-SOURCE DATA · LOAD FORECAST · SUPPLY-DEMAND BALANCE" />
+    <SceneTitle title={t('i.tEng')} caption="MULTI-SOURCE DATA · LOAD FORECAST · SUPPLY-DEMAND BALANCE" />
     <defs>
       <linearGradient id="solar-shine" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0" stopColor="#fff" stopOpacity="0" />
@@ -337,9 +352,9 @@ function EnergyScene({ accent }: SceneProps) {
 }
 
 export const EXPLORER_TABS: IndustryCase[] = [
-  { id:'manufacturing', label:'制造', eyebrow:'SMART MANUFACTURING', title:'AI 视觉质检', summary:'工业相机持续采集产品图像，AI 实时定位缺陷，并联动产线完成自动分拣。', accent:'#2563EB', steps:['采集图像','缺陷识别','自动分拣'], statusLabel:'检测状态', status:'缺陷已识别', valueLabel:'响应动作', value:'自动分拣', keywords:['机器视觉','缺陷识别','质量控制','自动分拣'], Scene:ManufacturingScene },
-  { id:'transport', label:'交通', eyebrow:'SMART MOBILITY', title:'AI 交通调度中枢', summary:'融合实时车流与路口状态，预测拥堵趋势，动态优化信号时长和车辆路径。', accent:'#0891B2', steps:['路况感知','拥堵预测','信号优化','路径疏导'], statusLabel:'通行效率', status:'持续提升', valueLabel:'拥堵风险', value:'动态下降', keywords:['车流感知','拥堵预测','信号控制','路径优化'], Scene:TransportScene },
-  { id:'medical', label:'医疗', eyebrow:'AI HEALTHCARE', title:'AI 影像辅助诊断', summary:'AI 对医学影像进行扫描和特征分析，标记可疑病灶，为医生提供风险判断依据。', accent:'#0EA5C6', steps:['影像输入','病灶定位','风险分析','诊断建议'], statusLabel:'异常区域', status:'已发现', valueLabel:'输出方式', value:'辅助诊断建议', keywords:['医学影像','病灶识别','风险评估','辅助诊断'], Scene:MedicalScene },
-  { id:'agriculture', label:'农业', eyebrow:'PRECISION AGRICULTURE', title:'AI 农业巡检', summary:'无人机采集农田影像，AI 分析作物长势和水分差异，输出精准干预建议。', accent:'#0FAD8C', steps:['空中采集','图像识别','长势分析','精准干预'], statusLabel:'巡检结果', status:'异常区域已识别', valueLabel:'推荐动作', value:'精准灌溉', keywords:['无人机巡检','作物识别','长势分析','精准干预'], Scene:AgricultureScene },
-  { id:'energy', label:'能源', eyebrow:'INTELLIGENT ENERGY', title:'AI 能源调度', summary:'汇聚风电、光伏、储能和负荷数据，预测用能需求并动态平衡供需。', accent:'#089FA4', steps:['多源采集','负荷预测','供需匹配','智能调度'], statusLabel:'当前状态', status:'供需平衡优化', valueLabel:'输出动作', value:'动态分配', keywords:['负荷预测','供需匹配','能源优化','智能调度'], Scene:EnergyScene },
+  { id:'manufacturing', enLabel:'Mfg', enTitle:'AI Visual Inspection', enSummary:'Industrial cameras keep capturing product images; AI locates defects in real time and triggers auto-sorting on the line.', enSteps:['Capture','Detect','Sort'], enStatusL:'Detection', enStatus:'Defect identified', enValueL:'Response', enValue:'Auto-sort', enKeywords:['Machine vision','Defect detection','Quality control','Auto sorting'], label:'制造', eyebrow:'SMART MANUFACTURING', title:'AI 视觉质检', summary:'工业相机持续采集产品图像，AI 实时定位缺陷，并联动产线完成自动分拣。', accent:'#2563EB', steps:['采集图像','缺陷识别','自动分拣'], statusLabel:'检测状态', status:'缺陷已识别', valueLabel:'响应动作', value:'自动分拣', keywords:['机器视觉','缺陷识别','质量控制','自动分拣'], Scene:ManufacturingScene },
+  { id:'transport', enLabel:'Traffic', enTitle:'AI Traffic Control Hub', enSummary:'Fuses live traffic and intersection state, predicts congestion and optimizes signal timing and routes.', enSteps:['Sense traffic','Predict congestion','Optimize signals','Redirect flows'], enStatusL:'Throughput', enStatus:'Improving', enValueL:'Congestion risk', enValue:'Falling', enKeywords:['Traffic sensing','Congestion prediction','Signal control','Route optimization'], label:'交通', eyebrow:'SMART MOBILITY', title:'AI 交通调度中枢', summary:'融合实时车流与路口状态，预测拥堵趋势，动态优化信号时长和车辆路径。', accent:'#0891B2', steps:['路况感知','拥堵预测','信号优化','路径疏导'], statusLabel:'通行效率', status:'持续提升', valueLabel:'拥堵风险', value:'动态下降', keywords:['车流感知','拥堵预测','信号控制','路径优化'], Scene:TransportScene },
+  { id:'medical', enLabel:'Health', enTitle:'AI Imaging Diagnosis', enSummary:'AI scans medical images, flags suspicious lesions and supports doctors with risk assessment.', enSteps:['Image input','Lesion marking','Risk analysis','Diagnosis support'], enStatusL:'Abnormal area', enStatus:'Found', enValueL:'Output', enValue:'Diagnostic support', enKeywords:['Medical imaging','Lesion marking','Risk scoring','Decision support'], label:'医疗', eyebrow:'AI HEALTHCARE', title:'AI 影像辅助诊断', summary:'AI 对医学影像进行扫描和特征分析，标记可疑病灶，为医生提供风险判断依据。', accent:'#0EA5C6', steps:['影像输入','病灶定位','风险分析','诊断建议'], statusLabel:'异常区域', status:'已发现', valueLabel:'输出方式', value:'辅助诊断建议', keywords:['医学影像','病灶识别','风险评估','辅助诊断'], Scene:MedicalScene },
+  { id:'agriculture', enLabel:'Farm', enTitle:'AI Crop Scouting', enSummary:'Drones capture field imagery; AI analyzes crop vigor and moisture and suggests precise interventions.', enSteps:['Aerial capture','Image recognition','Vigor analysis','Precise action'], enStatusL:'Scouting result', enStatus:'Issues identified', enValueL:'Action', enValue:'Precise irrigation', enKeywords:['Drone scouting','Crop recognition','Vigor analysis','Precise intervention'], label:'农业', eyebrow:'PRECISION AGRICULTURE', title:'AI 农业巡检', summary:'无人机采集农田影像，AI 分析作物长势和水分差异，输出精准干预建议。', accent:'#0FAD8C', steps:['空中采集','图像识别','长势分析','精准干预'], statusLabel:'巡检结果', status:'异常区域已识别', valueLabel:'推荐动作', value:'精准灌溉', keywords:['无人机巡检','作物识别','长势分析','精准干预'], Scene:AgricultureScene },
+  { id:'energy', enLabel:'Energy', enTitle:'AI Energy Dispatch', enSummary:'Aggregates wind, solar, storage and load data, forecasts demand and balances supply in real time.', enSteps:['Multi-source intake','Load forecast','Supply matching','Smart dispatch'], enStatusL:'Grid state', enStatus:'Balanced & optimized', enValueL:'Action', enValue:'Dynamic allocation', enKeywords:['Load forecast','Supply-demand match','Energy optimization','Smart dispatch'], label:'能源', eyebrow:'INTELLIGENT ENERGY', title:'AI 能源调度', summary:'汇聚风电、光伏、储能和负荷数据，预测用能需求并动态平衡供需。', accent:'#089FA4', steps:['多源采集','负荷预测','供需匹配','智能调度'], statusLabel:'当前状态', status:'供需平衡优化', valueLabel:'输出动作', value:'动态分配', keywords:['负荷预测','供需匹配','能源优化','智能调度'], Scene:EnergyScene },
 ]

@@ -19,6 +19,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import { INDUSTRIES } from '@/data/industryData'
+import { useLanguage } from '@/i18n/LanguageContext'
 import { EXPLORER_TABS } from './IndustryScenes'
 
 const ICONS: Record<string, LucideIcon> = {
@@ -40,10 +41,16 @@ const npos = (deg: number) => {
 }
 
 export default function Industry() {
+  const { lang, t } = useLanguage()
   const [sel, setSel] = useState(INDUSTRIES[0].id)
   const [tab, setTab] = useState(EXPLORER_TABS[0].id)
   const current = INDUSTRIES.find((i) => i.id === sel)!
-  const activeCase = EXPLORER_TABS.find((t) => t.id === tab)!
+  const activeCase = EXPLORER_TABS.find((c) => c.id === tab)!
+  const en = lang === 'en'
+  const name = en ? current.enName : current.name
+  const desc = en ? current.enDesc : current.desc
+  const apps = en ? current.enApplications : current.applications
+  const vals = en ? current.enValues : current.values
   const ActiveScene = activeCase.Scene
 
   return (
@@ -52,8 +59,8 @@ export default function Industry() {
         <SectionHeading
           index="03"
           en="INDUSTRY"
-          title="AI 正在进入真实产业"
-          subtitle="从一个智能核心出发，人工智能正在向制造、医疗、能源、农业、交通等领域释放价值。点击产业节点查看。"
+          title={t('i.title')}
+          subtitle={t('i.sub')}
         />
 
         <div className="mt-12 grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
@@ -133,16 +140,16 @@ export default function Industry() {
                     })()}
                   </span>
                   <div>
-                    <h3 className="text-[24px] font-bold text-ink">{current.name}</h3>
+                    <h3 className="text-[24px] font-bold text-ink">{name}</h3>
                     <p className="text-[12px] font-semibold tracking-widest text-muted">{current.en}</p>
                   </div>
                 </div>
-                <p className="mt-5 text-[15px] leading-[1.8] text-body">{current.desc}</p>
+                <p className="mt-5 text-[15px] leading-[1.8] text-body">{desc}</p>
 
                 <div className="mt-7">
-                  <p className="text-[12.5px] font-bold tracking-[0.18em] text-muted">AI 应用</p>
+                  <p className="text-[12.5px] font-bold tracking-[0.18em] text-muted">{t('i.appsLabel')}</p>
                   <div className="mt-3 grid grid-cols-2 gap-2.5">
-                    {current.applications.map((a) => (
+                    {apps.map((a) => (
                       <span key={a} className="flex items-center gap-2 rounded-xl bg-brand/7 px-3 py-2.5 text-[13px] font-medium text-ink">
                         <Check size={14} className="text-brand" /> {a}
                       </span>
@@ -151,9 +158,9 @@ export default function Industry() {
                 </div>
 
                 <div className="mt-6">
-                  <p className="text-[12.5px] font-bold tracking-[0.18em] text-muted">产生价值</p>
+                  <p className="text-[12.5px] font-bold tracking-[0.18em] text-muted">{t('i.valsLabel')}</p>
                   <div className="mt-3 space-y-2.5">
-                    {current.values.map((v) => (
+                    {vals.map((v) => (
                       <div key={v} className="flex items-center gap-2.5 text-[14px] text-body">
                         <span className="flex h-6 w-6 items-center justify-center rounded-md bg-teal/12 text-teal">
                           <Sparkles size={13} />
@@ -170,8 +177,8 @@ export default function Industry() {
 
         {/* Industry Explorer */}
         <Reveal className="mt-20">
-          <h3 className="text-[26px] font-bold text-ink">产业案例可视化 · Industry Explorer</h3>
-          <p className="mt-2 text-[15px] text-body">切换标签，查看 AI 在不同产业中的典型工作方式。</p>
+          <h3 className="text-[26px] font-bold text-ink">{t('i.explorerTitle')}</h3>
+          <p className="mt-2 text-[15px] text-body">{t('i.explorerSub')}</p>
         </Reveal>
 
         <Reveal className="mt-7">
@@ -191,7 +198,7 @@ export default function Industry() {
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
-                  <span className="relative z-10">{t.label}</span>
+                  <span className="relative z-10">{en ? t.enLabel : t.label}</span>
                 </button>
               ))}
             </div>
@@ -222,13 +229,13 @@ export default function Industry() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-[10px] font-bold tracking-[0.18em]" style={{ color: activeCase.accent }}>{activeCase.eyebrow}</p>
-                        <h4 className="mt-1.5 text-[21px] font-bold text-ink">{activeCase.title}</h4>
+                        <h4 className="mt-1.5 text-[21px] font-bold text-ink">{en ? activeCase.enTitle : activeCase.title}</h4>
                       </div>
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ color: activeCase.accent, background: `${activeCase.accent}12` }}>
                         <Activity size={20} />
                       </span>
                     </div>
-                    <p className="mt-3 text-[13px] leading-[1.7] text-body">{activeCase.summary}</p>
+                    <p className="mt-3 text-[13px] leading-[1.7] text-body">{en ? activeCase.enSummary : activeCase.summary}</p>
                   </motion.div>
 
                   <motion.div
@@ -237,7 +244,7 @@ export default function Industry() {
                   >
                     <p className="text-[11px] font-bold tracking-[0.16em] text-muted">AI WORKFLOW</p>
                     <div className="mt-4 space-y-2.5">
-                      {activeCase.steps.map((step, index) => (
+                      {(en ? activeCase.enSteps : activeCase.steps).map((step, index) => (
                         <motion.div
                           key={step}
                           initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.06 + index * 0.05 }}
@@ -258,13 +265,13 @@ export default function Industry() {
                   >
                     <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-muted"><CircleDot size={14} style={{ color: activeCase.accent }} /> RESULT OUTPUT</div>
                     <div className="mt-3 grid grid-cols-2 gap-3">
-                      <div><p className="text-[10px] text-muted">{activeCase.statusLabel}</p><p className="mt-1 text-[12px] font-bold text-ink">{activeCase.status}</p></div>
-                      <div><p className="text-[10px] text-muted">{activeCase.valueLabel}</p><p className="mt-1 text-[12px] font-bold" style={{ color: activeCase.accent }}>{activeCase.value}</p></div>
+                      <div><p className="text-[10px] text-muted">{en ? activeCase.enStatusL : activeCase.statusLabel}</p><p className="mt-1 text-[12px] font-bold text-ink">{en ? activeCase.enStatus : activeCase.status}</p></div>
+                      <div><p className="text-[10px] text-muted">{en ? activeCase.enValueL : activeCase.valueLabel}</p><p className="mt-1 text-[12px] font-bold" style={{ color: activeCase.accent }}>{en ? activeCase.enValue : activeCase.value}</p></div>
                     </div>
                   </motion.div>
 
                   <div className="flex flex-wrap gap-1.5 px-1">
-                    {activeCase.keywords.map((keyword) => <span key={keyword} className="rounded-full border border-line/70 bg-white px-2.5 py-1 text-[10px] font-medium text-body">{keyword}</span>)}
+                    {(en ? activeCase.enKeywords : activeCase.keywords).map((keyword) => <span key={keyword} className="rounded-full border border-line/70 bg-white px-2.5 py-1 text-[10px] font-medium text-body">{keyword}</span>)}
                   </div>
                 </div>
               </motion.div>

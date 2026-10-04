@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 type LoopNodeId = 'data' | 'perception' | 'analysis' | 'prediction' | 'decision' | 'execution' | 'feedback' | 'optimization'
 
@@ -286,6 +287,7 @@ function CapabilityCard({ capability }: { capability: (typeof CAPABILITIES)[numb
 }
 
 export default function Mechanism() {
+  const { lang, t, ta } = useLanguage()
   const [hoveredNode, setHoveredNode] = useState<LoopNodeId | null>(null)
   const [selectedNode, setSelectedNode] = useState<LoopNodeId>('analysis')
   const [playingNode, setPlayingNode] = useState<LoopNodeId | null>(null)
@@ -294,9 +296,21 @@ export default function Mechanism() {
   const [parallax, setParallax] = useState({ x: 0, y: 0 })
   const playbackRef = useRef(0)
 
+  const LABELS = ta('m.labels')
+  const INSIGHTS = ta('m.insights')
+  const DETAILS = ta('m.details')
+  const TAGS = [ta('m.tags1'), ta('m.tags2'), ta('m.tags3'), ta('m.tags4'), ta('m.tags5'), ta('m.tags6'), ta('m.tags7'), ta('m.tags8')]
+  const NODE_LIST = NODES.map((node, i) => ({ ...node, zh: LABELS[i], insight: INSIGHTS[i], detail: DETAILS[i], tags: TAGS[i] }))
+  const CAPS = CAPABILITIES.map((cap, i) => ({
+    ...cap,
+    title: ta('m.capTitles')[i],
+    subtitle: ta('m.capSubs')[i],
+    verbs: [ta('m.capVerbs1'), ta('m.capVerbs2'), ta('m.capVerbs3')][i],
+  }))
+
   const displayNode = playingNode ?? hoveredNode ?? selectedNode
-  const displayIndex = NODES.findIndex((node) => node.id === displayNode)
-  const display = NODES[displayIndex]
+  const displayIndex = NODE_LIST.findIndex((node) => node.id === displayNode)
+  const display = NODE_LIST[displayIndex]
 
   const stop = () => {
     playbackRef.current += 1
@@ -309,7 +323,7 @@ export default function Mechanism() {
     const playback = ++playbackRef.current
     setHoveredNode(null)
     setIsPlaying(true)
-    for (const node of NODES) {
+    for (const node of NODE_LIST) {
       if (playback !== playbackRef.current) return
       setPlayingNode(node.id)
       await pause(500)
@@ -342,8 +356,8 @@ export default function Mechanism() {
         <SectionHeading
           index="02"
           en="MECHANISM"
-          title="AI 如何转化为生产力？"
-          subtitle="数据经过感知、分析、预测、决策、执行，再由反馈与优化形成不断进化的智能生产闭环。"
+          title={t("m.title")}
+          subtitle={t("m.sub")}
         />
 
         <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
@@ -368,7 +382,7 @@ export default function Mechanism() {
                 <motion.circle r="3" fill="#93C5FD" opacity="0.55">
                   <animateMotion dur="14s" repeatCount="indefinite" path={`M ${CC} ${CC - R}a ${R} ${R} 0 1 1 -0.1 0`} />
                 </motion.circle>
-                {NODES.map((_, i) => (
+                {NODE_LIST.map((_, i) => (
                   <motion.path
                     key={i}
                     d={arcPath(i)}
@@ -383,7 +397,7 @@ export default function Mechanism() {
                   />
                 ))}
 
-                {NODES.map((_, i) => {
+                {NODE_LIST.map((_, i) => {
                   const arrow = arrowPos(i)
                   const highlighted = i === displayIndex || i === (displayIndex + 7) % 8
                   return (
@@ -437,20 +451,20 @@ export default function Mechanism() {
                         {isPlaying ? 'AI PRODUCTIVITY ENGINE' : display.en.toUpperCase()}
                       </text>
                       <text x={CC} y={CC + 2} textAnchor="middle" fill="#0F172A" fontSize="15" fontWeight="700">
-                        {isPlaying ? '运行中' : display.zh}
+                        {isPlaying ? t('m.running') : display.zh}
                       </text>
                       <text x={CC} y={CC + 23} textAnchor="middle" fill="#64748B" fontSize="10" fontWeight="700">
                         {String(displayIndex + 1).padStart(2, '0')} / 08
                       </text>
                       <text x={CC} y={CC + 43} textAnchor="middle" fill="#94A3B8" fontSize="9.5" fontWeight="600">
-                        {centerHovered && !isPlaying ? '播放完整闭环' : display.insight}
+                        {centerHovered && !isPlaying ? t('m.play') : display.insight}
                       </text>
                     </motion.g>
                   </AnimatePresence>
                 </motion.g>
 
                 {/* 节点 */}
-                {NODES.map((n, i) => {
+                {NODE_LIST.map((n, i) => {
                   const p = pos(i)
                   const hovered = hoveredNode === n.id
                   const selected = selectedNode === n.id
@@ -498,10 +512,10 @@ export default function Mechanism() {
 
               <div className="mt-2 flex justify-center gap-3">
                 <button className="btn btn-primary !py-2.5 !text-[14px]" onClick={play}>
-                  <Play size={15} /> 播放完整闭环
+                  <Play size={15} /> {t('m.play')}
                 </button>
                 <button className="btn btn-ghost !py-2.5 !text-[14px]" onClick={reset}>
-                  <RotateCcw size={15} /> 重置
+                  <RotateCcw size={15} /> {t('c.reset')}
                 </button>
               </div>
             </div>
@@ -511,7 +525,7 @@ export default function Mechanism() {
           <Reveal delay={0.1}>
             <div className="card h-full min-h-[360px] p-8">
               <div className="flex gap-1.5" aria-label={`闭环进度 ${displayIndex + 1} / 8`}>
-                {NODES.map((node, index) => (
+                {NODE_LIST.map((node, index) => (
                   <motion.span
                     key={node.id}
                     className="h-1.5 flex-1 rounded-full"
@@ -553,7 +567,7 @@ export default function Mechanism() {
                   </motion.div>
                 </motion.div>
               </AnimatePresence>
-              <p className="mt-8 text-[12.5px] text-muted">悬停可预览，点击或按 Enter 锁定当前环节。</p>
+              <p className="mt-8 text-[12.5px] text-muted">{t('m.hint')}</p>
             </div>
           </Reveal>
         </div>
@@ -562,10 +576,10 @@ export default function Mechanism() {
         <Reveal className="mt-20">
           <p className="text-center text-[10.5px] font-bold tracking-[0.24em] text-brand">AI PRODUCTIVITY CAPABILITIES</p>
           <h3 className="mt-2 text-center text-[26px] font-bold text-ink">
-            AI 将三种能力，转化为新的生产力
+            {t('m.capHeading')}
           </h3>
           <p className="mx-auto mt-3 max-w-2xl text-center text-[14px] leading-relaxed text-muted">
-            从感知、认知到行动，人工智能正不断把技术能力转化为真实生产价值。
+            {t('m.capSub')}
           </p>
         </Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">

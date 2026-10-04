@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const CX = 360
 const CY = 360
@@ -46,6 +47,7 @@ const LINKS: Record<string, string[]> = {
 }
 
 export default function AICoreGraph() {
+  const { lang } = useLanguage()
   const [hover, setHover] = useState<string | null>(null)
 
   const innerPos = Object.fromEntries(INNER.map((n) => [n.id, polar(INNER_R, n.angle)]))
@@ -166,11 +168,11 @@ export default function AICoreGraph() {
         <circle cx={CX} cy={CY} r="61" fill="#0B52D6" stroke="rgba(255,255,255,.96)" strokeWidth="3" style={{ filter: 'drop-shadow(0 12px 24px rgba(15,91,251,.5))' }} />
         <circle cx={CX} cy={CY} r="61" fill="none" stroke="#0647D8" strokeWidth="2.5" className="pulse-ring" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
         <motion.circle cx={CX} cy={CY} r="61" fill="none" stroke="#60A5FA" strokeWidth="1.5" animate={{ scale: [1, 1.5], opacity: [0.4, 0] }} transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' }} style={{ transformOrigin: `${CX}px ${CY}px` }} />
-        <text x={CX} y={CY - 4} textAnchor="middle" fill="#fff" fontSize="21" fontWeight="700">
+        <text x={CX} y={CY - 4} textAnchor="middle" fill="#fff" fontSize={lang === 'en' ? 17 : 21} fontWeight="700">
           AI Core
         </text>
-        <text x={CX} y={CY + 18} textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="11" fontWeight="600" letterSpacing="1.5">
-          智能引擎
+        <text x={CX} y={CY + 18} textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize={lang === 'en' ? 9 : 11} fontWeight="600" letterSpacing="1.5">
+          {lang === 'en' ? 'INTELLIGENCE ENGINE' : '智能引擎'}
         </text>
       </g>
 

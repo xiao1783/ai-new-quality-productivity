@@ -19,6 +19,7 @@ import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import EChart from './charts/EChart'
 import { PALETTE } from '@/data/site'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const TABS = [
   { id: 'vision', label: '机器视觉', icon: ScanEye, title: '机器视觉检测', en: 'Machine Vision Inspection', scenario: '工业质量检测', model: 'Visual Inspection Simulation' },
@@ -86,6 +87,7 @@ function ProductArt({ sample, state }: { sample: Sample; state: InspectionState 
 }
 
 function VisionLab() {
+  const { t } = useLanguage()
   const [status, setStatus] = useState<Record<number, InspectionState>>({})
   const [runState, setRunState] = useState<'ready' | 'scanning' | 'complete'>('ready')
   const [selectedSample, setSelectedSample] = useState<number | null>(null)
@@ -110,15 +112,15 @@ function VisionLab() {
     <div>
       <div className="flex flex-col gap-4 border-b border-line/70 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="max-w-3xl text-[13.5px] leading-6 text-body">选择示例产品并启动 AI 检测，观察模型如何扫描产品、定位缺陷并输出分类结果与置信度。</p>
-          <span title="当前结果与置信度均为前端模拟数据，用于展示机器视觉检测流程。" className="mt-2 inline-flex rounded-full border border-brand/15 bg-brand/5 px-2.5 py-1 text-[10px] font-bold text-brand">教学模拟</span>
+          <p className="max-w-3xl text-[13.5px] leading-6 text-body">{t('lab.vIntro')}</p>
+          <span title={t('lab.mockTip')} className="mt-2 inline-flex rounded-full border border-brand/15 bg-brand/5 px-2.5 py-1 text-[10px] font-bold text-brand">{t('lab.mockBadge')}</span>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <div className="text-right">
             <p className="text-[9px] font-bold tracking-[.18em] text-muted">SYSTEM STATUS</p>
             <p className={`mt-1 flex items-center justify-end gap-1.5 text-[11px] font-bold ${runState === 'complete' ? 'text-teal' : runState === 'scanning' ? 'text-brand' : 'text-slate-500'}`}><span className={`h-1.5 w-1.5 rounded-full ${runState === 'complete' ? 'bg-teal' : runState === 'scanning' ? 'animate-pulse bg-brand' : 'bg-slate-400'}`} />{runState === 'complete' ? 'ANALYSIS COMPLETE' : runState === 'scanning' ? 'SCANNING' : 'READY'}</p>
           </div>
-          <button type="button" onClick={runInspection} disabled={runState === 'scanning'} className="btn btn-primary min-h-11 justify-center !px-4 !py-2.5 !text-[12px] disabled:cursor-not-allowed disabled:opacity-60"><ScanEye size={15}/>{runState === 'scanning' ? `SCANNING ${Object.values(status).filter((v)=>v==='done').length + 1} / 04` : runState === 'complete' ? '再次检测' : '开始 AI 检测'}<ArrowRight size={13}/></button>
+          <button type="button" onClick={runInspection} disabled={runState === 'scanning'} className="btn btn-primary min-h-11 justify-center !px-4 !py-2.5 !text-[12px] disabled:cursor-not-allowed disabled:opacity-60"><ScanEye size={15}/>{runState === 'scanning' ? `SCANNING ${Object.values(status).filter((v)=>v==='done').length + 1} / 04` : runState === 'complete' ? t('lab.rescan') : t('lab.start')}<ArrowRight size={13}/></button>
         </div>
       </div>
 
@@ -146,16 +148,16 @@ function VisionLab() {
                 )}
               </div>
               <div className="px-4 pb-4 pt-3">
-                <div className="flex min-h-[34px] items-end justify-between"><div><p className="text-[9px] font-bold tracking-[.16em] text-muted">RESULT</p><p className={`mt-1 text-[13px] font-black ${done ? sample.defect ? 'text-rose-600' : 'text-teal' : 'text-slate-400'}`}>{done ? sample.defect ? '缺陷 · Defect' : '正常 · Normal' : scanning ? '分析中…' : '尚未检测'}</p></div>{done && <p className="text-[9px] text-muted">{sample.defectType}</p>}</div>
+                <div className="flex min-h-[34px] items-end justify-between"><div><p className="text-[9px] font-bold tracking-[.16em] text-muted">RESULT</p><p className={`mt-1 text-[13px] font-black ${done ? sample.defect ? 'text-rose-600' : 'text-teal' : 'text-slate-400'}`}>{done ? sample.defect ? t('lab.rDefect') : t('lab.rNormal') : scanning ? t('lab.rAnalyzing') : t('lab.rWaiting')}</p></div>{done && <p className="text-[9px] text-muted">{sample.defectType}</p>}</div>
                 <div className="mt-3 flex items-center justify-between text-[9px] font-bold tracking-[.12em] text-muted"><span>CONFIDENCE</span><span className={done ? sample.defect ? 'text-rose-600' : 'text-teal' : ''}>{done ? `${sample.confidence}%` : '—'}</span></div>
                 <div className="mt-1.5 h-[3px] overflow-hidden rounded-full bg-slate-100"><motion.div className={`h-full rounded-full ${sample.defect ? 'bg-rose-500' : 'bg-teal'}`} initial={{ width: 0 }} animate={{ width: done ? `${sample.confidence}%` : 0 }} transition={{ duration: .55 }}/></div>
-                <AnimatePresence>{selected && done && <motion.p initial={{opacity:0,y:4}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="mt-2 border-t border-line/70 pt-2 text-[9px] text-body">分类：{sample.defect ? 'Defect' : 'Normal'} · 缺陷类型：{sample.defectType}</motion.p>}</AnimatePresence>
+                <AnimatePresence>{selected && done && <motion.p initial={{opacity:0,y:4}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="mt-2 border-t border-line/70 pt-2 text-[9px] text-body">{t('lab.type')}: {sample.defect ? 'Defect' : 'Normal'} · {t('lab.defectType')}: {sample.defectType}</motion.p>}</AnimatePresence>
               </div>
             </motion.button>
           )
         })}
       </div>
-      <AnimatePresence>{runState === 'complete' && <motion.div initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-xl border border-teal/15 bg-teal/[.05] px-4 py-2.5 text-[11px] text-body"><span className="flex items-center gap-1.5 font-bold text-teal"><BadgeCheck size={14}/>检测完成</span><span>4 Samples</span><span>Normal 2</span><span>Defect 2</span></motion.div>}</AnimatePresence>
+      <AnimatePresence>{runState === 'complete' && <motion.div initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-xl border border-teal/15 bg-teal/[.05] px-4 py-2.5 text-[11px] text-body"><span className="flex items-center gap-1.5 font-bold text-teal"><BadgeCheck size={14}/>{t('lab.complete')}</span><span>4 Samples</span><span>Normal 2</span><span>Defect 2</span></motion.div>}</AnimatePresence>
     </div>
   )
 }
@@ -170,6 +172,7 @@ const TASKS = [
 ]
 
 function ScheduleLab() {
+  const { t } = useLanguage()
   const [run, setRun] = useState(false)
   // 传统：全部排队，单线顺序处理 = 56
   // AI：LPT 贪心分配到 3 台机器
@@ -211,13 +214,13 @@ function ScheduleLab() {
 
   return (
     <div>
-      <p className="text-[14px] text-body">场景：5 个任务、3 台机器。对比传统顺序排队与 AI 优化调度。</p>
+      <p className="text-[14px] text-body">{t('lab.schedIntro')}</p>
       <div className="mt-5 space-y-3">
-        <Row label="传统单线" total={trad} color="#94A3B8" data={TASKS.map((t, i) => ({ t: t.id, start: TASKS.slice(0, i).reduce((s, x) => s + x.d, 0), d: t.d }))} />
+        <Row label={t('lab.tradLine')} total={trad} color="#94A3B8" data={TASKS.map((t, i) => ({ t: t.id, start: TASKS.slice(0, i).reduce((s, x) => s + x.d, 0), d: t.d }))} />
         {[0, 1, 2].map((m) => (
           <Row
             key={m}
-            label={`机器 ${m + 1}`}
+            label={`${t('lab.machine')} ${m + 1}`}
             total={trad}
             color={[PALETTE.brand, PALETTE.cyan, PALETTE.teal][m]}
             data={ai.assign.filter((a) => a.m === m)}
@@ -226,16 +229,16 @@ function ScheduleLab() {
       </div>
       <div className="mt-6 flex flex-wrap items-center gap-4">
         <button className="btn btn-primary !py-2.5 !text-[14px]" onClick={() => setRun(true)}>
-          <Play size={15} /> 开始模拟
+          <Play size={15} /> {t('lab.startSim')}
         </button>
         <button className="btn btn-ghost !py-2.5 !text-[14px]" onClick={() => setRun(false)}>
-          <RotateCcw size={15} /> 重置
+          <RotateCcw size={15} /> {t('c.reset')}
         </button>
         {run && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 rounded-xl bg-teal/10 px-4 py-2.5 text-[13.5px]">
             <span className="text-muted">Traditional <b className="text-ink">{trad} min</b></span>
             <span className="text-muted">AI <b className="text-teal">{ai.makespan} min</b></span>
-            <span className="font-bold text-brand">效率提升 {gain}%（模拟结果）</span>
+            <span className="font-bold text-brand">{t('lab.effGain')} {gain}%{t('lab.simNote')}</span>
           </motion.div>
         )}
       </div>
@@ -245,6 +248,7 @@ function ScheduleLab() {
 
 /* ================= 实验 3：预测性维护 ================= */
 function MaintenanceLab() {
+  const { t } = useLanguage()
   const [done, setDone] = useState(false)
   const data = useMemo(() => {
     const arr: number[] = []
@@ -261,10 +265,10 @@ function MaintenanceLab() {
       tooltip: { trigger: 'axis' },
       grid: { left: 8, right: 16, top: 24, bottom: 4, containLabel: true },
       xAxis: { type: 'category', data: data.map((_, i) => i), axisLabel: { color: PALETTE.muted, fontSize: 10, interval: 4 }, axisLine: { lineStyle: { color: PALETTE.line } } },
-      yAxis: { type: 'value', splitLine: { lineStyle: { color: PALETTE.grid } }, axisLabel: { color: PALETTE.muted, fontSize: 10 }, name: '振动', nameTextStyle: { color: PALETTE.muted } },
+      yAxis: { type: 'value', splitLine: { lineStyle: { color: PALETTE.grid } }, axisLabel: { color: PALETTE.muted, fontSize: 10 }, name: t('lab.vibAxis'), nameTextStyle: { color: PALETTE.muted } },
       series: [
         {
-          name: '设备振动',
+          name: t('lab.seriesName'),
           type: 'line',
           smooth: true,
           showSymbol: false,
@@ -272,7 +276,7 @@ function MaintenanceLab() {
           areaStyle: { color: 'rgba(37,99,235,0.08)' },
           data,
           markLine: done
-            ? { silent: true, symbol: 'none', lineStyle: { color: PALETTE.amber, type: 'dashed' }, data: [{ xAxis: 27, label: { formatter: '异常起点' } }] }
+            ? { silent: true, symbol: 'none', lineStyle: { color: PALETTE.amber, type: 'dashed' }, data: [{ xAxis: 27, label: { formatter: t('lab.anomalyStart') } }] }
             : undefined,
           markArea: done
             ? { itemStyle: { color: 'rgba(244,63,94,0.12)' }, data: [[{ xAxis: 27 }, { xAxis: 39 }]] }
@@ -285,24 +289,24 @@ function MaintenanceLab() {
 
   return (
     <div>
-      <p className="text-[14px] text-body">设备振动监测曲线：前段平稳，后段出现异常波动。点击「AI 分析」自动标记。</p>
+      <p className="text-[14px] text-body">{t('lab.vibIntro')}</p>
       <div className="mt-5 h-[280px]">
         <EChart option={option} />
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-4">
         <button className="btn btn-primary !py-2.5 !text-[14px]" onClick={() => setDone(true)}>
-          <Play size={15} /> AI 分析
+          <Play size={15} /> {t('lab.aiAnalyze')}
         </button>
         <button className="btn btn-ghost !py-2.5 !text-[14px]" onClick={() => setDone(false)}>
-          <RotateCcw size={15} /> 重置
+          <RotateCcw size={15} /> {t('c.reset')}
         </button>
         {done && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-center gap-3">
             <span className="flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-2.5 text-[13.5px] font-bold text-rose-600">
-              <AlertTriangle size={16} /> 设备风险：High
+              <AlertTriangle size={16} /> {t('lab.riskHigh')}
             </span>
             <span className="flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2.5 text-[13.5px] font-semibold text-amber-700">
-              <Wrench size={16} /> 建议：Maintenance Recommended
+              <Wrench size={16} /> {t('lab.adviceMaint')}
             </span>
           </motion.div>
         )}
@@ -313,6 +317,7 @@ function MaintenanceLab() {
 
 /* ================= 实验 4：AI 决策 ================= */
 function DecisionLab() {
+  const { t } = useLanguage()
   const [orders, setOrders] = useState(1200)
   const [machines, setMachines] = useState(9)
   const [hours, setHours] = useState(8)
@@ -353,9 +358,9 @@ function DecisionLab() {
           center: ['50%', '45%'],
           label: { formatter: '{b}\n{c}%', color: PALETTE.body, fontSize: 12 },
           data: [
-            { value: alloc[0], name: '生产线 A', itemStyle: { color: PALETTE.brand } },
-            { value: alloc[1], name: '生产线 B', itemStyle: { color: PALETTE.cyan } },
-            { value: alloc[2], name: '生产线 C', itemStyle: { color: PALETTE.teal } },
+            { value: alloc[0], name: `${t('lab.line')} A`, itemStyle: { color: PALETTE.brand } },
+            { value: alloc[1], name: `${t('lab.line')} B`, itemStyle: { color: PALETTE.cyan } },
+            { value: alloc[2], name: `${t('lab.line')} C`, itemStyle: { color: PALETTE.teal } },
           ],
           animationType: 'expansion',
         },
@@ -377,11 +382,11 @@ function DecisionLab() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
       <div className="space-y-4">
-        <Field label="订单量（件）" value={orders} set={setOrders} min={200} max={3000} step={50} />
-        <Field label="设备数量（台）" value={machines} set={setMachines} min={3} max={20} step={1} />
-        <Field label="生产时间（小时）" value={hours} set={setHours} min={2} max={24} step={1} />
+        <Field label={t('lab.orderField')} value={orders} set={setOrders} min={200} max={3000} step={50} />
+        <Field label={t('lab.machineField')} value={machines} set={setMachines} min={3} max={20} step={1} />
+        <Field label={t('lab.hoursField')} value={hours} set={setHours} min={2} max={24} step={1} />
         <button className="btn btn-primary w-full justify-center" onClick={() => setDone(true)}>
-          <CheckCircle2 size={16} /> AI 优化
+          <CheckCircle2 size={16} /> {t('lab.aiOptimize')}
         </button>
       </div>
       <div className="rounded-2xl border border-line bg-white p-4">
@@ -393,15 +398,15 @@ function DecisionLab() {
             <div className="mt-2 grid grid-cols-3 gap-2 text-center text-[13px]">
               {alloc.map((v, i) => (
                 <div key={i} className="rounded-lg bg-canvas py-2.5">
-                  生产线 {String.fromCharCode(65 + i)} <b className="text-brand">{v}%</b>
+                  {t('lab.line')} {String.fromCharCode(65 + i)} <b className="text-brand">{v}%</b>
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-center text-[11.5px] text-muted">教学优化模型输出，非真实排产结果。</p>
+            <p className="mt-3 text-center text-[11.5px] text-muted">{t('lab.optimizedNote')}</p>
           </>
         ) : (
           <div className="flex h-full min-h-[280px] items-center justify-center text-[14px] text-muted">
-            调整输入后点击「AI 优化」，查看最佳生产方案
+            {t('lab.pickHint')}
           </div>
         )}
       </div>
@@ -411,6 +416,7 @@ function DecisionLab() {
 
 /* ================= 实验室主框架 ================= */
 export default function AILab() {
+  const { lang, t, ta } = useLanguage()
   const [tab, setTab] = useState('vision')
   const activeTab = TABS.find((item) => item.id === tab) ?? TABS[0]
   return (
@@ -419,8 +425,8 @@ export default function AILab() {
         <SectionHeading
           index="07"
           en="AI LAB"
-          title="亲手体验 AI 如何创造生产力"
-          subtitle="四个交互式实验，模拟机器视觉、智能调度、预测性维护与智能决策的完整过程。"
+          title={t('lab.title')}
+          subtitle={t('lab.sub')}
           align="center"
         />
 
@@ -438,7 +444,7 @@ export default function AILab() {
                   className={`relative flex min-h-11 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${tab === t.id ? 'text-white' : 'bg-[#F4F7FB] text-body hover:bg-brand/[.06] hover:text-brand'}`}
                 >
                   {tab === t.id && <motion.span layoutId="activeLabTab" className="absolute inset-0 rounded-xl bg-gradient-to-r from-brand to-cyan shadow-[0_7px_16px_rgba(37,99,235,.18)]" transition={{duration:.25}} />}
-                  <t.icon size={16} className="relative z-10" /> <span className="relative z-10">{t.label}</span>
+                  <t.icon size={16} className="relative z-10" /> <span className="relative z-10">{ta('lab.tabs')[TABS.findIndex((x) => x.id === t.id)]}</span>
                 </button>
               ))}
               </div>
@@ -456,11 +462,11 @@ export default function AILab() {
                   <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                       <div className="flex items-center gap-2 text-[10.5px] font-bold tracking-[0.18em] text-muted"><FlaskConical size={14} className="text-brand" />EXPERIMENT 0{TABS.findIndex((t) => t.id === tab) + 1}</div>
-                      <h3 className="mt-2 text-[20px] font-black text-ink sm:text-[23px]">{activeTab.title}</h3>
+                      <h3 className="mt-2 text-[20px] font-black text-ink sm:text-[23px]">{t(['lab.t1', 'lab.t2', 'lab.t3', 'lab.t4'][TABS.findIndex((x) => x.id === tab)] as 'lab.t1')}</h3>
                       <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[.08em] text-brand">{activeTab.en}</p>
                     </div>
                     <div className="flex flex-wrap gap-2 text-[9px]">
-                      <span className="rounded-lg border border-line bg-white/80 px-3 py-2"><b className="mr-2 tracking-[.14em] text-muted">SCENARIO</b><span className="font-semibold text-body">{activeTab.scenario}</span></span>
+                      <span className="rounded-lg border border-line bg-white/80 px-3 py-2"><b className="mr-2 tracking-[.14em] text-muted">SCENARIO</b><span className="font-semibold text-body">{ta('lab.scenarios')[TABS.findIndex((x) => x.id === tab)]}</span></span>
                       <span className="rounded-lg border border-line bg-white/80 px-3 py-2"><b className="mr-2 tracking-[.14em] text-muted">MODEL</b><span className="font-semibold text-body">{activeTab.model}</span></span>
                     </div>
                   </div>

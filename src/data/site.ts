@@ -1,12 +1,12 @@
 export const NAV_ITEMS = [
-  { id: 'hero', label: '首页' },
-  { id: 'understand', label: '认知' },
-  { id: 'mechanism', label: '机制' },
-  { id: 'industry', label: '产业' },
-  { id: 'efficiency', label: '效率' },
-  { id: 'dashboard', label: '数据' },
-  { id: 'future', label: '未来' },
-  { id: 'lab', label: '实验室' },
+  { id: 'hero', label: '首页', en: 'Home' },
+  { id: 'understand', label: '认知', en: 'Insight' },
+  { id: 'mechanism', label: '机制', en: 'Mechanism' },
+  { id: 'industry', label: '产业', en: 'Industry' },
+  { id: 'efficiency', label: '效率', en: 'Efficiency' },
+  { id: 'dashboard', label: '数据', en: 'Data' },
+  { id: 'future', label: '未来', en: 'Future' },
+  { id: 'lab', label: '实验室', en: 'Lab' },
 ] as const
 
 /** 统一图表配色 */

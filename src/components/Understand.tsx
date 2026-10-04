@@ -19,6 +19,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import SourceNote from './ui/SourceNote'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const TRANSFORM_PAIRS = [
   { leftIcon: User, left: '人工经验', leftDesc: '判断依赖个人经历', rightIcon: Database, right: '数据驱动', rightDesc: '以实时数据支持判断' },
@@ -27,8 +28,6 @@ const TRANSFORM_PAIRS = [
   { leftIcon: Unplug, left: '信息孤岛', leftDesc: '设备与系统彼此割裂', rightIcon: Network, right: '实时协同', rightDesc: '设备、数据与人员互联' },
   { leftIcon: TrendingUp, left: '线性增长', leftDesc: '增长依赖资源持续投入', rightIcon: Rocket, right: '创新增长', rightDesc: '以智能放大创新效率' },
 ]
-
-const STEPS = ['传统生产', '数据接入', 'AI 分析', '智能决策', '智能生产']
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
@@ -135,6 +134,7 @@ function EfficiencyVisual({ active }: { active: boolean }) {
 }
 
 function QualityVisual({ active }: { active: boolean }) {
+  const { t } = useLanguage()
   const circumference = 2 * Math.PI * 32
   return (
     <div className="relative flex h-[104px] items-center justify-center gap-5" role="img" aria-label="全球灯塔工厂中国占比 42%（85 / 201 家）">
@@ -160,14 +160,15 @@ function QualityVisual({ active }: { active: boolean }) {
         </div>
       </div>
       <div className="min-w-0">
-        <p className="text-[13px] font-bold leading-tight text-ink">灯塔工厂中国占比</p>
-        <p className="mt-1.5 text-[11px] leading-tight text-muted">85 / 201 家 · 居全球首位</p>
+        <p className="text-[13px] font-bold leading-tight text-ink">{t('u.qualityCap')}</p>
+        <p className="mt-1.5 text-[11px] leading-tight text-muted">{t('u.qualityDetail')}</p>
       </div>
     </div>
   )
 }
 
 function TraditionalFactoryScene({ focus }: { focus: number | null }) {
+  const { t } = useLanguage()
   const isolated = focus === 3
   const fixed = focus === 2
   const human = focus === 0
@@ -269,12 +270,13 @@ function TraditionalFactoryScene({ focus }: { focus: number | null }) {
         />
       </motion.g>
 
-      <text x="110" y="196" textAnchor="middle" fill="#64748B" fontSize="11" fontWeight="700">传统工厂 · 分散设备与人工流程</text>
+      <text x="110" y="196" textAnchor="middle" fill="#64748B" fontSize="11" fontWeight="700">{t('u.tradCap')}</text>
     </svg>
   )
 }
 
 function SmartFactoryScene({ focus, active }: { focus: number | null; active: boolean }) {
+  const { t } = useLanguage()
   const networked = focus === 3 || active
   const optimize = focus === 2
   const flowD = optimize ? 'M36 146 C78 118 115 158 183 112' : 'M36 146 C76 146 93 122 121 128 S162 146 184 118'
@@ -375,7 +377,7 @@ function SmartFactoryScene({ focus, active }: { focus: number | null; active: bo
         <circle cx="76" cy="165" r="3.5" fill="#334155" />
       </motion.g>
 
-      <text x="110" y="196" textAnchor="middle" fill="#0F5BFB" fontSize="11" fontWeight="700">智能工厂 · 互联设备与动态流程</text>
+      <text x="110" y="196" textAnchor="middle" fill="#0F5BFB" fontSize="11" fontWeight="700">{t('u.smartCap')}</text>
     </svg>
   )
 }
@@ -423,44 +425,33 @@ const FEATURES = [
     index: '01',
     icon: Cpu,
     en: 'TECHNOLOGY',
-    title: '高科技',
-    core: '技术密度',
-    desc: '以人工智能、数据与算力为核心，推动技术密度持续提升。',
     visual: 'technology' as const,
     keywords: ['AI', 'DATA', 'COMPUTING'],
     color: '#2563EB',
     glow: 'rgba(37,99,235,.075)',
-    source: '2014–2023 年全球生成式AI专利申请中中国约占 70% · WIPO（2024.7）',
   },
   {
     index: '02',
     icon: Zap,
     en: 'EFFICIENCY',
-    title: '高效能',
-    core: '协同效率',
-    desc: '智能决策与自动化协同，让全要素生产率持续提高。',
     visual: 'efficiency' as const,
-    keywords: ['实时', '协同', '优化'],
+    keywords: ['RT', 'SYNC', 'OPT'],
     color: '#06B6D4',
     glow: 'rgba(6,182,212,.075)',
-    source: '2025 年中国全员劳动生产率 184,413 元/人，同比 +6.1% · 国家统计局（2026.2）',
   },
   {
     index: '03',
     icon: BadgeCheck,
     en: 'QUALITY',
-    title: '高质量',
-    core: '质量稳定性',
-    desc: '从规模扩张转向创新驱动，发展更加可靠、持续。',
     visual: 'quality' as const,
-    keywords: ['可靠', '可持续', '高标准'],
+    keywords: ['RELY', 'SUSTAIN', 'STD'],
     color: '#14B8A6',
     glow: 'rgba(20,184,166,.075)',
-    source: '全球灯塔工厂 201 家中中国占 85 家（42%），居全球首位 · WEF（2025.10）',
   },
 ]
 
-function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
+function FeatureCard({ feature, text }: { feature: (typeof FEATURES)[number]; text: { title: string; desc: string; core: string; keys: string[]; src: string } }) {
+  const { lang } = useLanguage()
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -487,11 +478,11 @@ function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
       </div>
 
       <div className="relative mt-5">
-        <h4 className="text-[19px] font-bold leading-none text-ink">{feature.title}</h4>
-        <p className="mt-3 min-h-[44px] text-[13.5px] leading-relaxed text-body">{feature.desc}</p>
+        <h4 className="text-[19px] font-bold leading-none text-ink">{text.title}</h4>
+        <p className="mt-3 min-h-[44px] text-[13.5px] leading-relaxed text-body">{text.desc}</p>
         <div className="mt-3 flex items-center gap-2">
-          <span className="text-[10px] font-semibold tracking-wide text-muted">核心概念</span>
-          <span className="text-[14px] font-bold" style={{ color: feature.color }}>{feature.core}</span>
+          <span className="text-[10px] font-semibold tracking-wide text-muted">{lang === 'en' ? 'Core idea' : '核心概念'}</span>
+          <span className="text-[14px] font-bold" style={{ color: feature.color }}>{text.core}</span>
         </div>
       </div>
 
@@ -502,7 +493,7 @@ function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
       </div>
 
       <div className="relative mt-4 flex items-center gap-2">
-        {feature.keywords.map((keyword, index) => (
+        {text.keys.map((keyword, index) => (
           <motion.span
             key={keyword}
             animate={{ opacity: hovered ? 1 : 0.72, y: hovered ? [2, 0] : 0 }}
@@ -515,12 +506,13 @@ function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
         ))}
       </div>
 
-      <SourceNote className="mt-3">{feature.source}</SourceNote>
+      <SourceNote className="mt-3">{text.src}</SourceNote>
     </motion.div>
   )
 }
 
 export default function Understand() {
+  const { lang, t, ta } = useLanguage()
   const [activePair, setActivePair] = useState<number | null>(null)
   const [phase, setPhase] = useState(0)
   const [activeStep, setActiveStep] = useState(0)
@@ -529,6 +521,24 @@ export default function Understand() {
   const [aiHover, setAiHover] = useState(false)
   const playbackRef = useRef(0)
   const pulseControls = useAnimationControls()
+
+  const lefts = ta('u.lefts')
+  const leftDescs = ta('u.leftDescs')
+  const rights = ta('u.rights')
+  const rightDescs = ta('u.rightDescs')
+  const PAIRS = TRANSFORM_PAIRS.map((pair, i) => ({
+    ...pair,
+    left: lefts[i],
+    leftDesc: leftDescs[i],
+    right: rights[i],
+    rightDesc: rightDescs[i],
+  }))
+  const STEPS = ta('u.steps')
+  const featureTexts = [
+    { title: t('u.f1t'), desc: t('u.f1d'), core: t('u.f1core'), keys: ta('u.f1keys'), src: t('u.f1src') },
+    { title: t('u.f2t'), desc: t('u.f2d'), core: t('u.f2core'), keys: ta('u.f2keys'), src: t('u.f2src') },
+    { title: t('u.f3t'), desc: t('u.f3d'), core: t('u.f3core'), keys: ta('u.f3keys'), src: t('u.f3src') },
+  ]
 
   useEffect(() => () => { playbackRef.current += 1 }, [])
 
@@ -548,7 +558,7 @@ export default function Understand() {
     setPlaying(true)
     setComplete(false)
 
-    for (let index = 0; index < TRANSFORM_PAIRS.length; index += 1) {
+    for (let index = 0; index < PAIRS.length; index += 1) {
       if (playback !== playbackRef.current) return
       setActivePair(index)
       setPhase(1)
@@ -596,14 +606,14 @@ export default function Understand() {
         <SectionHeading
           index="01"
           en="UNDERSTAND"
-          title="什么是新质生产力？"
-          subtitle="它并不是简单的「机器变快了」，而是技术、生产要素与产业结构共同发生改变。"
+          title={t('u.title')}
+          subtitle={t('u.sub')}
         />
 
         {/* 交互式生产方式转型 */}
         <div className="relative mt-14">
           <svg className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full lg:block" viewBox="0 0 1000 430" preserveAspectRatio="none" aria-hidden="true">
-            {TRANSFORM_PAIRS.map((pair, index) => {
+            {PAIRS.map((pair, index) => {
               const y = 118 + index * 54
               const focused = activePair === index
               const leftFlow = focused && (phase === 2 || phase === 3 || (!playing && phase === 5))
@@ -641,7 +651,7 @@ export default function Understand() {
               <h3 className="mt-2 text-[22px] font-bold text-ink">传统生产模式</h3>
               <div className="mt-5 grid min-h-[330px] grid-cols-1 gap-3 sm:grid-cols-[minmax(165px,.85fr)_minmax(165px,1.15fr)]">
                 <div className="space-y-1">
-                  {TRANSFORM_PAIRS.map((pair, index) => (
+                  {PAIRS.map((pair, index) => (
                     <ModeItem
                       key={pair.left}
                       icon={pair.leftIcon}
@@ -701,11 +711,11 @@ export default function Understand() {
               </motion.button>
             </div>
             <p className="mt-2 max-w-[140px] text-center text-[11px] leading-relaxed text-muted">
-              {playing ? `正在转化：${activePair !== null ? TRANSFORM_PAIRS[activePair].left : ''}` : complete ? '转型完成 · 点击可重播' : '点击 AI 查看生产方式转型'}
+              {playing ? `${t('u.converting')}${activePair !== null ? PAIRS[activePair].left : ''}` : complete ? t('u.replayDone') : t('u.clickAi')}
             </p>
             {complete && (
               <motion.span initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="mt-3 flex items-center gap-1 rounded-full bg-teal/10 px-2.5 py-1 text-[10.5px] font-bold text-teal">
-                <Check size={12} /> 转型完成
+                <Check size={12} /> {t('u.done')}
               </motion.span>
             )}
           </div>
@@ -720,7 +730,7 @@ export default function Understand() {
                   <SmartFactoryScene focus={activePair} active={complete || playing && phase >= 4} />
                 </motion.div>
                 <div className="order-1 space-y-1 sm:order-2">
-                {TRANSFORM_PAIRS.map((pair, index) => {
+                {PAIRS.map((pair, index) => {
                   const focused = activePair === index
                   const opacity = complete ? 1 : activePair === null ? 0.42 : focused && phase === 5 ? 1 : focused ? 0.45 : 0.26
                   return (
@@ -770,8 +780,8 @@ export default function Understand() {
         {/* 三特征 */}
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {FEATURES.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.1}>
-              <FeatureCard feature={f} />
+            <Reveal key={f.index} delay={i * 0.1}>
+              <FeatureCard feature={f} text={featureTexts[i]} />
             </Reveal>
           ))}
         </div>

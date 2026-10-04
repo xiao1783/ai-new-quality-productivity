@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Menu, X, ArrowRight, Sparkles } from 'lucide-react'
 import { NAV_ITEMS } from '@/data/site'
+import { useLanguage } from '@/i18n/LanguageContext'
 import Logo from './Logo'
+import LanguageToggle from './ui/LanguageToggle'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState('hero')
   const [open, setOpen] = useState(false)
+  const { lang, t } = useLanguage()
 
   useEffect(() => {
     const onScroll = () => {
@@ -62,7 +65,7 @@ export default function Navbar() {
                 active === item.id ? 'text-brand' : 'text-body hover:text-ink'
               }`}
             >
-              {item.label}
+              {lang === 'en' ? item.en : item.label}
               {active === item.id && (
                 <span className="absolute inset-x-3 -bottom-0.5 h-[2.5px] rounded-full bg-gradient-to-r from-brand to-cyan" />
               )}
@@ -70,21 +73,22 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* CTA + mobile toggle */}
+        {/* CTA + language toggle + mobile menu */}
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           <div className="hidden items-center gap-2 sm:flex">
             <button
               onClick={() => go('ai-experience')}
               className="btn btn-ghost !px-4 !py-2.5 !text-[14px]"
             >
               <Sparkles size={16} />
-              体验AI之旅
+              {t('nav.journey')}
             </button>
             <button
               onClick={() => go('understand')}
               className="btn btn-primary !px-5 !py-2.5 !text-[14px]"
             >
-              进入展馆
+              {t('nav.enter')}
               <ArrowRight size={16} />
             </button>
           </div>
@@ -109,20 +113,20 @@ export default function Navbar() {
                 active === item.id ? 'bg-brand/10 text-brand' : 'text-body'
               }`}
             >
-              {item.label}
+              {lang === 'en' ? item.en : item.label}
             </button>
           ))}
           <button
             onClick={() => go('ai-experience')}
             className="btn btn-ghost mt-2 w-full justify-center"
           >
-            <Sparkles size={16} /> 体验AI之旅
+            <Sparkles size={16} /> {t('nav.journey')}
           </button>
           <button
             onClick={() => go('understand')}
             className="btn btn-primary mt-2 w-full justify-center"
           >
-            进入展馆 <ArrowRight size={16} />
+            {t('nav.enter')} <ArrowRight size={16} />
           </button>
         </div>
       )}

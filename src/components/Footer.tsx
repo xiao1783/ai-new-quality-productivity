@@ -2,10 +2,12 @@ import { motion } from 'framer-motion'
 import { BookOpen } from 'lucide-react'
 import Logo from './Logo'
 import { DATA_SOURCES } from '@/data/realData'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const WORDS = ['效率', '创新', '协同', '未来']
 
 export default function Footer() {
+  const { lang, t, ta } = useLanguage()
   return (
     <footer className="relative overflow-hidden bg-[#0B1220] text-white">
       <div className="bg-grid absolute inset-0 opacity-[0.5] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
@@ -30,9 +32,10 @@ export default function Footer() {
           className="mx-auto mt-8 max-w-[900px] font-bold leading-[1.2]"
           style={{ fontSize: 'clamp(32px, 4.4vw, 56px)' }}
         >
-          技术的价值，
+          {t('f2.title1')}
           <br />
-          最终在于<span className="text-gradient">创造新的可能</span>。
+          {t('f2.title2')}
+          <span className="text-gradient">{t('f2.title3')}</span>。
         </motion.h2>
 
         <motion.p
@@ -42,11 +45,11 @@ export default function Footer() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mx-auto mt-8 max-w-[640px] text-[16px] leading-[1.9] text-slate-300"
         >
-          人工智能正在从一种工具，转变为能够重构生产过程、创新方式与产业结构的重要力量。
+          {t('f2.para')}
         </motion.p>
 
         <div className="mt-12 flex flex-wrap justify-center gap-3">
-          {WORDS.map((w, i) => (
+          {ta('f2.words').map((w, i) => (
             <motion.span
               key={w}
               initial={{ opacity: 0, y: 16 }}
@@ -72,10 +75,10 @@ export default function Footer() {
             <BookOpen size={14} /> DATA SOURCES · 数据来源
           </p>
           <p className="mt-3 text-[13px] leading-relaxed text-slate-400">
-            本站各展区图表的关键数据，均来自以下权威机构公开发布的报告与统计公报：
+            {t('f2.sourcesIntro')}
           </p>
           <ul className="mt-5 grid gap-x-10 gap-y-2.5 text-[12.5px] leading-relaxed text-slate-300 sm:grid-cols-2">
-            {DATA_SOURCES.map((s) => (
+            {(lang === 'en' ? ta('f2.sources') : DATA_SOURCES).map((s) => (
               <li key={s} className="flex gap-2">
                 <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/70" />
                 <span>{s}</span>
@@ -83,7 +86,7 @@ export default function Footer() {
             ))}
           </ul>
           <p className="mt-6 border-t border-white/10 pt-4 text-[11.5px] leading-relaxed text-slate-500">
-            以上数据仅用于教学可视化展示；「AI 生产力模拟器」与「AI 实验室」为前端交互模拟实验，不构成任何统计结论；产业智能化热力图与三模式雷达图为编者综合公开资料整理的概念模型。
+            {t('f2.note')}
           </p>
         </motion.div>
 
@@ -95,7 +98,7 @@ export default function Footer() {
           <p className="text-[12px] font-semibold tracking-[0.26em] text-slate-400">
             AI × NEW QUALITY PRODUCTIVE FORCES
           </p>
-          <p className="text-[12px] text-slate-500">2026 · 大学课程作业 · 教学可视化数字展馆</p>
+          <p className="text-[12px] text-slate-500">{t('f2.credit')}</p>
         </div>
       </div>
     </footer>

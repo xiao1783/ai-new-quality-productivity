@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, User, ScanEye, Clock3 } from 'lucide-react'
 import Reveal from './ui/Reveal'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const PRODUCT_X = [106, 258, 430, 602, 748]
 
@@ -33,18 +34,20 @@ function Conveyor({ ai = false }: { ai?: boolean }) {
 }
 
 const FlowSteps = ({ ai = false }: { ai?: boolean }) => {
-  const steps = ai ? ['图像采集','AI 识别','实时判定','自动分拣'] : ['人工观察','逐件判断','人工记录']
+  const { t, ta } = useLanguage()
+  const steps = ai ? ta('b.aiSteps') : ta('b.manualSteps')
   return <g transform="translate(56 454)">
     {steps.map((step,i)=><g key={step} transform={`translate(${i*(ai?205:270)} 0)`}><circle cx="8" cy="0" r="8" fill={ai?'#D5F5F0':'#E6EDF3'} stroke={ai?'#14B8A6':'#94A3B8'} /><text x="8" y="3.5" textAnchor="middle" fill={ai?'#0F766E':'#64748B'} fontSize="7" fontWeight="700">0{i+1}</text><text x="24" y="4" fill={ai?'#0F766E':'#52677A'} fontSize="10.5" fontWeight="700">{step}</text>{i<steps.length-1&&<path d={`M${ai?147:205} 0h34`} stroke={ai?'#7DD3CA':'#B5C3CF'} strokeDasharray="3 4" />}</g>)}
   </g>
 }
 
 function TraditionalScene() {
+  const { t, ta } = useLanguage()
   return (
     <svg viewBox="0 0 960 480" className="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="传统人工质量检测生产线">
       <rect width="960" height="480" fill="#F3F6FA" />
       <path d="M0 88H960M0 165H960" stroke="#E5ECF2" /><path d="M40 0V480M920 0V480" stroke="#E8EEF4" />
-      <g transform="translate(38 30)"><rect width="260" height="96" rx="17" fill="#fff" stroke="#DCE6EE" /><text x="20" y="27" fill="#64748B" fontSize="9" fontWeight="700" letterSpacing="1.5">MANUAL INSPECTION</text><text x="20" y="54" fill="#334155" fontSize="19" fontWeight="750">人工抽检</text><g transform="translate(20 68)">{['逐件目检','效率受限','部分覆盖'].map((t,i)=><g key={t} transform={`translate(${i*76} 0)`}><rect width="67" height="19" rx="7" fill="#F3F6FA" /><text x="33.5" y="13" textAnchor="middle" fill="#64748B" fontSize="8.5">{t}</text></g>)}</g></g>
+      <g transform="translate(38 30)"><rect width="260" height="96" rx="17" fill="#fff" stroke="#DCE6EE" /><text x="20" y="27" fill="#64748B" fontSize="9" fontWeight="700" letterSpacing="1.5">MANUAL INSPECTION</text><text x="20" y="54" fill="#334155" fontSize="19" fontWeight="750">{t('b.manual')}</text><g transform="translate(20 68)">{ta('b.manualTags').map((t,i)=><g key={t} transform={`translate(${i*76} 0)`}><rect width="67" height="19" rx="7" fill="#F3F6FA" /><text x="33.5" y="13" textAnchor="middle" fill="#64748B" fontSize="8.5">{t}</text></g>)}</g></g>
       <g transform="translate(380 142)">
         <circle cx="50" cy="25" r="22" fill="#A8B7C5" /><path d="M32 23q18 10 36 0" fill="none" stroke="#6B8093" strokeWidth="2" />
         <path d="M20 55q30-20 60 0v100H20Z" fill="#8FA5B8" /><path d="M23 76l-32 54M77 76l42 45" stroke="#8FA5B8" strokeWidth="14" strokeLinecap="round" />
@@ -63,12 +66,13 @@ function TraditionalScene() {
 }
 
 function AIScene() {
+  const { t, ta } = useLanguage()
   return (
     <svg viewBox="0 0 960 480" className="h-full w-full" preserveAspectRatio="xMidYMid meet" role="img" aria-label="AI 机器视觉质量检测生产线">
       <defs><linearGradient id="scan-field" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#22D3EE" stopOpacity=".03"/><stop offset="1" stopColor="#14B8A6" stopOpacity=".2"/></linearGradient></defs>
       <rect width="960" height="480" fill="#EFFCF8" />
       <path d="M0 88H960M0 165H960" stroke="#DFF3EE" /><path d="M40 0V480M920 0V480" stroke="#DCF2ED" />
-      <g transform="translate(662 30)"><rect width="260" height="96" rx="17" fill="#fff" stroke="#CFEAE4" /><text x="240" y="27" textAnchor="end" fill="#0F8F88" fontSize="9" fontWeight="700" letterSpacing="1.5">MACHINE VISION</text><text x="240" y="54" textAnchor="end" fill="#153B47" fontSize="19" fontWeight="750">AI 全量检测</text><g transform="translate(20 68)">{['实时检测','持续运行','全量覆盖'].map((t,i)=><g key={t} transform={`translate(${i*76} 0)`}><rect width="67" height="19" rx="7" fill="#EAF9F5" /><text x="33.5" y="13" textAnchor="middle" fill="#0F766E" fontSize="8.5">{t}</text></g>)}</g></g>
+      <g transform="translate(662 30)"><rect width="260" height="96" rx="17" fill="#fff" stroke="#CFEAE4" /><text x="240" y="27" textAnchor="end" fill="#0F8F88" fontSize="9" fontWeight="700" letterSpacing="1.5">MACHINE VISION</text><text x="240" y="54" textAnchor="end" fill="#153B47" fontSize="19" fontWeight="750">{t('b.aiFull')}</text><g transform="translate(20 68)">{ta('b.aiTags').map((t,i)=><g key={t} transform={`translate(${i*76} 0)`}><rect width="67" height="19" rx="7" fill="#EAF9F5" /><text x="33.5" y="13" textAnchor="middle" fill="#0F766E" fontSize="8.5">{t}</text></g>)}</g></g>
       <g transform="translate(430 85)"><path d="M50-30V10M20-30h60" stroke="#7796AC" strokeWidth="7" strokeLinecap="round" /><rect x="5" y="8" width="90" height="60" rx="13" fill="#2563EB" stroke="#164DB8" strokeWidth="2" /><rect x="18" y="20" width="48" height="36" rx="9" fill="#3185ED" /><circle cx="44" cy="38" r="15" fill="#0F172A" /><motion.circle cx="44" cy="38" r="15" fill="none" stroke="#67E8F9" strokeWidth="1.5" animate={{ scale: [1, 1.7], opacity: [0.5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }} style={{ transformOrigin: '44px 38px' }} /><circle cx="44" cy="38" r="7" fill="#67E8F9" /><motion.circle cx="79" cy="23" r="4" fill="#34D399" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity }} /><path d="M95 23h18v31H95" fill="#A5B9CA" stroke="#70879B" /></g>
       <path d="M440 153L390 344H575L520 153Z" fill="url(#scan-field)" />
       {[210,250,290].map(y=><line key={y} x1={420-(y-210)*.13} y1={y} x2={540+(y-210)*.25} y2={y} stroke="#37C8D0" strokeWidth="1" opacity=".25" />)}
@@ -76,7 +80,7 @@ function AIScene() {
       <path d="M402 276v-18h18M548 258h18v18M402 331v18h18M548 349h18v-18" fill="none" stroke="#0891B2" strokeWidth="2.5" /><text x="484" y="246" textAnchor="middle" fill="#0891B2" fontSize="8.5" fontWeight="700">INSPECTION ZONE</text>
       <motion.path d="M526 124C610 96 648 116 696 158" fill="none" stroke="#06B6D4" strokeWidth="2" strokeDasharray="5 7" animate={{strokeDashoffset:[24,0]}} transition={{duration:1.4,repeat:Infinity,ease:'linear'}} />
       <motion.circle r="4" fill="#06B6D4" animate={{cx:[526,610,696],cy:[124,104,158]}} transition={{duration:1.8,repeat:Infinity,ease:'linear'}} />
-      <g transform="translate(690 122)"><rect width="220" height="142" rx="17" fill="#fff" stroke="#A9E1D9" /><text x="18" y="26" fill="#153B47" fontSize="12" fontWeight="750">AI 实时判定</text><motion.circle cx="187" cy="22" r="4" fill="#14B8A6" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.3, repeat: Infinity }} /><text x="18" y="50" fill="#7A929B" fontSize="8">STATUS</text><text x="73" y="50" fill="#0F766E" fontSize="9" fontWeight="700">● INSPECTING</text><path d="M18 62H202" stroke="#E3F1EE"/><text x="18" y="83" fill="#78909A" fontSize="9">当前产品</text><text x="197" y="83" textAnchor="end" fill="#334155" fontSize="10" fontWeight="700">P-003</text><text x="18" y="104" fill="#78909A" fontSize="9">检测结果</text><motion.text x="197" y="104" textAnchor="end" fill="#E11D48" fontSize="10" fontWeight="800" animate={{ opacity: [0.55, 1, 0.55] }} transition={{ duration: 1.1, repeat: Infinity }}>DEFECT FOUND</motion.text><rect x="18" y="116" width="184" height="14" rx="5" fill="#F0FDF9"/><text x="110" y="126" textAnchor="middle" fill="#0F766E" fontSize="8">OK → 正常线　NG ↘ 分拣线</text></g>
+      <g transform="translate(690 122)"><rect width="220" height="142" rx="17" fill="#fff" stroke="#A9E1D9" /><text x="18" y="26" fill="#153B47" fontSize="12" fontWeight="750">{t('i.aiVerdict')}</text><motion.circle cx="187" cy="22" r="4" fill="#14B8A6" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.3, repeat: Infinity }} /><text x="18" y="50" fill="#7A929B" fontSize="8">STATUS</text><text x="73" y="50" fill="#0F766E" fontSize="9" fontWeight="700">● INSPECTING</text><path d="M18 62H202" stroke="#E3F1EE"/><text x="18" y="83" fill="#78909A" fontSize="9">{t('b.current')}</text><text x="197" y="83" textAnchor="end" fill="#334155" fontSize="10" fontWeight="700">P-003</text><text x="18" y="104" fill="#78909A" fontSize="9">{t('b.result')}</text><motion.text x="197" y="104" textAnchor="end" fill="#E11D48" fontSize="10" fontWeight="800" animate={{ opacity: [0.55, 1, 0.55] }} transition={{ duration: 1.1, repeat: Infinity }}>DEFECT FOUND</motion.text><rect x="18" y="116" width="184" height="14" rx="5" fill="#F0FDF9"/><text x="110" y="126" textAnchor="middle" fill="#0F766E" fontSize="8">{t('b.okNg')}</text></g>
       <g transform="translate(864 299)"><path d="M0 22h40M17 22v-30" stroke="#507284" strokeWidth="5" strokeLinecap="round"/><motion.path d="M17 6l25 16" stroke="#14B8A6" strokeWidth="6" strokeLinecap="round" animate={{rotate:[0,17,0]}} style={{transformOrigin:'17px 6px'}} transition={{duration:3,repeat:Infinity}}/><path d="M40 22l35-23" stroke="#F43F5E" strokeWidth="2" strokeDasharray="4 4"/><rect x="48" y="42" width="64" height="31" rx="7" fill="#FFF1F2" stroke="#FDA4AF"/><text x="80" y="61" textAnchor="middle" fill="#BE123C" fontSize="9" fontWeight="700">NG BOX</text><text x="38" y="-12" fill="#0F766E" fontSize="8" fontWeight="700">OK LINE →</text></g>
       <Conveyor ai />
       <FlowSteps ai />
@@ -85,6 +89,7 @@ function AIScene() {
 }
 
 export default function BeforeAfter() {
+  const { t, ta } = useLanguage()
   const [pos, setPos] = useState(50)
   const [dragging, setDragging] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -99,8 +104,8 @@ export default function BeforeAfter() {
   return (
     <div className="mt-20">
       <Reveal>
-        <h3 className="text-center text-[26px] font-bold text-ink">生产过程前后对比 · Before / After AI</h3>
-        <p className="mt-3 text-center text-[15px] text-body">产品质量检测场景 · 拖动中间滑块，观察 AI 介入前后的生产流程变化。</p>
+        <h3 className="text-center text-[26px] font-bold text-ink">{t('b.title')}</h3>
+        <p className="mt-3 text-center text-[15px] text-body">{t('b.sub')}</p>
       </Reveal>
 
       <Reveal className="mt-7">
@@ -130,8 +135,8 @@ export default function BeforeAfter() {
           </div>
 
           <div className="mt-3 grid overflow-hidden rounded-xl border border-line/60 text-[10px] font-semibold sm:grid-cols-2">
-            <div className="flex items-center justify-center gap-3 bg-slate-50 px-3 py-2.5 text-slate-600"><Clock3 size={13} className="text-amber-500"/><span>人工抽检</span><i className="h-3 w-px bg-slate-300"/><span>逐件判断</span><i className="h-3 w-px bg-slate-300"/><span>部分覆盖</span></div>
-            <div className="flex items-center justify-center gap-3 bg-teal/7 px-3 py-2.5 text-teal"><ScanEye size={13}/><span>实时检测</span><i className="h-3 w-px bg-teal/25"/><span>持续运行</span><i className="h-3 w-px bg-teal/25"/><span>全量覆盖</span></div>
+            <div className="flex items-center justify-center gap-3 bg-slate-50 px-3 py-2.5 text-slate-600"><Clock3 size={13} className="text-amber-500"/><span>{t('b.manual')}</span><i className="h-3 w-px bg-slate-300"/><span>{ta('b.manualSteps')[1]}</span><i className="h-3 w-px bg-slate-300"/><span>{ta('b.manualTags')[2]}</span></div>
+            <div className="flex items-center justify-center gap-3 bg-teal/7 px-3 py-2.5 text-teal"><ScanEye size={13}/><span>{ta('b.aiTags')[0]}</span><i className="h-3 w-px bg-teal/25"/><span>{ta('b.aiTags')[1]}</span><i className="h-3 w-px bg-teal/25"/><span>{ta('b.aiTags')[2]}</span></div>
           </div>
         </div>
       </Reveal>

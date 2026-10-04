@@ -6,6 +6,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import Reveal from './ui/Reveal'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 type HumanId = 'create' | 'judgment' | 'communication' | 'values'
 type AiId = 'calculation' | 'search' | 'prediction' | 'automation'
@@ -65,9 +66,30 @@ const MATRIX: Record<`${HumanId}-${AiId}`, Collaboration> = {
   'values-automation': result('负责任自动化', 'RESPONSIBLE AUTOMATION', '人类设定价值原则与监督边界，AI 在明确规则内稳定执行任务。', ['原则设定', '边界监督', '可靠执行'], '原则 / 监督', '规则 / 自动化', '负责执行'),
 }
 
+
+const MATRIX_EN: Record<string, Partial<Collaboration>> = {
+  'create-calculation': { title: 'Feasible Innovation', description: 'Humans propose ideas while AI quickly computes constraints and feasibility, turning ideas into executable plans faster.', tags: ['Idea validation', 'Constraint computing', 'Implementation'], humanStrength: 'Ideas / imagination', aiStrength: 'Computation / constraints', together: 'Feasible innovation' },
+  'create-search': { title: 'Expanded Innovation', description: 'Humans propose novel ideas while AI retrieves, organizes and connects information, widening the solution space.', tags: ['Idea generation', 'Information discovery', 'Exploration'], humanStrength: 'Ideas / originality', aiStrength: 'Retrieval / connection', together: 'Exploration' },
+  'create-prediction': { title: 'Forward-Looking Innovation', description: 'Humans set creative directions while AI projects trends and impacts, balancing imagination with the future.', tags: ['Trend insight', 'Idea projection', 'Future plans'], humanStrength: 'Ideas / imagination', aiStrength: 'Trends / projection', together: 'Foresight' },
+  'create-automation': { title: 'Creative Execution', description: 'Humans define the creative experience while AI automates well-specified production, accelerating delivery.', tags: ['Creative design', 'Process generation', 'Rapid delivery'], humanStrength: 'Creativity / experience', aiStrength: 'Process / execution', together: 'Execution' },
+  'judgment-calculation': { title: 'Quantified Judgment', description: 'AI computes options quickly while humans add experience and context for fuller decisions.', tags: ['Quantified analysis', 'Contextual judgment', 'Option choice'], humanStrength: 'Experience / context', aiStrength: 'Computation / comparison', together: 'Quantified judgment' },
+  'judgment-search': { title: 'Informed Judgment', description: 'AI gathers knowledge and evidence while humans weigh quality and context.', tags: ['Information retrieval', 'Evidence gathering', 'Experienced judgment'], humanStrength: 'Discernment / experience', aiStrength: 'Retrieval / curation', together: 'Informed judgment' },
+  'judgment-prediction': { title: 'Augmented Decision', description: 'AI projects trends, risks and outcomes while humans make the final call with goals in mind.', tags: ['Trend forecast', 'Risk spotting', 'Decision support'], humanStrength: 'Context / judgment', aiStrength: 'Prediction / patterns', together: 'Foresight' },
+  'judgment-automation': { title: 'Intelligent Governance', description: 'AI executes standardized rules while humans handle exceptions and oversee critical calls.', tags: ['Rule execution', 'Exception handling', 'Human oversight'], humanStrength: 'Exceptions / oversight', aiStrength: 'Rules / execution', together: 'Smart approval' },
+  'communication-calculation': { title: 'Data Communication', description: 'AI turns complex computation into clear evidence while humans tailor it to the audience.', tags: ['Data storytelling', 'Information design', 'Consensus'], humanStrength: 'Empathy / expression', aiStrength: 'Computation / structure', together: 'Data storytelling' },
+  'communication-search': { title: 'Knowledge Communication', description: 'AI supplies background knowledge while humans express accurately, listen and build understanding.', tags: ['Knowledge retrieval', 'Content shaping', 'Effective dialogue'], humanStrength: 'Expression / feedback', aiStrength: 'Search / curation', together: 'Knowledge dialogue' },
+  'communication-prediction': { title: 'Anticipatory Collaboration', description: 'AI anticipates needs and risks while humans coordinate people and resources early.', tags: ['Need anticipation', 'Risk communication', 'Readiness'], humanStrength: 'Coordination / empathy', aiStrength: 'Prediction / risk', together: 'Anticipation' },
+  'communication-automation': { title: 'Collaborative Execution', description: 'Humans communicate and coordinate while AI runs rule-based processes, lifting team throughput.', tags: ['Team coordination', 'Process automation', 'Task execution'], humanStrength: 'Coordination / feedback', aiStrength: 'Process / execution', together: 'Team execution' },
+  'values-calculation': { title: 'Balanced Decision', description: 'AI computes options and constraints while humans weigh values and context.', tags: ['Multi-objective analysis', 'Option comparison', 'Value judgment'], humanStrength: 'Values / goals', aiStrength: 'Computation / comparison', together: 'Trade-off' },
+  'values-search': { title: 'Value-Informed Decision', description: 'AI gathers rules, cases and stakeholder information while humans set the boundaries of action.', tags: ['Case retrieval', 'Rule understanding', 'Value choice'], humanStrength: 'Values / boundaries', aiStrength: 'Retrieval / synthesis', together: 'Informed choice' },
+  'values-prediction': { title: 'Risk-Aware Balance', description: 'AI projects long-term risks of choices while humans weigh values and responsibility.', tags: ['Risk forecast', 'Long-term impact', 'Value trade-off'], humanStrength: 'Values / responsibility', aiStrength: 'Prediction / risk', together: 'Risk awareness' },
+  'values-automation': { title: 'Responsible Automation', description: 'Humans set principles and oversight boundaries while AI executes reliably within them.', tags: ['Principle setting', 'Boundary oversight', 'Reliable execution'], humanStrength: 'Principles / oversight', aiStrength: 'Rules / automation', together: 'Responsible execution' },
+}
+
 const DEMO: [HumanId, AiId][] = [['create','search'], ['judgment','prediction'], ['communication','automation'], ['values','calculation']]
 
 export default function HumanAI() {
+  const { lang, t, ta } = useLanguage()
   const [selectedHuman, setSelectedHuman] = useState<HumanId | null>(null)
   const [selectedAI, setSelectedAI] = useState<AiId | null>(null)
   const [hoveredHuman, setHoveredHuman] = useState<HumanId | null>(null)
@@ -75,11 +97,17 @@ export default function HumanAI() {
   const [demoStep, setDemoStep] = useState<number | null>(null)
   const [completed, setCompleted] = useState(false)
 
+  const HUMAN_LIST = HUMAN.map((item, i) => ({ ...item, title: ta('h.hab')[i], contributes: ta((['h.habCon1', 'h.habCon2', 'h.habCon3', 'h.habCon4'] as const)[i]) }))
+  const AI_LIST = AI.map((item, i) => ({ ...item, title: ta('h.aab')[i], contributes: ta((['h.aabCon1', 'h.aabCon2', 'h.aabCon3', 'h.aabCon4'] as const)[i]) }))
+  const mxKey = selectedHuman && selectedAI ? (`${selectedHuman}-${selectedAI}`) : null
+  const selectedResult = mxKey
+    ? (lang === 'en' && MATRIX_EN[mxKey] ? { ...MATRIX[mxKey as keyof typeof MATRIX], ...MATRIX_EN[mxKey] } : MATRIX[mxKey as keyof typeof MATRIX])
+    : null
+
   const activeHuman = hoveredHuman ?? selectedHuman
   const activeAI = hoveredAI ?? selectedAI
-  const selectedResult = selectedHuman && selectedAI ? MATRIX[`${selectedHuman}-${selectedAI}`] : null
-  const previewHuman = HUMAN.find((item) => item.id === activeHuman)
-  const previewAI = AI.find((item) => item.id === activeAI)
+  const previewHuman = HUMAN_LIST.find((item) => item.id === activeHuman)
+  const previewAI = AI_LIST.find((item) => item.id === activeAI)
   const isDemoPlaying = demoStep !== null
 
   useEffect(() => {
@@ -142,7 +170,7 @@ export default function HumanAI() {
         {selected && <motion.span layoutId={`${side}-selected-dot`} className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full" style={{ background: color }} />}
         <item.icon size={17} style={{ color: active || selected || recommended ? color : '#64748B' }} />
         <span><span className="block text-[13.5px] font-semibold text-ink">{item.title}</span><span className="block text-[8px] font-semibold tracking-[.1em] text-muted">{item.en}</span></span>
-        {recommended && !selected && <span className="ml-auto text-[8px] font-bold" style={{ color }}>推荐协同</span>}
+        {recommended && !selected && <span className="ml-auto text-[8px] font-bold" style={{ color }}>{t('h.recommend')}</span>}
       </motion.button>
     )
   }
@@ -151,7 +179,7 @@ export default function HumanAI() {
     <div className="mt-20">
       <Reveal>
         <h3 className="text-center text-[26px] font-bold text-ink">Human × AI</h3>
-        <p className="mt-3 text-center text-[16px] text-body">AI 的价值，不只是「替代」—— 而是放大人的能力。</p>
+        <p className="mt-3 text-center text-[16px] text-body">{t('h.sub')}</p>
       </Reveal>
 
       <Reveal className="mt-9">
@@ -173,7 +201,7 @@ export default function HumanAI() {
                 <div className="flex items-center gap-3"><motion.span animate={hoveredHuman?{scale:[1,1.08,1]}:{}} className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/10 text-brand"><User size={21}/></motion.span><div><p className="text-[18px] font-bold text-ink">人 · Human</p><p className="text-[11px] text-muted">HUMAN CONTRIBUTES</p></div></div>
                 <AnimatePresence mode="wait">{previewHuman&&<motion.span key={previewHuman.id} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="text-right text-[9px] leading-4 text-brand">{previewHuman.contributes.join(' · ')}</motion.span>}</AnimatePresence>
               </div>
-              <div className="mt-5 grid grid-cols-2 gap-3">{HUMAN.map((item,i)=>abilityButton(item,'human',i))}</div>
+              <div className="mt-5 grid grid-cols-2 gap-3">{HUMAN_LIST.map((item,i)=>abilityButton(item,'human',i))}</div>
             </motion.section>
 
             <div className="relative z-20 flex items-center justify-center gap-3 lg:flex-col">
@@ -199,10 +227,10 @@ export default function HumanAI() {
 
             <motion.section className="relative z-20 rounded-2xl border border-transparent bg-canvas p-5 transition-colors" animate={{backgroundColor:hoveredAI?'#F0FDFF':'#F7FAFC'}}>
               <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3"><motion.span animate={hoveredAI?{x:[0,2,-2,0]}:{}} transition={{duration:.35}} className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan/10 text-cyan"><Cpu size={21}/></motion.span><div><p className="text-[18px] font-bold text-ink">AI · 机器</p><p className="text-[11px] text-muted">AI CONTRIBUTES</p></div></div>
+                <div className="flex items-center gap-3"><motion.span animate={hoveredAI?{x:[0,2,-2,0]}:{}} transition={{duration:.35}} className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan/10 text-cyan"><Cpu size={21}/></motion.span><div><p className="text-[18px] font-bold text-ink">{t('h.aiSide')}</p><p className="text-[11px] text-muted">AI CONTRIBUTES</p></div></div>
                 <AnimatePresence mode="wait">{previewAI&&<motion.span key={previewAI.id} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="text-right text-[9px] leading-4 text-cyan">{previewAI.contributes.join(' · ')}</motion.span>}</AnimatePresence>
               </div>
-              <div className="mt-5 grid grid-cols-2 gap-3">{AI.map((item,i)=>abilityButton(item,'ai',i))}</div>
+              <div className="mt-5 grid grid-cols-2 gap-3">{AI_LIST.map((item,i)=>abilityButton(item,'ai',i))}</div>
             </motion.section>
           </div>
 
@@ -218,17 +246,17 @@ export default function HumanAI() {
                 </motion.div>
               ) : (
                 <motion.div key="default" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
-                  <p className="text-[13px] text-muted">{selectedHuman ? '选择一种 AI 能力完成协同。' : selectedAI ? '选择一种人类能力完成协同。' : '选择两种能力，探索人机协同'}</p>
+                  <p className="text-[13px] text-muted">{selectedHuman ? t('h.pickHuman') : selectedAI ? t('h.pickAI') : t('h.pickBoth')}</p>
                   <p className="mt-2 text-[24px] font-bold sm:text-[30px]">Human + AI = <span className="text-gradient">Augmented Productivity</span></p>
-                  <p className="mt-1 text-[13px] text-body">人机协同，形成增强型生产力。</p>
+                  <p className="mt-1 text-[13px] text-body">{t('h.equalSub')}</p>
                 </motion.div>
               )}
             </AnimatePresence>
 
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              <button type="button" disabled={isDemoPlaying} onClick={()=>{reset();setDemoStep(0)}} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-65"><Play size={14}/>{isDemoPlaying?`协同演示 ${demoStep!+1} / 4`:'演示人机协同'}</button>
-              <button type="button" onClick={reset} className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2 text-[12px] font-semibold text-body transition hover:border-brand/40 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"><RotateCcw size={14}/>重置</button>
-              {selectedResult&&<span className="inline-flex items-center gap-1.5 px-2 text-[10px] font-semibold text-teal"><Check size={13}/>协同结果已生成</span>}
+              <button type="button" disabled={isDemoPlaying} onClick={()=>{reset();setDemoStep(0)}} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-65"><Play size={14}/>{isDemoPlaying?`${t('h.demoPlaying')} ${demoStep! + 1} / 4`:t('h.demo')}</button>
+              <button type="button" onClick={reset} className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2 text-[12px] font-semibold text-body transition hover:border-brand/40 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"><RotateCcw size={14}/>{t('c.reset')}</button>
+              {selectedResult&&<span className="inline-flex items-center gap-1.5 px-2 text-[10px] font-semibold text-teal"><Check size={13}/>{t('h.done')}</span>}
             </div>
           </div>
         </div>
