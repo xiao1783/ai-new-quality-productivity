@@ -235,24 +235,6 @@ function DigitCanvas() {
   )
 }
 
-/**
- * 各段 Lottie 的「海报帧」比例。
- * 素材是从空白开始逐笔生长的动画，停在第 0 帧时整张卡片几乎是空的，
- * 因此进入章节时先停到画面最完整的位置，再让滚轮前后拖动。
- */
-const POSTER_FRAME: Record<string, number> = {
-  'ch1_robot.json': 0.36,
-  'ch3_neuron.json': 0.55,
-  'ch6_prop.json': 0.5,
-  'ch6_mnist.json': 0.18,
-  'ch1_seed.json': 0.68,
-  'ch1_data.json': 0.5,
-  'ch1_words.json': 0.2,
-}
-
-const posterFrame = (file: string, item: AnimationItem) =>
-  Math.round((POSTER_FRAME[file] ?? 0) * (Number(item.totalFrames || 1) - 1))
-
 function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: string; active: boolean; accent?: string; tag?: string }) {
   const { t } = useLanguage()
   const container = useRef<HTMLDivElement>(null)
@@ -270,14 +252,15 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
       rendererSettings: { preserveAspectRatio: 'xMidYMid meet' },
     })
 
-    const goPoster = () => item.goToAndStop(posterFrame(file, item), true)
-    item.addEventListener('DOMLoaded', goPoster)
+    // 任何一段动画都从第 0 帧（最开始的状态）进入，由滚轮驱动播放
+    const goStart = () => item.goToAndStop(0, true)
+    item.addEventListener('DOMLoaded', goStart)
     item.pause()
     animation.current = item
 
     return () => {
       if (pauseTimer.current) window.clearTimeout(pauseTimer.current)
-      item.removeEventListener('DOMLoaded', goPoster)
+      item.removeEventListener('DOMLoaded', goStart)
       item.destroy()
       animation.current = null
     }
@@ -287,8 +270,8 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
     if (active || !animation.current) return
     animation.current.pause()
     animation.current.setSpeed(1)
-    animation.current.goToAndStop(posterFrame(file, animation.current), true)
-  }, [active, file])
+    animation.current.goToAndStop(0, true)
+  }, [active])
 
   const scrub = (event: WheelEvent<HTMLDivElement>) => {
     const item = animation.current
