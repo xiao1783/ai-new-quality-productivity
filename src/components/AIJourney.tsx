@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent, type WheelEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type WheelEvent } from 'react'
 import { motion } from 'framer-motion'
 import lottie, { type AnimationItem } from 'lottie-web'
 import {
@@ -46,17 +46,50 @@ const CHAPTERS: Chapter[] = [
 const DIGITS = [7, 8, 6, 4, 5, 0, 9, 1, 2]
 type Point = [number, number]
 
+/** 每个数字卡片底部的“置信度”条（静态差异 + 呼吸微调） */
+const DIGIT_CONFS = [92, 74, 86, 97, 71, 88, 79, 94, 76]
+
 function DigitIntro() {
+  const { lang } = useLanguage()
   return (
-    <div className="journey-visual journey-digit-grid grid grid-cols-3 gap-3 p-6 sm:p-8">
+    <div className="journey-visual journey-digit-grid relative grid grid-cols-3 gap-3 p-6 sm:p-8">
+      {/* 环境光斑 */}
+      <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-brand/10 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -bottom-12 -right-8 h-44 w-44 rounded-full bg-cyan/12 blur-3xl" aria-hidden="true" />
+
+      {/* 顶部标签行 */}
+      <div className="relative col-span-3 mb-1 flex items-center justify-between px-1">
+        <span className="text-[10px] font-black tracking-[.22em] text-brand">NEURAL INPUT · 0–9</span>
+        <span className="flex items-center gap-1.5 text-[10px] font-bold text-teal">
+          <motion.i
+            className="h-1.5 w-1.5 rounded-full bg-teal"
+            animate={{ opacity: [0.3, 1, 0.3], scale: [0.85, 1.25, 0.85] }}
+            transition={{ duration: 1.6, repeat: Infinity }}
+          />
+          {lang === 'en' ? 'READY' : '就绪'}
+        </span>
+      </div>
+
       {DIGITS.map((digit, index) => (
         <motion.div
           key={`${digit}-${index}`}
-          className="flex aspect-square items-center justify-center rounded-2xl border border-brand/15 bg-white/80 text-[32px] font-black text-ink shadow-[0_12px_28px_rgba(15,91,251,.1)]"
-          animate={{ opacity: [0.35, 1, 0.35], scale: [0.96, 1.04, 0.96] }}
-          transition={{ duration: 3.2, repeat: Infinity, delay: index * 0.22 }}
+          className="relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-brand/12 bg-gradient-to-br from-white via-white to-cyan-50/80 shadow-[0_12px_28px_rgba(15,91,251,.09)]"
+          animate={{ opacity: [0.55, 1, 0.55], y: [0, -4, 0], scale: [0.97, 1.02, 0.97] }}
+          transition={{ duration: 3.4, repeat: Infinity, delay: index * 0.24, ease: 'easeInOut' }}
         >
-          {digit}
+          {/* 顶部微光条 */}
+          <span className="absolute inset-x-4 top-0 h-[3px] rounded-b-full bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+          <span className="text-gradient text-[34px] font-black tabular-nums">{digit}</span>
+          {/* 底部置信度条 */}
+          <span className="absolute inset-x-0 bottom-0 flex h-[22%] items-center justify-center" aria-hidden="true">
+            <span className="h-[3px] w-[46%] overflow-hidden rounded-full bg-brand/10">
+              <motion.i
+                className="block h-full rounded-full bg-gradient-to-r from-brand to-cyan"
+                animate={{ width: [`${DIGIT_CONFS[index]}%`, `${Math.min(99, DIGIT_CONFS[index] + 7)}%`, `${DIGIT_CONFS[index]}%`] }}
+                transition={{ duration: 3.4, repeat: Infinity, delay: index * 0.24, ease: 'easeInOut' }}
+              />
+            </span>
+          </span>
         </motion.div>
       ))}
     </div>
@@ -202,7 +235,7 @@ function DigitCanvas() {
   )
 }
 
-function LottieScrollVisual({ file, active }: { file: string; active: boolean }) {
+function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: string; active: boolean; accent?: string; tag?: string }) {
   const { t } = useLanguage()
   const container = useRef<HTMLDivElement>(null)
   const animation = useRef<AnimationItem | null>(null)
@@ -256,39 +289,70 @@ function LottieScrollVisual({ file, active }: { file: string; active: boolean })
   }
 
   return (
-    <div className="journey-visual journey-lottie-shell" onWheel={scrub}>
+    <div className="journey-visual journey-lottie-shell" style={{ '--stage-accent': accent } as CSSProperties} onWheel={scrub}>
+      {/* 舞台四角括号 */}
+      <span className="pointer-events-none absolute left-7 top-[12%] z-[2] h-9 w-9 border-l-[2.5px] border-t-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
+      <span className="pointer-events-none absolute right-7 top-[12%] z-[2] h-9 w-9 border-r-[2.5px] border-t-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
+      <span className="pointer-events-none absolute bottom-[16%] left-7 z-[2] h-9 w-9 border-b-[2.5px] border-l-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
+      <span className="pointer-events-none absolute bottom-[16%] right-7 z-[2] h-9 w-9 border-b-[2.5px] border-r-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
+      {/* 旋转轨道环 */}
+      <motion.span
+        className="pointer-events-none absolute left-1/2 top-[44%] hidden h-[430px] w-[430px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed lg:block"
+        style={{ borderColor: `${accent}2e` }}
+        aria-hidden="true"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 46, repeat: Infinity, ease: 'linear' }}
+      >
+        <span className="absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: accent }} />
+      </motion.span>
+      <motion.span
+        className="pointer-events-none absolute left-1/2 top-[44%] hidden h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border lg:block"
+        style={{ borderColor: `${accent}1c` }}
+        aria-hidden="true"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+      />
       <div ref={container} className="journey-lottie-canvas" />
+      {/* 章节标签 */}
+      {tag && (
+        <span
+          className="absolute left-8 top-[12%] z-[2] rounded-lg px-2.5 py-1 text-[9px] font-black tracking-[.18em]"
+          style={{ background: `${accent}14`, color: accent }}
+        >
+          {tag}
+        </span>
+      )}
       <div className="journey-lottie-hint"><span>↕</span> {t('j.wheelHint')}</div>
     </div>
   )
 }
 
 function TimelineVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch1_robot.json" active={active} />
+  return <LottieScrollVisual file="ch1_robot.json" active={active} accent="#EC4899" tag="AI TIMELINE" />
 }
 
 function NeuronVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch3_neuron.json" active={active} />
+  return <LottieScrollVisual file="ch3_neuron.json" active={active} accent="#06B6D4" tag="NEURON SIGNAL" />
 }
 
 function ForwardVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch6_prop.json" active={active} />
+  return <LottieScrollVisual file="ch6_prop.json" active={active} accent="#0EA5E9" tag="FORWARD PASS" />
 }
 
 function PipelineVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch6_mnist.json" active={active} />
+  return <LottieScrollVisual file="ch6_mnist.json" active={active} accent="#2563EB" tag="RECOGNITION FLOW" />
 }
 
 function ApplicationsVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch1_seed.json" active={active} />
+  return <LottieScrollVisual file="ch1_seed.json" active={active} accent="#14B8A6" tag="AI EVERYWHERE" />
 }
 
 function SignalsVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch1_data.json" active={active} />
+  return <LottieScrollVisual file="ch1_data.json" active={active} accent="#0F5BFB" tag="AI STATISTICS" />
 }
 
 function VocabularyVisual({ active }: { active: boolean }) {
-  return <LottieScrollVisual file="ch1_words.json" active={active} />
+  return <LottieScrollVisual file="ch1_words.json" active={active} accent="#8B5CF6" tag="GLOSSARY" />
 }
 
 function ChapterVisual({ index, active }: { index: number; active: boolean }) {
