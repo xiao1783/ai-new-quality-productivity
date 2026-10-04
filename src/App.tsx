@@ -9,6 +9,7 @@ import Dashboard from './components/Dashboard'
 import Future from './components/Future'
 import AIJourney from './components/AIJourney'
 import AILab from './components/AILab'
+import AISandbox from './components/AISandbox'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -36,6 +37,7 @@ export default function App() {
         <Dashboard />
         <Future />
         <AILab />
+        <AISandbox />
       </main>
       <Footer />
     </>

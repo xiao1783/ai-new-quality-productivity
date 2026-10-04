@@ -7,6 +7,7 @@ export const NAV_ITEMS = [
   { id: 'dashboard', label: '数据', en: 'Data' },
   { id: 'future', label: '未来', en: 'Future' },
   { id: 'lab', label: '实验室', en: 'Lab' },
+  { id: 'sandbox', label: '沙盘', en: 'Sandbox' },
 ] as const
 
 /** 统一图表配色 */
