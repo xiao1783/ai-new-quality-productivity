@@ -291,18 +291,28 @@ body {
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(320px, .76fr) minmax(520px, 1.24fr);
-  gap: clamp(36px, 5vw, 82px);
-  width: min(1320px, calc(100% - 120px));
+  gap: clamp(36px, 4.2vw, 74px);
+  width: min(1460px, calc(100% - 96px));
   height: 100svh;
   min-height: 100svh;
   margin: 0 auto;
-  padding: 118px 0 96px;
+  padding: 112px 0 92px;
   align-items: center;
   overflow-y: auto;
 }
 .experience-stage .journey-visual {
   min-height: min(62vh, 590px);
   box-shadow: 0 26px 70px rgba(30,102,172,.13), inset 0 1px 0 rgba(255,255,255,.96);
+}
+/* 第 3–9 章：素材画布为 1:1，卡片按可用高度取正方形并居中，避免左右留白与画面外溢 */
+.experience-stage .journey-lottie-shell {
+  width: auto;
+  height: min(calc(100svh - 204px), 820px);
+  min-height: 420px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  justify-self: center;
+  box-shadow: none;
 }
 .experience-stage .journey-digit-grid {
   width: min(100%, 480px);
@@ -319,11 +329,11 @@ body {
   background: transparent !important;
   box-shadow: none !important;
 }
-/* 舞台底板：柔和面板 + 主题色光斑 */
+/* 舞台底板：卡片即画面边界（柔和面板 + 主题色光斑） */
 .journey-lottie-shell::before {
   content: '';
   position: absolute;
-  inset: 7% 4% 11%;
+  inset: 0;
   border-radius: 30px;
   background:
     radial-gradient(circle at 78% 16%, color-mix(in srgb, var(--stage-accent, #2563eb) 16%, transparent), transparent 42%),
@@ -338,22 +348,22 @@ body {
 .journey-lottie-shell::after {
   content: '';
   position: absolute;
-  inset: 7% 4% 11%;
+  inset: 0;
   border-radius: 30px;
   background-image: radial-gradient(
     color-mix(in srgb, var(--stage-accent, #2563eb) 22%, transparent) 1px,
     transparent 1px
   );
   background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(circle at 50% 46%, black 26%, transparent 76%);
-  mask-image: radial-gradient(circle at 50% 46%, black 26%, transparent 76%);
+  -webkit-mask-image: radial-gradient(circle at 50% 46%, black 30%, transparent 82%);
+  mask-image: radial-gradient(circle at 50% 46%, black 30%, transparent 82%);
   pointer-events: none;
 }
 .journey-lottie-canvas {
   position: relative;
   z-index: 1;
   width: 100%;
-  height: min(62vh, 590px);
+  height: 100%;
   background: transparent;
 }
 .journey-lottie-canvas svg {
@@ -365,7 +375,7 @@ body {
 .journey-lottie-hint {
   position: absolute;
   left: 50%;
-  bottom: 4px;
+  bottom: -16px;
   display: flex;
   transform: translateX(-50%);
   align-items: center;
@@ -637,12 +647,18 @@ input[type='range'].slider::-moz-range-thumb {
   .experience-stage .journey-visual {
     min-height: 360px;
   }
+  .experience-stage .journey-lottie-shell {
+    width: min(100%, 460px);
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+  }
   .experience-stage .journey-digit-grid {
     width: min(100%, 320px);
     min-height: 0;
   }
   .journey-lottie-canvas {
-    height: 360px;
+    height: 100%;
   }
   .experience-progress {
     display: none;

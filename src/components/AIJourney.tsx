@@ -235,6 +235,24 @@ function DigitCanvas() {
   )
 }
 
+/**
+ * 各段 Lottie 的「海报帧」比例。
+ * 素材是从空白开始逐笔生长的动画，停在第 0 帧时整张卡片几乎是空的，
+ * 因此进入章节时先停到画面最完整的位置，再让滚轮前后拖动。
+ */
+const POSTER_FRAME: Record<string, number> = {
+  'ch1_robot.json': 0.36,
+  'ch3_neuron.json': 0.55,
+  'ch6_prop.json': 0.5,
+  'ch6_mnist.json': 0.18,
+  'ch1_seed.json': 0.68,
+  'ch1_data.json': 0.5,
+  'ch1_words.json': 0.2,
+}
+
+const posterFrame = (file: string, item: AnimationItem) =>
+  Math.round((POSTER_FRAME[file] ?? 0) * (Number(item.totalFrames || 1) - 1))
+
 function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: string; active: boolean; accent?: string; tag?: string }) {
   const { t } = useLanguage()
   const container = useRef<HTMLDivElement>(null)
@@ -252,11 +270,14 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
       rendererSettings: { preserveAspectRatio: 'xMidYMid meet' },
     })
 
+    const goPoster = () => item.goToAndStop(posterFrame(file, item), true)
+    item.addEventListener('DOMLoaded', goPoster)
     item.pause()
     animation.current = item
 
     return () => {
       if (pauseTimer.current) window.clearTimeout(pauseTimer.current)
+      item.removeEventListener('DOMLoaded', goPoster)
       item.destroy()
       animation.current = null
     }
@@ -266,8 +287,8 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
     if (active || !animation.current) return
     animation.current.pause()
     animation.current.setSpeed(1)
-    animation.current.goToAndStop(0, true)
-  }, [active])
+    animation.current.goToAndStop(posterFrame(file, animation.current), true)
+  }, [active, file])
 
   const scrub = (event: WheelEvent<HTMLDivElement>) => {
     const item = animation.current
@@ -290,14 +311,14 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
 
   return (
     <div className="journey-visual journey-lottie-shell" style={{ '--stage-accent': accent } as CSSProperties} onWheel={scrub}>
-      {/* 舞台四角括号 */}
-      <span className="pointer-events-none absolute left-7 top-[12%] z-[2] h-9 w-9 border-l-[2.5px] border-t-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
-      <span className="pointer-events-none absolute right-7 top-[12%] z-[2] h-9 w-9 border-r-[2.5px] border-t-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
-      <span className="pointer-events-none absolute bottom-[16%] left-7 z-[2] h-9 w-9 border-b-[2.5px] border-l-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
-      <span className="pointer-events-none absolute bottom-[16%] right-7 z-[2] h-9 w-9 border-b-[2.5px] border-r-[2.5px]" style={{ borderColor: `${accent}59` }} aria-hidden="true" />
+      {/* 舞台四角括号（贴在卡片外侧） */}
+      <span className="pointer-events-none absolute -left-2.5 -top-2.5 z-[2] h-9 w-9 rounded-tl-[10px] border-l-[2.5px] border-t-[2.5px]" style={{ borderColor: `${accent}66` }} aria-hidden="true" />
+      <span className="pointer-events-none absolute -right-2.5 -top-2.5 z-[2] h-9 w-9 rounded-tr-[10px] border-r-[2.5px] border-t-[2.5px]" style={{ borderColor: `${accent}66` }} aria-hidden="true" />
+      <span className="pointer-events-none absolute -bottom-2.5 -left-2.5 z-[2] h-9 w-9 rounded-bl-[10px] border-b-[2.5px] border-l-[2.5px]" style={{ borderColor: `${accent}66` }} aria-hidden="true" />
+      <span className="pointer-events-none absolute -bottom-2.5 -right-2.5 z-[2] h-9 w-9 rounded-br-[10px] border-b-[2.5px] border-r-[2.5px]" style={{ borderColor: `${accent}66` }} aria-hidden="true" />
       {/* 旋转轨道环 */}
       <motion.span
-        className="pointer-events-none absolute left-1/2 top-[44%] hidden h-[430px] w-[430px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed lg:block"
+        className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[86%] w-[86%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed lg:block"
         style={{ borderColor: `${accent}2e` }}
         aria-hidden="true"
         animate={{ rotate: 360 }}
@@ -306,7 +327,7 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
         <span className="absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: accent }} />
       </motion.span>
       <motion.span
-        className="pointer-events-none absolute left-1/2 top-[44%] hidden h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border lg:block"
+        className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[60%] w-[60%] -translate-x-1/2 -translate-y-1/2 rounded-full border lg:block"
         style={{ borderColor: `${accent}1c` }}
         aria-hidden="true"
         animate={{ rotate: -360 }}
@@ -316,7 +337,7 @@ function LottieScrollVisual({ file, active, accent = '#2563eb', tag }: { file: s
       {/* 章节标签 */}
       {tag && (
         <span
-          className="absolute left-8 top-[12%] z-[2] rounded-lg px-2.5 py-1 text-[9px] font-black tracking-[.18em]"
+          className="absolute left-7 top-6 z-[2] rounded-lg px-2.5 py-1 text-[9px] font-black tracking-[.18em]"
           style={{ background: `${accent}14`, color: accent }}
         >
           {tag}
