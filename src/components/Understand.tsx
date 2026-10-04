@@ -167,170 +167,394 @@ function QualityVisual({ active }: { active: boolean }) {
   )
 }
 
+/* ---------- 场景曲线采样：沿路径运动的元素 ---------- */
+type Pt = [number, number]
+const cubicAt = (p0: Pt, c1: Pt, c2: Pt, p3: Pt, t: number): Pt => {
+  const u = 1 - t
+  const a = u * u * u
+  const b = 3 * u * u * t
+  const c = 3 * u * t * t
+  const d = t * t * t
+  return [
+    a * p0[0] + b * c1[0] + c * c2[0] + d * p3[0],
+    a * p0[1] + b * c1[1] + c * c2[1] + d * p3[1],
+  ]
+}
+const curveSamples = (p0: Pt, c1: Pt, c2: Pt, p3: Pt, count = 16): Pt[] =>
+  Array.from({ length: count }, (_, i) => cubicAt(p0, c1, c2, p3, i / (count - 1)))
+
+/* 秒针轨迹：8 点近似圆周 */
+const HAND_X = [3.4, 2.4, 0, -2.4, -3.4, -2.4, 0, 2.4, 3.4]
+const HAND_Y = [0, 2.4, 3.4, 2.4, 0, -2.4, -3.4, -2.4, 0]
+
 function TraditionalFactoryScene({ focus }: { focus: number | null }) {
   const { t } = useLanguage()
   const isolated = focus === 3
   const fixed = focus === 2
   const human = focus === 0
+  const repeated = focus === 1
+
+  const limb = human ? '#2F6BE0' : '#8598AB'
+  const torso = human ? '#3B82F6' : '#9BAEC0'
+  const headTone = human ? '#7CB0F8' : '#AEBECD'
+  const helmet = human ? '#2563EB' : '#8CA1B4'
 
   return (
     <svg viewBox="0 0 220 210" className="h-full w-full" role="img" aria-label="传统工厂示意">
       <defs>
         <linearGradient id="tf-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#F2F6FA" />
-          <stop offset="1" stopColor="#DEE7F0" />
+          <stop offset="0" stopColor="#FCFEFF" />
+          <stop offset="0.55" stopColor="#E7EFF8" />
+          <stop offset="1" stopColor="#CEDDED" />
         </linearGradient>
+        <linearGradient id="tf-wing" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#EFF5FA" />
+          <stop offset="1" stopColor="#D5E2F0" />
+        </linearGradient>
+        <linearGradient id="tf-belt" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#E6EDF5" />
+          <stop offset="0.45" stopColor="#CDDAE7" />
+          <stop offset="1" stopColor="#AFC2D3" />
+        </linearGradient>
+        <linearGradient id="tf-crate" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#E8EEF5" />
+          <stop offset="1" stopColor="#CBD8E4" />
+        </linearGradient>
+        <radialGradient id="tf-ground" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#7E93A8" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#7E93A8" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="tf-ambient" cx="0.5" cy="0.45" r="0.6">
+          <stop offset="0" stopColor="#DDEBF8" stopOpacity="0.6" />
+          <stop offset="1" stopColor="#DDEBF8" stopOpacity="0" />
+        </radialGradient>
       </defs>
 
+      {/* 环境光与地面投影 */}
+      <ellipse cx="110" cy="100" rx="106" ry="92" fill="url(#tf-ambient)" />
+      <ellipse cx="104" cy="172" rx="86" ry="11" fill="url(#tf-ground)" />
+
       {/* 厂房主体 */}
-      <path d="M18 168V74l38 18V66l42 22V46h72v122Z" fill="url(#tf-body)" stroke="#B7C4D4" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M18 168V74l38 18V66l42 22V46h72v122Z" fill="url(#tf-body)" stroke="#A3B8CC" strokeWidth="2" strokeLinejoin="round" />
+      {/* 左侧锯齿车间 */}
+      <path d="M18 168V74l38 18V66l42 22v80Z" fill="url(#tf-wing)" />
+      {/* 车间地面 */}
+      <path d="M20 151h150" stroke="#C2D2E1" strokeWidth="1.2" />
+      {/* 屋顶压顶 */}
+      <path d="M98 46h72" stroke="#C4D3E1" strokeWidth="4.5" strokeLinecap="round" />
+      <path d="M100 47.5h68" stroke="#FFFFFF" strokeWidth="1.6" strokeLinecap="round" opacity="0.85" />
+
+      {/* 屋面排气管 */}
+      <rect x="120" y="34" width="6" height="13" rx="2" fill="#B3C4D4" />
+      {[0, 1].map((i) => (
+        <motion.circle
+          key={i}
+          r={2 + i * 0.7}
+          fill="#C8D5E1"
+          animate={{ cx: [123, 126], cy: [32, 17], opacity: [0.45, 0] }}
+          transition={{ duration: 2.8, repeat: Infinity, delay: i * 1.2, ease: 'easeOut' }}
+        />
+      ))}
+
       {/* 烟囱与烟气 */}
-      <rect x="150" y="28" width="13" height="20" rx="2" fill="#C2CEDB" />
+      <rect x="150" y="27" width="13" height="21" rx="2.5" fill="#C6D3E0" stroke="#A3B8CC" />
+      <rect x="148" y="25" width="17" height="5" rx="2" fill="#B3C4D4" />
       {[0, 1, 2].map((i) => (
         <motion.circle
           key={i}
-          cx={156}
-          cy={24}
-          r={2.6 + i * 0.9}
-          fill="#B6C3D2"
-          animate={{ cy: [24, 6], cx: [156, 164 + i * 3], opacity: [0.55, 0] }}
-          transition={{ duration: 3.2, repeat: Infinity, delay: i * 1.05, ease: 'easeOut' }}
+          r={2.4 + i * 0.9}
+          fill="#C2CFDC"
+          animate={{ cx: [156, 163 + i * 3], cy: [23, 5], opacity: [0.5, 0] }}
+          transition={{ duration: 3.4, repeat: Infinity, delay: i * 1.1, ease: 'easeOut' }}
         />
       ))}
+
       {/* 侧窗：一盏灯光不稳 */}
-      <rect x="28" y="86" width="16" height="13" rx="2" fill="#CBD5E1" />
-      <motion.rect x="28" y="106" width="16" height="13" rx="2" fill="#FCD34D" animate={{ opacity: [0.2, 0.85, 0.2] }} transition={{ duration: 2.1, repeat: Infinity }} />
+      <g>
+        <rect x="22" y="80" width="16" height="13" rx="2" fill="#D7E4F0" stroke="#B2C5D6" />
+        <path d="M30 80v13" stroke="#B2C5D6" />
+      </g>
+      <g>
+        <rect x="22" y="96" width="16" height="13" rx="2" fill="#FBE7BC" stroke="#E0B25C" />
+        <path d="M30 96v13" stroke="#E0B25C" />
+        <motion.rect width="16" height="13" rx="2" fill="#FCD34D" animate={{ attrX: [22, 22, 22], attrY: [96, 96, 96], opacity: [0.15, 0.85, 0.15] }} transition={{ duration: 2.1, repeat: Infinity }} />
+      </g>
 
-      {/* 孤岛设备节点 */}
-      {[64, 112, 164].map((x, index) => (
-        <g key={x}>
-          {isolated && (
-            <motion.circle cx={x} cy="72" r="7" fill="none" stroke="#F59E0B" strokeWidth="1.5" animate={{ scale: [1, 1.9], opacity: [0.6, 0] }} transition={{ duration: 1.6, repeat: Infinity, delay: index * 0.25 }} style={{ transformOrigin: `${x}px 72px` }} />
-          )}
-          <circle cx={x} cy="72" r="7" fill={isolated ? '#F59E0B' : '#94A3B8'} />
-          <rect x={x - 3.5} y="69" width="7" height="6" rx="1" fill="#fff" opacity=".85" />
-          {index < 2 && (
-            <motion.path
-              d={`M${x + 7} 72 H${[112, 164][index] - 7}`}
-              stroke="#94A3B8"
-              strokeWidth="2"
-              strokeDasharray="4 5"
-              animate={{ opacity: isolated ? 0.12 : 0.75 }}
-            />
-          )}
+      {/* 车间挂钟 */}
+      <g transform="translate(86 100)">
+        <circle r="6.6" fill="#FBFDFF" stroke="#9DAFC0" strokeWidth="1.4" />
+        <path d="M0 -3.8V0l2.8 1.6" fill="none" stroke="#5C7286" strokeWidth="1.2" strokeLinecap="round" />
+        <motion.line x1="0" y1="0" x2="3.4" y2="0" stroke="#E8973A" strokeWidth="1.1" strokeLinecap="round" animate={{ x2: HAND_X, y2: HAND_Y }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} />
+      </g>
+
+      {/* 设备机位：彼此断开 */}
+      {[64, 112, 164].map((x, index) => {
+        const alert = isolated
+        return (
+          <g key={x}>
+            {index < 2 && (
+              <motion.path
+                d={`M${x + 8} 78H${[112, 164][index] - 8}`}
+                fill="none"
+                stroke={alert ? '#F0A93B' : '#9CAFC1'}
+                strokeWidth="2"
+                strokeDasharray="3 6"
+                strokeLinecap="round"
+                animate={{ opacity: alert ? 0.15 : 0.8 }}
+                transition={{ duration: 0.35 }}
+              />
+            )}
+            {alert && (
+              <motion.circle
+                cx={x}
+                cy="78"
+                fill="none"
+                stroke="#F59E0B"
+                strokeWidth="1.4"
+                animate={{ r: [11, 17], opacity: [0.7, 0] }}
+                transition={{ duration: 1.6, repeat: Infinity, delay: index * 0.22, ease: 'easeOut' }}
+              />
+            )}
+            <rect x={x - 8} y="71" width="16" height="14" rx="3.5" fill={alert ? '#F59E0B' : '#93A7BC'} />
+            <rect x={x - 5.5} y="74" width="11" height="5" rx="1.6" fill="#F4F8FC" opacity="0.95" />
+            <circle cx={x + 5} cy="82" r="1.5" fill={alert ? '#FFF3D6' : '#DCE5EE'} />
+          </g>
+        )
+      })}
+      {/* 链路断开标记 */}
+      <g stroke="#B9C7D6" strokeWidth="1.4" strokeLinecap="round">
+        <path d="M100 75l6 6M106 75l-6 6" />
+      </g>
+
+      {/* 墙面控制柜 */}
+      <g>
+        <rect x="106" y="92" width="46" height="42" rx="6" fill="#E9F0F7" stroke="#B2C5D7" />
+        <path d="M106 101h46" stroke="#C6D5E3" />
+        <circle cx="119" cy="112" r="7" fill="#FBFDFF" stroke="#A9BCCE" strokeWidth="1.2" />
+        <motion.line
+          x1="119"
+          y1="112"
+          x2="123"
+          y2="107.5"
+          stroke="#E8973A"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+          animate={{ x2: [122.5, 114.5, 122.5], y2: [107.5, 109, 107.5] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.circle cx="140" cy="110" r="3.4" fill="#F59E0B" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.6, repeat: Infinity }} />
+        <circle cx="112" cy="127" r="2.4" fill="#BECEDD" />
+        <circle cx="121" cy="127" r="2.4" fill="#BECEDD" />
+        <rect x="130" y="124" width="16" height="5.5" rx="2.75" fill="#BECEDD" />
+      </g>
+
+      {/* 断续的流程：固定流程时被拉直 */}
+      {fixed ? (
+        <motion.path
+          d="M30 130H168"
+          fill="none"
+          stroke="#64748B"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.5 }}
+        />
+      ) : (
+        <g fill="none" stroke="#B4C3D3" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="6 8">
+          <motion.path d="M30 131C52 118 72 120 90 125" animate={{ strokeDashoffset: [0, -28] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'linear' }} />
+          <motion.path d="M114 133C134 139 152 130 168 118" animate={{ strokeDashoffset: [0, -28] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'linear' }} />
         </g>
-      ))}
-
-      {/* 断续的数据流 */}
-      <motion.path
-        d={fixed ? 'M34 126 H184' : 'M34 126 C72 105 104 145 184 112'}
-        fill="none"
-        stroke={fixed ? '#64748B' : '#A8B6C8'}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeDasharray={fixed ? '0' : '5 7'}
-        animate={fixed ? { pathLength: 1 } : { pathLength: 1, strokeDashoffset: [0, -24] }}
-        transition={fixed ? { duration: 0.4 } : { strokeDashoffset: { duration: 1.8, repeat: Infinity, ease: 'linear' } }}
-      />
+      )}
 
       {/* 传送带 */}
-      <rect x="26" y="152" width="168" height="16" rx="8" fill="#C9D4E0" />
+      <ellipse cx="110" cy="171" rx="86" ry="6" fill="url(#tf-ground)" />
+      <rect x="26" y="152" width="168" height="16" rx="8" fill="url(#tf-belt)" stroke="#A8B9C9" />
+      <rect x="30" y="154" width="160" height="3.6" rx="1.8" fill="#FFFFFF" opacity="0.5" />
       {[42, 76, 110, 144, 178].map((x) => (
-        <circle key={x} cx={x} cy="160" r="4.5" fill="#E5ECF3" stroke="#93A6B9" strokeWidth="1.5" />
-      ))}
-      <motion.path d="M34 156h150" stroke="#8FA3B6" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="7 9" animate={{ strokeDashoffset: [0, -32] }} transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }} />
-
-      {/* 在制品：一件轻微倾斜并告警 */}
-      {[[42, 0], [78, 0], [150, 0]].map(([x]) => (
         <g key={x}>
-          <rect x={x} y="134" width="22" height="17" rx="3" fill="#CBD5E1" stroke="#AAB9C8" />
-          <path d={`M${x + 5} 140h12M${x + 5} 145h8`} stroke="#AAB9C8" strokeWidth="2" strokeLinecap="round" />
+          <circle cx={x} cy="162" r="4.4" fill="#F2F6FA" stroke="#93A6B9" strokeWidth="1.3" />
+          <circle cx={x} cy="162" r="1.3" fill="#B9C8D6" />
         </g>
       ))}
-      <motion.g animate={{ rotate: [-6, -2, -6] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: '125px 151px' }}>
-        <rect x="114" y="134" width="22" height="17" rx="3" fill="#F1F5F9" stroke="#F59E0B" strokeWidth="1.5" />
-        <path d="M119 140h12M119 145h8" stroke="#D9A24A" strokeWidth="2" strokeLinecap="round" />
-      </motion.g>
+      <motion.path d="M34 158h150" stroke="#8FA3B6" strokeWidth="2.4" strokeLinecap="round" strokeDasharray="6 8" animate={{ strokeDashoffset: [0, -28] }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} />
+
+      {/* 在制品 */}
+      {[58, 92, 152].map((x) => (
+        <g key={x}>
+          <rect x={x} y="134" width="22" height="17" rx="3" fill="url(#tf-crate)" stroke="#A9BACA" />
+          <path d={`M${x + 4} 141h14M${x + 4} 146h9`} stroke="#A9BACA" strokeWidth="1.8" strokeLinecap="round" />
+        </g>
+      ))}
+      <g>
+        <rect x="122" y="134" width="22" height="17" rx="3" fill="#FFF8EA" stroke="#E9A93B" strokeWidth="1.6" />
+        <path d="M126 141h14M126 146h9" stroke="#D9A24A" strokeWidth="1.8" strokeLinecap="round" />
+        <motion.circle cx="141" cy="132" r="2.6" fill="#F59E0B" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity }} />
+      </g>
 
       {/* 工人 */}
-      <motion.g animate={human ? { scale: 1.08 } : { scale: 1 }} style={{ transformOrigin: '48px 145px' }}>
-        <circle cx="48" cy="106" r="9" fill={human ? '#2563EB' : '#9FB0C2'} />
-        <path d="M48 115v18" stroke={human ? '#2563EB' : '#7E93A8'} strokeWidth="4.5" strokeLinecap="round" />
-        <path d="M48 133l-7 12M48 133l7 12" stroke={human ? '#2563EB' : '#7E93A8'} strokeWidth="4" strokeLinecap="round" />
-        <path d="M48 119l-10 6" stroke={human ? '#2563EB' : '#7E93A8'} strokeWidth="3.5" strokeLinecap="round" />
-        <rect x="30" y="123" width="11" height="9" rx="1.5" fill="#E2E8F0" stroke="#94A3B8" />
-        <motion.path
-          d="M48 119l11 5"
-          stroke={human ? '#2563EB' : '#7E93A8'}
-          strokeWidth="3.5"
+      <g>
+        <ellipse cx="48" cy="150" rx="10" ry="2.6" fill="#7E93A8" opacity="0.2" />
+        {human && (
+          <motion.circle cx="48" cy="104" fill="none" stroke="#2563EB" strokeWidth="1.4" animate={{ r: [9, 16], opacity: [0.75, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }} />
+        )}
+        <path d="M44 131v20M52 131v20" stroke={limb} strokeWidth="3.6" strokeLinecap="round" />
+        <path d="M48 111c-4.2 0-7 3-7 7v13h14v-13c0-4-2.8-7-7-7Z" fill={torso} />
+        <path d="M42 121l-7 6" stroke={limb} strokeWidth="3.2" strokeLinecap="round" />
+        <rect x="27" y="124" width="13" height="10" rx="2" fill="#E6ECF3" stroke="#A9BACA" />
+        <motion.line
+          x1="54"
+          y1="121"
+          x2="63"
+          y2="127"
+          stroke={limb}
+          strokeWidth="3.4"
           strokeLinecap="round"
-          animate={{ rotate: [0, -22, 0] }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ transformOrigin: '48px 119px' }}
+          animate={{ x2: repeated ? [63, 56, 63] : [63, 59, 63], y2: repeated ? [127, 134, 127] : [127, 131, 127] }}
+          transition={{ duration: repeated ? 1.1 : 2.6, repeat: Infinity, ease: 'easeInOut' }}
         />
-      </motion.g>
+        <circle cx="48" cy="104" r="6.2" fill={headTone} />
+        <path d="M41.8 102.4a6.2 6.2 0 0 1 12.4 0Z" fill={helmet} />
+        <path d="M40 102.2h18" stroke={helmet} strokeWidth="2" strokeLinecap="round" />
+      </g>
 
-      <text x="110" y="196" textAnchor="middle" fill="#64748B" fontSize="11" fontWeight="700">{t('u.tradCap')}</text>
+      <text x="110" y="196" textAnchor="middle" fill="#5B6E83" fontSize="11" fontWeight="700">{t('u.tradCap')}</text>
     </svg>
   )
 }
+
+const FLOW_MAIN: [Pt, Pt, Pt, Pt] = [[80, 146], [116, 146], [126, 124], [188, 108]]
+const FLOW_OPT: [Pt, Pt, Pt, Pt] = [[80, 146], [104, 110], [144, 150], [188, 104]]
+const agv = (v: number) => [v, v + 10, v]
+/** 关键帧相位旋转：让同一条路径上的多个工件错开位置 */
+const rot = <T,>(arr: T[], k: number): T[] => [...arr.slice(k), ...arr.slice(0, k)]
 
 function SmartFactoryScene({ focus, active }: { focus: number | null; active: boolean }) {
   const { t } = useLanguage()
   const networked = focus === 3 || active
   const optimize = focus === 2
-  const flowD = optimize ? 'M36 146 C78 118 115 158 183 112' : 'M36 146 C76 146 93 122 121 128 S162 146 184 118'
+  const flow = optimize ? FLOW_OPT : FLOW_MAIN
+  const flowD = `M${flow[0][0]} ${flow[0][1]}C${flow[1][0]} ${flow[1][1]} ${flow[2][0]} ${flow[2][1]} ${flow[3][0]} ${flow[3][1]}`
+  const samples = curveSamples(flow[0], flow[1], flow[2], flow[3], 16)
+  const flowX = samples.map((p) => p[0])
+  const flowY = samples.map((p) => p[1])
+  const swing = { x2: [188, 176, 188], y2: [108, 119, 108] }
 
   return (
     <svg viewBox="0 0 220 210" className="h-full w-full" role="img" aria-label="智能工厂示意">
       <defs>
         <linearGradient id="sf-glass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#F4FBFF" />
-          <stop offset="1" stopColor="#E0F1FD" />
+          <stop offset="0" stopColor="#F8FDFF" />
+          <stop offset="1" stopColor="#DFF0FD" />
         </linearGradient>
         <linearGradient id="sf-flow" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#06B6D4" />
           <stop offset="1" stopColor="#2563EB" />
         </linearGradient>
+        <linearGradient id="sf-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8ED3F2" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#8ED3F2" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id="sf-ambient" cx="0.5" cy="0.42" r="0.6">
+          <stop offset="0" stopColor="#D6F1E9" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#D6F1E9" stopOpacity="0" />
+        </radialGradient>
       </defs>
 
-      {/* 厂房 */}
-      <rect x="19" y="47" width="182" height="122" rx="15" fill="url(#sf-glass)" stroke="#A8D7F3" strokeWidth="2" />
+      <ellipse cx="110" cy="96" rx="104" ry="86" fill="url(#sf-ambient)" />
 
-      {/* 顶部感知节点与网络 */}
-      {[69, 119, 169].map((x, i) => (
-        <g key={x}>
-          <motion.circle cx={x} cy="32" r="9" fill="#14B8A6" animate={{ opacity: networked ? [0.14, 0.32, 0.14] : 0.1 }} transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.3 }} />
-          <circle cx={x} cy="32" r="5.5" fill="#14B8A6" />
-          <circle cx={x} cy="32" r="2" fill="#fff" opacity=".9" />
+      {/* 厂房：玻璃幕墙 */}
+      <rect x="18" y="46" width="184" height="124" rx="16" fill="url(#sf-glass)" stroke="#A3D5F2" strokeWidth="2" />
+      <path d="M34 52h152" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+      <path d="M30 148h160" stroke="#BFE3F7" strokeWidth="1.4" />
+      <rect x="30" y="148" width="160" height="14" rx="4" fill="url(#sf-floor)" />
+
+      {/* 面板指示灯 */}
+      {[{ x: 182, c: '#14B8A6' }, { x: 188, c: '#22D3EE' }, { x: 194, c: '#F59E0B' }].map((l, i) => (
+        <motion.circle key={l.x} cx={l.x} cy="55" r="1.8" fill={l.c} animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.35 }} />
+      ))}
+
+      {/* 感知节点 */}
+      {[{ x: 69, r: 5 }, { x: 124, r: 6.4 }, { x: 169, r: 5 }].map((n, i) => (
+        <g key={n.x}>
+          <motion.circle cx={n.x} cy="30" fill="#14B8A6" animate={{ r: [n.r + 5, n.r + 8], opacity: networked ? [0.28, 0.06] : [0.1, 0.04] }} transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.3, ease: 'easeOut' }} />
+          <circle cx={n.x} cy="30" r={n.r} fill="#14B8A6" />
+          <circle cx={n.x} cy="30" r={n.r * 0.38} fill="#FFFFFF" opacity="0.92" />
         </g>
       ))}
+      {networked && (
+        <motion.circle
+          cx="124"
+          cy="30"
+          fill="none"
+          stroke="#5EEAD4"
+          strokeWidth="1.2"
+          animate={{ r: [10, 17], opacity: [0.85, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+        />
+      )}
+
+      {/* 互联链路 */}
       <motion.path
-        d="M69 32H169M69 38V56M119 38V120M169 38V122M69 40 52 58"
+        d="M69 30H169M69 35V52M124 36V118M169 35V124"
         fill="none"
         stroke="#14B8A6"
-        strokeWidth="2"
-        strokeDasharray="5 5"
-        animate={{ opacity: networked ? 1 : 0.32, strokeDashoffset: networked ? [0, -20] : 0 }}
-        transition={{ opacity: { duration: 0.6 }, strokeDashoffset: networked ? { duration: 1.4, repeat: Infinity, ease: 'linear' } : { duration: 0.3 } }}
+        strokeWidth="1.8"
+        strokeDasharray="4 5"
+        strokeLinecap="round"
+        animate={{ opacity: networked ? 1 : 0.3, strokeDashoffset: networked ? [0, -18] : 0 }}
+        transition={{ opacity: { duration: 0.5 }, strokeDashoffset: networked ? { duration: 1.2, repeat: Infinity, ease: 'linear' } : { duration: 0.3 } }}
       />
+      {[[69, 52], [124, 118], [169, 124]].map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="2" fill="#14B8A6" opacity={networked ? 1 : 0.4} />
+      ))}
 
       {/* 数据看板 */}
       <g>
-        <rect x="34" y="58" width="58" height="44" rx="7" fill="#fff" stroke="#BFDBFE" strokeWidth="1.5" />
-        <path d="M40 72h10M40 78h14" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
-        <motion.path
-          d="M40 96 50 86l8 6 14-15"
-          fill="none"
-          stroke="#2563EB"
-          strokeWidth="2.5"
+        <rect x="32" y="52" width="64" height="48" rx="9" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
+        <path d="M39 63h13M39 68h8" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
+        <motion.circle cx="88" cy="61" r="2.4" fill="#06B6D4" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 1.4, repeat: Infinity }} />
+        <path d="M39 90 47 80 55 85 65 71" fill="none" stroke="#2563EB" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        <motion.circle cx="65" cy="71" r="2.6" fill="#2563EB" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.6, repeat: Infinity }} />
+        {[{ x: 71, h: 8 }, { x: 79, h: 14 }, { x: 87, h: 10 }].map((b, i) => (
+          <motion.rect
+            key={b.x}
+            width="5"
+            rx="1.6"
+            fill="#93C5FD"
+            animate={{ attrX: [b.x, b.x, b.x], attrY: [90 - b.h * 0.66, 90 - b.h, 90 - b.h * 0.66], height: [b.h * 0.66, b.h, b.h * 0.66] }}
+            transition={{ duration: 1.9, repeat: Infinity, delay: i * 0.2, ease: 'easeInOut' }}
+          />
+        ))}
+      </g>
+
+      {/* 智能料架 */}
+      <g>
+        <rect x="30" y="112" width="30" height="36" rx="4" fill="#EAF7FD" stroke="#A8D7F3" strokeWidth="1.4" />
+        <path d="M30 124h30M30 136h30" stroke="#C7E6F8" strokeWidth="1.4" />
+        <rect x="34" y="116" width="9" height="7" rx="1.6" fill="#7DD3FC" />
+        <rect x="46" y="116" width="10" height="7" rx="1.6" fill="#BAE6FD" />
+        <rect x="34" y="128" width="11" height="7" rx="1.6" fill="#BAE6FD" />
+        <rect x="48" y="128" width="8" height="7" rx="1.6" fill="#7DD3FC" />
+        <rect x="35" y="140" width="18" height="7" rx="1.6" fill="#7DD3FC" opacity="0.7" />
+      </g>
+
+      {/* 视觉扫描门 */}
+      <g>
+        <path d="M114 118v26M134 118v26" stroke="#38BDF8" strokeWidth="2.6" strokeLinecap="round" />
+        <path d="M110 118h28" stroke="#0EA5E9" strokeWidth="3" strokeLinecap="round" />
+        <rect x="119" y="120" width="10" height="7" rx="2" fill="#0EA5E9" />
+        <motion.line
+          x1="124"
+          y1="129"
+          x2="124"
+          y2="143"
+          stroke="#67E8F9"
+          strokeWidth="2.4"
           strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 0.8, ease: 'easeInOut' }}
+          animate={{ y2: [143, 134, 143], opacity: [0.85, 0.3, 0.85] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.circle cx="72" cy="77" r="2.5" fill="#06B6D4" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity }} />
       </g>
 
       {/* 主流程 */}
@@ -340,42 +564,47 @@ function SmartFactoryScene({ focus, active }: { focus: number | null; active: bo
         stroke="url(#sf-flow)"
         strokeWidth="4"
         strokeLinecap="round"
-        animate={{ pathLength: active || optimize ? [0.35, 1] : 1, opacity: active || optimize ? 1 : 0.65 }}
+        animate={{ pathLength: active || optimize ? [0.35, 1] : 1, opacity: active || optimize ? 1 : 0.62 }}
         transition={{ duration: 0.7, ease: 'easeInOut' }}
       />
-      <motion.circle r="3" fill="#06B6D4" animate={{ opacity: networked ? 1 : 0 }}>
-        <animateMotion dur="2.6s" repeatCount="indefinite" path={flowD} />
-      </motion.circle>
-      <motion.circle r="2" fill="#2563EB" animate={{ opacity: networked ? 1 : 0 }}>
-        <animateMotion dur="3.1s" repeatCount="indefinite" path={flowD} />
-      </motion.circle>
 
-      {/* 视觉扫描门 */}
-      <motion.g animate={{ opacity: [0.45, 1, 0.45] }} transition={{ duration: 1.6, repeat: Infinity }}>
-        <path d="M96 118v-9M114 118v-9M96 109h18" fill="none" stroke="#0EA5E9" strokeWidth="2.5" strokeLinecap="round" />
-      </motion.g>
+      {/* 沿流程运动的工件与脉冲 */}
+      {[{ dur: 4.6, offset: 0, w: 14, h: 9, fill: '#0EA5E9' }, { dur: 6.4, offset: 6, w: 11, h: 8, fill: '#14B8A6' }].map((item) => (
+        <motion.rect
+          key={item.offset}
+          width={item.w}
+          height={item.h}
+          rx="2"
+          fill={item.fill}
+          animate={{
+            attrX: rot(flowX, item.offset).map((v) => v - item.w / 2),
+            attrY: rot(flowY, item.offset).map((v) => v - item.h / 2),
+          }}
+          transition={{ duration: item.dur, repeat: Infinity, ease: 'linear' }}
+        />
+      ))}
+      <motion.circle r="2.6" fill="#06B6D4" animate={{ cx: flowX, cy: flowY, opacity: networked ? 0.95 : 0.35 }} transition={{ duration: 3.2, repeat: Infinity, ease: 'linear' }} />
 
       {/* 机械臂 */}
       <g>
-        <rect x="150" y="128" width="30" height="9" rx="4" fill="#2563EB" />
-        <motion.g animate={{ rotate: [0, 12, 0, -8, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: '165px 128px' }}>
-          <path d="M165 128V98" stroke="#2563EB" strokeWidth="7" strokeLinecap="round" />
-          <motion.g animate={{ rotate: [-18, 26, -18] }} transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: '165px 98px' }}>
-            <path d="M165 98l24 10" stroke="#3B82F6" strokeWidth="6" strokeLinecap="round" />
-            <circle cx="191" cy="109" r="4" fill="#0EA5E9" />
-          </motion.g>
-          <circle cx="165" cy="98" r="5" fill="#EFF6FF" stroke="#2563EB" strokeWidth="2.5" />
-        </motion.g>
+        <ellipse cx="164" cy="137" rx="18" ry="3.4" fill="#7EA6C4" opacity="0.22" />
+        <rect x="148" y="126" width="32" height="10" rx="5" fill="#2563EB" />
+        <path d="M164 126V98" stroke="#2563EB" strokeWidth="7" strokeLinecap="round" />
+        <motion.line x1="164" y1="98" x2="188" y2="108" stroke="#3B82F6" strokeWidth="6" strokeLinecap="round" animate={swing} transition={{ duration: 4.4, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.circle r="4" fill="#0EA5E9" animate={{ cx: swing.x2, cy: swing.y2 }} transition={{ duration: 4.4, repeat: Infinity, ease: 'easeInOut' }} />
+        <circle cx="164" cy="98" r="5" fill="#EFF6FF" stroke="#2563EB" strokeWidth="2.4" />
       </g>
 
       {/* AGV */}
-      <motion.g animate={{ x: [0, 30, 0] }} transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}>
-        <rect x="44" y="148" width="40" height="16" rx="6" fill="#0EA5E9" />
-        <rect x="49" y="142" width="18" height="8" rx="3" fill="#BAE6FD" />
-        <motion.circle cx="84" cy="145" r="2.5" fill="#F59E0B" animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 1, repeat: Infinity }} />
-        <circle cx="53" cy="165" r="3.5" fill="#334155" />
-        <circle cx="76" cy="165" r="3.5" fill="#334155" />
-      </motion.g>
+      <g>
+        <ellipse cx="55" cy="168" rx="23" ry="3" fill="#7EA6C4" opacity="0.2" />
+        <motion.rect width="42" height="17" rx="6" fill="#0EA5E9" animate={{ attrX: agv(34), attrY: [148, 148, 148] }} transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.rect width="42" height="5" rx="2.5" fill="#38BDF8" opacity="0.55" animate={{ attrX: agv(34), attrY: [148, 148, 148] }} transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.rect width="18" height="8" rx="3" fill="#BAE6FD" animate={{ attrX: agv(40), attrY: [142, 142, 142] }} transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.circle r="3.6" fill="#334155" animate={{ cx: agv(44), cy: [166, 166, 166] }} transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.circle r="3.6" fill="#334155" animate={{ cx: agv(66), cy: [166, 166, 166] }} transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.circle r="2.5" fill="#F59E0B" animate={{ cx: agv(76), cy: [145, 145, 145], opacity: [0.2, 1, 0.2] }} transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }} />
+      </g>
 
       <text x="110" y="196" textAnchor="middle" fill="#0F5BFB" fontSize="11" fontWeight="700">{t('u.smartCap')}</text>
     </svg>
