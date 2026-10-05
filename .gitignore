@@ -31,3 +31,7 @@ pnpm-debug.log*
 .env
 .env.local
 .env.*.local
+
+# 本地工具产物
+.zcode/
+shots/

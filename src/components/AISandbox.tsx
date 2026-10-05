@@ -92,11 +92,38 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
           <stop offset="0" stopColor="#60A5FA" />
           <stop offset="1" stopColor={accent} />
         </radialGradient>
+        <linearGradient id="sb-bar" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#0F5BFB" />
+          <stop offset="1" stopColor="#13BFAF" />
+        </linearGradient>
       </defs>
 
       <rect width="640" height="305" rx="20" fill="url(#sb-bg)" />
       <rect width="640" height="305" rx="20" fill="url(#sb-grid)" opacity="0.55" />
       <ellipse cx="330" cy="296" rx="270" ry="10" fill="#7E93A8" opacity="0.12" />
+
+      {/* 车间吊灯 */}
+      {[[200, 26], [440, 26]].map(([lx, ly]) => (
+        <g key={lx}>
+          <line x1={lx} y1="10" x2={lx} y2={ly} stroke="#A8B7C5" strokeWidth="1.5" />
+          <path d={`M${lx - 11} ${ly}h22l-4 6.5h-14z`} fill="#C2CEDB" />
+          <motion.circle cx={lx} cy={ly + 4} r="2" fill="#FCD34D" animate={{ opacity: [0.45, 1, 0.45] }} transition={{ duration: 2.4, repeat: Infinity }} />
+        </g>
+      ))}
+
+      {/* 环境数据微尘 */}
+      {flowOn &&
+        [[86, 96], [596, 88], [606, 150], [72, 140]].map(([x, y], i) => (
+          <motion.circle
+            key={i}
+            cx={x}
+            cy={y}
+            r="2"
+            fill={accent}
+            animate={{ cy: [y, y - 14, y], opacity: [0.08, 0.35, 0.08] }}
+            transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        ))}
 
       {/* 设备之间的连接 */}
       {DEVICE_LINKS.map(([a, b], i) => (
@@ -155,6 +182,17 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
 
       {/* AI 中枢 */}
       <g>
+        {!hubOn && (
+          <motion.circle
+            cx={HUB[0]}
+            cy={HUB[1]}
+            r="34"
+            fill="none"
+            stroke="#AFC0D3"
+            animate={{ r: [34, 41], opacity: [0.45, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+          />
+        )}
         {hubOn && (
           <motion.circle
             cx={HUB[0]}
@@ -203,6 +241,28 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
             <rect x={m.x - 46} y="184" width="92" height="66" rx="10" fill={body} stroke={casing} strokeWidth="2" />
             <rect x={m.x - 38} y="192" width="76" height="26" rx="6" fill="#FFFFFF" opacity="0.85" />
             {[0, 1, 2].map((k) => (
+              <motion.circle
+                key={k}
+                cx={m.x - 14 + k * 14}
+                cy="189"
+                r="1.7"
+                fill={deviceOn ? teal : '#B9C8D6'}
+                animate={{ opacity: deviceOn ? [0.3, 1, 0.3] : 1 }}
+                transition={{ duration: 1.3, repeat: Infinity, delay: k * 0.25 }}
+              />
+            ))}
+            {hubOn && (
+              <motion.rect
+                width="76"
+                height="2.4"
+                rx="1.2"
+                fill={accent}
+                opacity="0.45"
+                animate={{ attrX: [m.x - 38, m.x - 38, m.x - 38], attrY: [194, 216, 194] }}
+                transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.4, ease: 'easeInOut' }}
+              />
+            )}
+            {[0, 1, 2].map((k) => (
               <motion.rect
                 key={k}
                 width="14"
@@ -238,15 +298,22 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
               transition={{ duration: 1.1, repeat: Infinity }}
             />
             {fault && (
-              <motion.circle
-                cx={m.x}
-                cy="218"
-                fill="none"
-                stroke="#F59E0B"
-                strokeWidth="2"
-                animate={{ r: [50, 68], opacity: [0.55, 0] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-              />
+              <>
+                <motion.circle
+                  cx={m.x}
+                  cy="218"
+                  fill="none"
+                  stroke="#F59E0B"
+                  strokeWidth="2"
+                  animate={{ r: [50, 68], opacity: [0.55, 0] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                />
+                <motion.g animate={{ y: [0, -3, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>
+                  <path d={`M${m.x - 7.5} 172l7.5 -12.5 7.5 12.5z`} fill="#F59E0B" stroke="#fff" strokeWidth="1.2" />
+                  <line x1={m.x} y1={164.5} x2={m.x} y2={168.5} stroke="#fff" strokeWidth="1.7" strokeLinecap="round" />
+                  <circle cx={m.x} cy={170.6} r="0.95" fill="#fff" />
+                </motion.g>
+              </>
             )}
             <text x={m.x} y="266" textAnchor="middle" fill="#64748B" fontSize="9.5" fontWeight="700">
               {ta('sb.sceneLabels')[0]} {i + 1}
@@ -261,6 +328,7 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
           const dir = i === 0 ? 1 : -1
           return (
             <g key={`r${x}`}>
+              <rect x={x - 21} y="183" width="42" height="5" rx="2.5" fill={accent} opacity="0.55" />
               <rect x={x - 13} y="176" width="26" height="9" rx="4" fill={accent} />
               <path d={`M${x} 176V146`} stroke={accent} strokeWidth="6" strokeLinecap="round" />
               <motion.line
@@ -285,6 +353,8 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
             <text x="442" y="52" fill="#0F172A" fontSize="9.5" fontWeight="700">
               {ta('sb.sceneLabels')[4]}
             </text>
+            <rect x="576" y="42" width="22" height="13" rx="4" fill={accent} opacity="0.14" />
+            <text x="587" y="51.5" textAnchor="middle" fontSize="8" fontWeight="800" fill={accent}>AI</text>
             {[0, 1, 2].map((row) => (
               <motion.rect
                 key={row}
@@ -338,14 +408,27 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
               animate={{ attrX: cell.run.map((x) => x + 9), attrY: [226, 226, 226] }}
               transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
             />
+            <path d={`M${cell.x + 18} 202l4 4 7.5 -8.5`} fill="none" stroke={teal} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9" />
           </motion.g>
         ))}
 
       {/* 传送带 */}
       <rect x="30" y="252" width="580" height="30" rx="14" fill={mix('#C9D4E0', '#C5EEE8', level)} stroke={mix('#AFBECC', '#78CEC4', level)} />
       <rect x="30" y="252" width="580" height="11" rx="6" fill="#FFFFFF" opacity="0.55" />
+      <motion.path
+        d="M44 268h552"
+        fill="none"
+        stroke={mix('#9FB2C4', '#5FC9BE', level)}
+        strokeWidth="2"
+        strokeDasharray="9 13"
+        animate={{ strokeDashoffset: deviceOn ? [0, -44] : 0, opacity: deviceOn ? 0.55 : 0.18 }}
+        transition={{ strokeDashoffset: { duration: 1.5, repeat: Infinity, ease: 'linear' } }}
+      />
       {[80, 180, 280, 380, 480, 580].map((x) => (
-        <circle key={x} cx={x} cy="268" r="7" fill="#F7FAFC" stroke={mix('#A8B8C6', '#84D3CA', level)} strokeWidth="2" />
+        <g key={x}>
+          <circle cx={x} cy="268" r="7" fill="#F7FAFC" stroke={mix('#A8B8C6', '#84D3CA', level)} strokeWidth="2" />
+          <line x1={x - 4} y1="268" x2={x + 4} y2="268" stroke={mix('#93A7BC', '#3FA99D', level)} strokeWidth="1.4" strokeLinecap="round" opacity={deviceOn ? 0.85 : 0.45} />
+        </g>
       ))}
       {[120, 250, 400, 520].map((x, i) => (
         <motion.rect
@@ -365,6 +448,9 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
       <motion.g animate={{ x: [40, 40, 40] }}>
         <circle cx="46" cy="196" r="7" fill={mix('#AEBECD', '#7CB0F8', level)} />
         <path d="M39.5 194.5a6.5 6.5 0 0 1 13 0Z" fill={mix('#8CA1B4', '#2563EB', level)} />
+        <path d="M38 193a8 8 0 0 1 16 0Z" fill={mix('#C9D5E1', '#1D4ED8', level)} />
+        <line x1="36.5" y1="193" x2="55.5" y2="193" stroke={mix('#A8B7C5', '#1E40AF', level)} strokeWidth="2.2" strokeLinecap="round" />
+        <rect x="56" y="212" width="10" height="13" rx="1.5" fill="#fff" stroke={mix('#8598AB', '#2F6BE0', level)} strokeWidth="1.2" transform="rotate(9 61 218)" />
         <path d="M46 203c-3.6 0-6 2.6-6 6v20h12v-20c0-3.4-2.4-6-6-6Z" fill={mix('#9BAEC0', '#3B82F6', level)} />
         <motion.line
           x1="52"
@@ -385,7 +471,7 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
 
       {/* 当前阶段 */}
       <g>
-        <rect x="26" y="34" width="196" height="34" rx="12" fill="#FFFFFF" stroke="#CFE2F5" />
+        <rect x="26" y="34" width="196" height="42" rx="12" fill="#FFFFFF" stroke="#CFE2F5" />
         <motion.circle cx="44" cy="51" r="4.5" fill={stage === 0 ? '#B9C8D6' : teal} animate={{ opacity: stage === 0 ? 1 : [0.35, 1, 0.35] }} transition={{ duration: 1.4, repeat: Infinity }} />
         <text x="58" y="47" fill="#64748B" fontSize="8.5" fontWeight="700">
           {t('sb.stageChip')}
@@ -393,6 +479,14 @@ function SandboxScene({ level, stage }: { level: number; stage: number }) {
         <text x="58" y="60" fill="#0F172A" fontSize="11" fontWeight="800">
           {String(Math.max(stage, 1)).padStart(2, '0')} / 07 · {ta('sb.stages')[Math.max(0, stage - 1)]}
         </text>
+        <rect x="38" y="66" width="172" height="3.5" rx="1.75" fill="#E2E8F0" />
+        <motion.rect
+          height="3.5"
+          rx="1.75"
+          fill="url(#sb-bar)"
+          animate={{ attrX: 38, attrY: 66, width: 172 * Math.min(1, stage / 7) }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+        />
       </g>
 
       {/* 完成提示由外层 HTML 覆盖层呈现 */}

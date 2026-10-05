@@ -6,8 +6,9 @@
   "description": "智启新质——人工智能驱动新质生产力可视化数字展馆",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "build": "tsc --noEmit && vite build --minify terser",
+    "preview": "vite preview",
+    "postinstall": "node scripts/patch-esbuild.cjs"
   },
   "dependencies": {
     "echarts": "^5.5.1",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "tailwindcss": "^4.0.0",
+    "terser": "^5.51.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.11"
   }
