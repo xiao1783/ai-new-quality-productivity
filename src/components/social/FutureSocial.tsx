@@ -102,6 +102,7 @@ export default function FutureSocial() {
         {
           name: lang === 'en' ? 'Aging rate · outlook' : '老龄化率 · 展望',
           type: 'line',
+          connectNulls: true,
           symbolSize: 9,
           lineStyle: { width: 2.5, type: 'dashed', color: '#FB7185' },
           itemStyle: { color: '#FB7185' },
