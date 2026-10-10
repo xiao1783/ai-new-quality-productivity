@@ -82,7 +82,7 @@ export interface ValueEstimate {
 export const AI_VALUE_ESTIMATES: ValueEstimate[] = [
   { name: '生成式AI · 年增值潜力', sub: '麦肯锡 MGI（2023.6）', low: 2.6, high: 4.4, kind: 'range' },
   { name: 'AI 到2030年全球GDP贡献', sub: '普华永道《Sizing the Prize》（2017.6）', low: 15.7, high: 15.7, kind: 'point' },
-  { name: 'AI 整体 · 年增值潜力', sub: '麦肯锡 MGI（2023.6）', low: 13.6, high: 22.1, kind: 'range' },
+  { name: '传统 AI 与分析 · 年增值潜力', sub: '麦肯锡 MGI（2023.6）', low: 13.6, high: 22.1, kind: 'range' },
 ]
 
 /* ---------- 07 数据驾驶舱：中国关键指标 ---------- */
@@ -100,12 +100,12 @@ export const AI_INVESTMENT = {
   unit: '亿美元',
   items: [
     { name: '美国', value: 1091 },
-    { name: '其他地区', value: 1294, note: '差额推算' },
+    { name: '其他地区', value: 279, note: '按全球私人投资总额差额推算' },
     { name: '中国', value: 93 },
     { name: '英国', value: 45 },
   ],
-  total: 2523,
-  source: '斯坦福 HAI《AI Index Report 2025》（2025.4）· 全球总额 2,523 亿美元创新高；「其他地区」为总额减主要国家推算',
+  total: 1508,
+  source: '斯坦福 HAI《AI Index Report 2025》（2025.4）· 2024 年全球私人 AI 投资 1,508 亿美元；「其他地区」为总额减美国、中国、英国后推算',
 }
 
 /* IFR《World Robotics 2024》（2024.11）：制造业机器人密度（台 / 万名员工，2023） */

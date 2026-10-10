@@ -301,7 +301,7 @@ export default function Dashboard() {
           <Reveal>
             <div className="card h-full p-6">
               <h4 className="text-[15px] font-bold text-ink">{t('d.invTitle')}</h4>
-              <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? '2024 · global total US$252.3B' : `${AI_INVESTMENT.year} 年 · 全球总额 ${AI_INVESTMENT.total.toLocaleString()} 亿美元`}</p>
+              <p className="mt-1 text-[12px] text-muted">{lang === 'en' ? `2024 · global private investment US$${(AI_INVESTMENT.total / 10).toFixed(1)}B` : `${AI_INVESTMENT.year} 年 · 全球私人投资 ${AI_INVESTMENT.total.toLocaleString()} 亿美元`}</p>
               <div className="mt-2 h-[280px]">
                 <EChart option={donutOption} />
               </div>
