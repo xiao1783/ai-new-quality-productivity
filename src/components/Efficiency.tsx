@@ -11,6 +11,7 @@ import ProductivitySimulator from './ProductivitySimulator'
 import HumanAI from './HumanAI'
 import BeforeAfter from './BeforeAfter'
 import NetworkGraph from './NetworkGraph'
+import EfficiencySocial from './social/EfficiencySocial'
 import { PALETTE } from '@/data/site'
 import { EFFICIENCY_KPIS, WEF_JOBS, AI_VALUE_ESTIMATES } from '@/data/realData'
 import { useLanguage } from '@/i18n/LanguageContext'
@@ -246,6 +247,11 @@ export default function Efficiency() {
         <HumanAI />
         <BeforeAfter />
         <NetworkGraph />
+
+        {/* 社会发展视角：效率红利分配模拟器 */}
+        <Reveal className="mt-6">
+          <EfficiencySocial />
+        </Reveal>
       </div>
     </section>
   )

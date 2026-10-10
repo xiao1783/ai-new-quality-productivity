@@ -10,6 +10,9 @@ import Future from './components/Future'
 import AIJourney from './components/AIJourney'
 import AILab from './components/AILab'
 import AISandbox from './components/AISandbox'
+import Ecosystem from './components/viz/Ecosystem'
+import ValueChain from './components/viz/ValueChain'
+import Landscape from './components/viz/Landscape'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -38,6 +41,9 @@ export default function App() {
         <Future />
         <AILab />
         <AISandbox />
+        <Ecosystem />
+        <ValueChain />
+        <Landscape />
       </main>
       <Footer />
     </>

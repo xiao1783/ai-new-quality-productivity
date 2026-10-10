@@ -366,6 +366,10 @@ export const zh = {
     '高盛研究：《Generative AI Could Raise Global GDP by 7%》（2023.4）',
     'IFR 国际机器人联合会：《World Robotics 2024》（2024.11）',
     'WIPO 世界知识产权组织：《生成式人工智能专利态势报告》（2024.7）',
+    'CNNIC 中国互联网络信息中心：《第47次中国互联网络发展状况统计报告》（2021.2）、《第56次中国互联网络发展状况统计报告》（2025.7）',
+    '国家能源局：《2024年可再生能源并网运行情况》（2025.1.27）',
+    '农业农村部：2024 年农业科技进步贡献率、农作物耕种收综合机械化率等年度数据（《人民日报》2024.12.17）',
+    '新华社（中国政府网）：积极应对人口老龄化政策解读与 2035 年 60 岁及以上人口展望（2025.11.30）',
   ],
   'f2.note': '以上数据仅用于教学可视化展示；「AI 生产力模拟器」与「AI 实验室」为前端交互模拟实验，不构成任何统计结论；产业智能化热力图与三模式雷达图为编者综合公开资料整理的概念模型。',
   'f2.credit': '2026 · 大学课程作业 · 教学可视化数字展馆',
@@ -411,6 +415,140 @@ export const zh = {
   'j.c9s': '用四个基础概念建立理解人工智能的共同语言。',
   'j.c9b1': '算法：为达成目标而执行的一系列规则；人工智能：让计算机完成通常需要人类智能的任务。',
   'j.c9b2': '机器学习：利用数据训练模型获得任务能力；深度学习：使用多层神经网络处理复杂模式。',
+
+  /* ========== 社会发展视角（各展区内嵌交互件） ========== */
+  // Hero：六大民生领域
+  'sv.h.title': 'AI 就在身边：六个民生领域的真实变化',
+  'sv.h.desc': '点击任一领域，查看 AI 与数字化在就业、医疗、养老、普惠、粮食、能源方面的实测数据。',
+  'sv.h.domains': ['就业机会', '医疗健康', '养老服务', '数字普惠', '粮食安全', '绿色能源'],
+  'sv.h.tks': [
+    '技术创造的岗位多于被替代的岗位，就业结构在转型中实现净增长。',
+    'AI 正从实验室走向诊疗一线，扩大优质医疗资源的供给能力。',
+    '数字化服务帮助 3.1 亿老年人共享智能社会，加快跨越「数字鸿沟」。',
+    '城乡数字差距 5 年收窄 8.2 个百分点，发展成果更均等可及。',
+    '农业科技进步贡献率超过 63%，技术进步守护 14 亿人的饭碗。',
+    '可再生能源装机 5 年翻倍，AI 预测调度让绿色电力更稳定可用。',
+  ],
+
+  // Understand：两种模式社会福祉
+  'sv.u.title': '两种发展模式的社会福祉对照',
+  'sv.u.desc': '切换「传统模式 / AI 模式」，从岗位质量、资源环境、服务可及、收入效率四个维度比较社会福祉。评分为编者概念模型（非统计口径），并锚定公开真实数据。',
+  'sv.u.modes': ['传统模式', 'AI 增强模式'],
+  'sv.u.tk': 'AI 的意义不止于更快生产：岗位质量、服务可及与资源环境同步改善，社会福祉才是生产力的最终落点。',
+
+  // Mechanism：八节点社会价值
+  'sv.m.title': '智能闭环的每个环节，都对应真实的社会效益',
+  'sv.m.desc': '点击数据闭环的八个环节，查看该环节正在发生的真实社会价值锚点（均为公开实测数据）。',
+  'sv.m.nodes': ['数据', '感知', '分析', '预测', '决策', '执行', '反馈', '优化'],
+  'sv.m.benefits': [
+    '5.15 亿人用上生成式 AI，智能数据服务第一次如此低成本地覆盖大众。',
+    '机器感知进入医院一线，帮助医生更快识别病灶、辅助诊断。',
+    '数据分析能力沉淀为灯塔工厂，中国数量全球第一，带动高技能就业。',
+    '功率预测让风、光等间歇能源可被调度，绿色电力装得下、用得好。',
+    '智能决策重配全球资源，岗位被替代的同时被更大规模地创造。',
+    '机器人承担高危重复操作，把人从危险、枯燥的岗位上解放出来。',
+    '闭环反馈持续提升全员劳动生产率，发展成果体现为人均产出增长。',
+    '持续优化延伸到田间地头，科技进步成为粮食安全的底气。',
+  ],
+  'sv.m.tk': '技术闭环的每一环都能在现实社会中找到对应：更安全的岗位、更可及的服务、更清洁的能源。',
+
+  // Industry：产业社会雷达
+  'sv.i.title': '八大产业的社会价值雷达',
+  'sv.i.desc': '用同一套六维框架（就业带动、服务可及、绿色低碳、安全健康、效率收入、创新能力）对照八大产业；雷达为概念评分，右侧锚点为可核实的真实数据。',
+  'sv.i.tk': '新质生产力不是单一产业的升级，而是就业、服务、绿色、安全在各行业的协同进步。',
+
+  // Efficiency：红利分配模拟器
+  'sv.e.title': '效率红利怎样变成社会发展',
+  'sv.e.desc': '拖动滑块调整效率红利总量与三类分配去向，观察社会发展指数如何变化——增长只有被广泛分享，才会转化为社会发展。',
+  'sv.e.sliders': ['年度效率红利总量', '流向就业与技能', '流向工资与劳动回报', '流向公共服务与民生'],
+  'sv.e.channels': ['就业与技能', '工资回报', '公共服务'],
+  'sv.e.note': '本模型为教学概念模型：社会发展指数综合红利总量与分配均衡度计算，不代表真实统计；分配越均衡，指数获得的加成越高。',
+  'sv.e.tk': '做大蛋糕与分好蛋糕同样重要：更均衡的分配让效率提升转化为更广的社会发展。',
+
+  // Dashboard：民生仪表盘
+  'sv.d.title': '民生数据仪表盘：四张图看见社会进步',
+  'sv.d.desc': '在数字普惠、医疗 AI、绿色能源、就业结构四个视图间切换，全部图表使用可核实的公开实测数据。',
+  'sv.d.tabs': ['数字普惠', '医疗 AI', '绿色能源', '就业结构'],
+  'sv.d.chartTitles': ['城乡互联网普及率（%）', 'FDA 当年批准 AI 医疗器械数', '全国可再生能源装机（亿千瓦）', '2025–2030 全球岗位变化（百万个）'],
+  'sv.d.tks': [
+    '城乡差距持续收窄，农村居民与老年群体正成为数字化的新受益者。',
+    '8 年增长约 36 倍，AI 医疗器械加速进入诊疗，优质医疗能力被规模化复制。',
+    '装机 5 年翻倍、占比过半，能源结构变绿是社会可持续发展的底座。',
+    '创造多于替代：转型期的关键是帮助劳动者完成技能转换。',
+  ],
+  'sv.d.tksEn': [
+    'The urban-rural gap keeps narrowing; rural residents and seniors are becoming new beneficiaries of digitalization.',
+    'Roughly a 36× rise in eight years: AI devices scale high-quality medical capability across frontline care.',
+    'Capacity doubled in five years and now exceeds half of total — greener energy underpins sustainable development.',
+    'More jobs created than displaced: the priority is helping workers transition with new skills.',
+  ],
+  'sv.d.jobsCats': ['新创造岗位', '被替代岗位', '净新增'],
+
+  // Future：社会发展时间轴
+  'sv.f.title': '2020 → 2035：社会发展时间轴',
+  'sv.f.desc': '播放或点选年份，观察老龄化与可再生能源两条曲线的变化：实线为实测数据，虚线与浅色区域为政策展望；生成式 AI 仅标注实测点，不作外推。',
+  'sv.f.tk': '面对老龄化与双碳目标，AI 既是应对社会挑战的工具，也是扩大绿色能源与民生供给的新动能。',
+
+  // AILab：规模化部署估算器
+  'sv.lab.title': '规模化部署：社会收益估算器',
+  'sv.lab.desc': '调整部署产线数与运行班次，估算 AI 质检规模化后的年度社会收益。全部参数为教学假设，用于理解「单点能力 → 社会规模」的换算。',
+  'sv.lab.sliders': ['AI 质检产线数', '日均运行班次'],
+  'sv.lab.outputs': ['年减少逃逸缺陷', '年节约人工工时', '年减少碳排放'],
+  'sv.lab.note': '估算口径（标准双班制假设）：每条产线每班每年减少 1,200 件逃逸缺陷；每条产线双班每年节约 8,000 工时；每条产线每年减碳 60 吨 CO₂e（与班次无关）。结果仅用于教学演示。',
+  'sv.lab.tk': '一条产线的提升是效率，成千上万条产线的提升就是质量安全、就业结构与碳排放层面的社会进步。',
+
+  // AISandbox：社会效益联动 KPI
+  'sv.sb.kpis': ['就业结构升级', '安全与环境', '生活福祉'],
+  'sv.sb.note': '三项读数由上方同一渗透水平派生，为概念推演（非统计口径）：智能化水平越高，高技能岗位占比、安全环境效益与生活便利福祉同步提升。',
+
+  /* ========== 扩展展区：生态图谱 / 价值转化 / 区域图景 ========== */
+  // Ecosystem
+  'eco.title': '生态图谱：AI 新质生产力价值网络',
+  'eco.sub': '桑基图、力导向关系图与矩形树图，从三个视角看 AI 的要素、产业与价值如何连成一张网。',
+  'eco.skTitle': '价值流向：从要素到社会价值',
+  'eco.skSub': '基础要素 → 核心能力 → 重点产业 → 社会价值，条带宽度表示概念关联强度',
+  'eco.skTk': 'AI 的社会价值不是单点奇迹，而是数据、算法、算力穿过产业层层传导的结果。',
+  'eco.gpTitle': 'AI 创新生态网络图',
+  'eco.gpSub': '基础层、模型层、应用层与治理层相互牵引；可拖拽、缩放，点击节点高亮关联',
+  'eco.gpTk': '健康的生态既要有底座与模型，也要有应用拉力与治理护栏，四层缺一不可。',
+  'eco.tmTitle': 'AI 价值贡献结构',
+  'eco.tmSub': '点击矩形可下钻；面积表示编者设定的概念权重（总和 100）',
+  'eco.tmTk': '产业落地是当前最大的价值板块，而技术驱动与社会环境为其提供双轮支撑。',
+
+  // ValueChain
+  'val.title': '价值转化：从技术到社会发展',
+  'val.sub': '漏斗、联动仪表盘与气泡矩阵，展示技术如何逐级转化为产业与社会价值。',
+  'val.fnTitle': '技术转化漏斗',
+  'val.fnSub': '从研发投入到社会价值实现的五级转化（相对指数，教学模拟）',
+  'val.fnTk': '每跨过一级都伴随衰减与筛选——转化机制设计和技术本身同样重要。',
+  'val.gaTitle': '转化效率联动仪表盘',
+  'val.gaSub': '拖动「转化投入强度」滑块，观察三个指标如何同步变化',
+  'val.gaSlider': '转化投入强度',
+  'val.gaGauges': ['技术就绪度', '产业化率', '社会价值转化率'],
+  'val.gaTk': '投入强度提升时，社会价值转化率增长更快——后发环节一旦打通，技术红利加速释放。',
+  'val.scTitle': '八大产业「创新—服务—就业」矩阵',
+  'val.scSub': '横轴创新能力、纵轴服务可及、气泡大小代表就业带动',
+  'val.scAxisX': '创新能力',
+  'val.scAxisY': '服务可及',
+  'val.scJobs': '就业带动',
+  'val.scTk': '创新强的产业未必天然服务可及——医疗、教育等行业提示我们要主动推动技术向善扩散。',
+
+  // Landscape
+  'geo.title': '区域图景：协同发展的中国版图',
+  'geo.sub': '中国地图、玫瑰图与平行坐标，从空间、结构与多维三个角度看发展的协调性。',
+  'geo.mapTitle': '省级 AI 融合活跃度（教学示意）',
+  'geo.mapSub': '颜色越深表示概念指数越高；点击省份查看指数与分级（可拖拽、缩放）',
+  'geo.mapPick': '点击或悬停省份，查看融合活跃度指数与分级',
+  'geo.mapLoading': '地图加载中…',
+  'geo.mapFail': '地图加载失败，请稍后重试',
+  'geo.mapRetry': '重新加载',
+  'geo.mapTk': '梯度差异客观存在，但数字基础设施与普惠服务正在让中西部加速追赶。',
+  'geo.rsTitle': '社会价值领域结构',
+  'geo.rsSub': '南丁格尔玫瑰图：半径表示概念权重，仅表达结构而非同口径指标',
+  'geo.rsTk': '就业、健康与绿色占据价值主体——社会发展是多目标协同，而非单一指标最大化。',
+  'geo.ppTitle': '八大产业六维平行坐标',
+  'geo.ppSub': '每条线代表一个产业；点击下方图例可筛选，观察各产业的长短板',
+  'geo.ppTk': '同一批产业数据在雷达图与平行坐标下呈现不同读法：后者更便于逐维比较。',
 } satisfies Record<string, DictValue>
 
 export type Dict = Record<keyof typeof zh, DictValue>
@@ -780,6 +918,10 @@ export const en: Dict = {
     'Goldman Sachs Research: Generative AI Could Raise Global GDP by 7% (Apr 2023)',
     'IFR: World Robotics 2024 (Nov 2024)',
     'WIPO: Generative AI Patent Landscape Report (Jul 2024)',
+    'CNNIC: 47th and 56th Statistical Reports on China’s Internet Development (Feb 2021 / Jul 2025)',
+    'National Energy Administration of China: 2024 Renewable Energy Grid Connection (27 Jan 2025)',
+    'Ministry of Agriculture and Rural Affairs of China: 2024 agricultural S&T contribution and mechanization data (People’s Daily, 17 Dec 2024)',
+    'Xinhua (gov.cn): policy outlook on population aging — 60+ population projection toward 2035 (30 Nov 2025)',
   ],
   'f2.note': 'Data shown for teaching visualization only; the productivity simulator and AI lab are front-end simulations, not statistics; the industry heatmap and the 3-mode radar are concept models compiled from public material.',
   'f2.credit': '2026 · University coursework · teaching visualization expo',
@@ -825,4 +967,138 @@ export const en: Dict = {
   'j.c9s': 'Four basic concepts that build a shared language for understanding AI.',
   'j.c9b1': 'Algorithm: a set of rules to reach a goal; AI: making computers do tasks that normally need human intelligence.',
   'j.c9b2': 'Machine learning: training models on data; deep learning: multi-layer networks for complex patterns.',
+
+  /* ========== Social impact (embedded interactive panels) ========== */
+  // Hero: six livelihood domains
+  'sv.h.title': 'AI in Everyday Life: Verified Change Across Six Livelihood Domains',
+  'sv.h.desc': 'Tap any domain to see verified figures on how AI and digitalization are changing jobs, healthcare, eldercare, inclusion, food and energy.',
+  'sv.h.domains': ['Jobs', 'Healthcare', 'Eldercare', 'Inclusion', 'Food security', 'Green energy'],
+  'sv.h.tks': [
+    'More jobs are created than displaced — employment grows on net amid the transition.',
+    'AI is moving from labs to frontline care, expanding the supply of high-quality medical capability.',
+    'Digital services help 310 million seniors share in an intelligent society and cross the digital divide.',
+    'The urban-rural digital gap narrowed by 8.2 pct in five years — development gains become more equal.',
+    'Agricultural S&T contributes over 63% of growth — technological progress safeguards food for 1.4 billion people.',
+    'Renewable capacity doubled in five years; AI forecasting makes green power more reliable.',
+  ],
+
+  // Understand: wellbeing modes
+  'sv.u.title': 'Social Wellbeing: Two Development Modes Compared',
+  'sv.u.desc': 'Switch between Traditional and AI-augmented modes to compare wellbeing across four dimensions: job quality, environment, service access and income efficiency. Scores are an editorial concept model (not a statistic) anchored to verified public data.',
+  'sv.u.modes': ['Traditional mode', 'AI-augmented mode'],
+  'sv.u.tk': 'AI means more than faster production: when job quality, service access and the environment improve together, wellbeing is the true endpoint of productivity.',
+
+  // Mechanism: eight-node social value
+  'sv.m.title': 'Every Step of the Intelligence Loop Maps to a Real Social Outcome',
+  'sv.m.desc': 'Click the eight stages of the data loop to see verified social-value anchors already taking place (all from public, measured data).',
+  'sv.m.nodes': ['Data', 'Perception', 'Analysis', 'Prediction', 'Decision', 'Execution', 'Feedback', 'Optimization'],
+  'sv.m.benefits': [
+    '515 million people now use generative AI — intelligent data services reach the public at unprecedentedly low cost.',
+    'Machine perception reaches hospital frontlines, helping doctors spot lesions faster and aiding diagnosis.',
+    'Data-analysis capability is embodied in Lighthouse factories — China hosts more than any country, driving high-skill jobs.',
+    'Output forecasting makes intermittent wind and solar power schedulable, so green capacity can be installed and used.',
+    'Intelligent decisions reallocate resources globally: jobs are displaced, but created on a larger scale.',
+    'Robots take over high-risk repetitive tasks, freeing people from dangerous, monotonous work.',
+    'Closed-loop feedback keeps lifting overall labor productivity — gains show up as higher output per person.',
+    'Continuous optimization reaches the fields: scientific and technological progress underpins food security.',
+  ],
+  'sv.m.tk': 'Every link of the technology loop has a real-world counterpart: safer jobs, more accessible services, cleaner energy.',
+
+  // Industry: industry social radar
+  'sv.i.title': 'Social-Value Radar Across Eight Industries',
+  'sv.i.desc': 'A shared six-dimension framework (jobs, access, low-carbon, safety & health, efficiency & income, innovation) compares all eight industries. The radar is an editorial concept score; the card on the right shows a verified data anchor where one exists.',
+  'sv.i.tk': 'New quality productivity is not a single industry upgrading — it is coordinated progress in jobs, services, sustainability and safety across all sectors.',
+
+  // Efficiency: dividend allocation simulator
+  'sv.e.title': 'How Efficiency Gains Become Social Development',
+  'sv.e.desc': 'Drag the sliders to set the total efficiency dividend and its three allocation channels, and watch the social development index respond — growth becomes social development only when it is broadly shared.',
+  'sv.e.sliders': ['Annual efficiency dividend', 'To jobs & skills', 'To wages & labor returns', 'To public services & livelihoods'],
+  'sv.e.channels': ['Jobs & skills', 'Wage returns', 'Public services'],
+  'sv.e.note': 'Teaching concept model: the index combines dividend volume and allocation balance; it is not a real statistic. More balanced allocation earns a small bonus.',
+  'sv.e.tk': 'Growing the pie and sharing it both matter: more balanced allocation turns efficiency gains into broader social development.',
+
+  // Dashboard: livelihood dashboard
+  'sv.d.title': 'Livelihood Data Dashboard: Social Progress in Four Charts',
+  'sv.d.desc': 'Switch between digital inclusion, medical AI, green energy and jobs. Every chart uses verified, publicly available measured data.',
+  'sv.d.tabs': ['Inclusion', 'Medical AI', 'Green energy', 'Jobs'],
+  'sv.d.chartTitles': ['Urban vs rural internet penetration (%)', 'AI medical devices authorized by U.S. FDA per year', 'National renewable capacity (100M kW)', 'Global job change 2025–2030 (million)'],
+  'sv.d.tks': [
+    '城乡差距持续收窄，农村居民与老年群体正成为数字化的新受益者。',
+    '8 年增长约 36 倍，AI 医疗器械加速进入诊疗，优质医疗能力被规模化复制。',
+    '装机 5 年翻倍、占比过半，能源结构变绿是社会可持续发展的底座。',
+    '创造多于替代：转型期的关键是帮助劳动者完成技能转换。',
+  ],
+  'sv.d.tksEn': [
+    'The urban-rural gap keeps narrowing; rural residents and seniors are becoming new beneficiaries of digitalization.',
+    'Roughly a 36× rise in eight years: AI devices scale high-quality medical capability across frontline care.',
+    'Capacity doubled in five years and now exceeds half of total — greener energy underpins sustainable development.',
+    'More jobs created than displaced: the priority is helping workers transition with new skills.',
+  ],
+  'sv.d.jobsCats': ['Created', 'Displaced', 'Net new'],
+
+  // Future: social timeline
+  'sv.f.title': '2020 → 2035: A Social Development Timeline',
+  'sv.f.desc': 'Play or tap the years to watch two curves — population aging and renewable capacity. Solid lines are measured data; dashed lines and the shaded zone are policy outlook. Generative AI shows measured points only, with no extrapolation.',
+  'sv.f.tk': 'Facing aging and the dual-carbon goals, AI is both a tool for societal challenges and a new driver expanding green energy and livelihood supply.',
+
+  // AILab: scaled deployment estimator
+  'sv.lab.title': 'Scaled Deployment: A Social-Benefit Estimator',
+  'sv.lab.desc': 'Adjust the number of deployed lines and daily shifts to estimate the annual social benefits when AI inspection scales up. All coefficients are teaching assumptions, illustrating how a single-site capability converts to society-wide scale.',
+  'sv.lab.sliders': ['AI-inspection lines', 'Shifts per day'],
+  'sv.lab.outputs': ['Escaped defects avoided / year', 'Labor hours saved / year', 'Carbon emissions avoided / year'],
+  'sv.lab.note': 'Assumptions (standard two-shift basis): 1,200 fewer escaped defects per line per shift-year; 8,000 labor hours saved per line on two shifts per year; 60 tCO₂e avoided per line-year (shift-independent). For teaching demonstration only.',
+  'sv.lab.tk': 'One upgraded line is efficiency; thousands of upgraded lines add up to social progress in quality and safety, employment structure and carbon emissions.',
+
+  // AISandbox: linked social KPI
+  'sv.sb.kpis': ['Job-structure upgrade', 'Safety & environment', 'Life wellbeing'],
+  'sv.sb.note': 'Derived from the same penetration level above — a conceptual projection (not a statistic): as intelligence deepens, high-skill employment, safety/environmental gains and everyday wellbeing rise together.',
+
+  /* ========== Extension halls: Ecosystem / Value chain / Landscape ========== */
+  // Ecosystem
+  'eco.title': 'Ecosystem Map: The Value Network of AI-driven Productivity',
+  'eco.sub': 'A Sankey diagram, a force-directed network and a treemap — three lenses on how AI’s elements, industries and value form one web.',
+  'eco.skTitle': 'Value Flow: From Elements to Social Outcomes',
+  'eco.skSub': 'Elements → capabilities → industries → social value; band width shows conceptual link strength',
+  'eco.skTk': 'Social value is not a single-point miracle — data, algorithms and computing flow through industries layer by layer.',
+  'eco.gpTitle': 'The AI Innovation Ecosystem Network',
+  'eco.gpSub': 'Foundation, models, applications and governance pull on one another. Drag, zoom, click a node to highlight links.',
+  'eco.gpTk': 'A healthy ecosystem needs both a base and models, plus demand from applications and guardrails from governance.',
+  'eco.tmTitle': 'Structure of AI Value Contribution',
+  'eco.tmSub': 'Click a rectangle to drill in; area shows editorial concept weights (sum = 100)',
+  'eco.tmTk': 'Industrial adoption is the largest value block, powered on two wheels by technology drivers and the social environment.',
+
+  // ValueChain
+  'val.title': 'Value Chain: From Technology to Social Development',
+  'val.sub': 'A funnel, linked gauges and a bubble matrix show how technology converts, stage by stage, into industrial and social value.',
+  'val.fnTitle': 'The Technology Conversion Funnel',
+  'val.fnSub': 'Five stages from R&D input to social value (relative index, teaching simulation)',
+  'val.fnTk': 'Every stage narrows and filters — designing the conversion mechanism matters as much as the technology itself.',
+  'val.gaTitle': 'Linked Conversion-Efficiency Gauges',
+  'val.gaSub': 'Drag the “conversion effort” slider and watch the three indicators respond together',
+  'val.gaSlider': 'Conversion effort',
+  'val.gaGauges': ['Technology readiness', 'Industrialization rate', 'Social-value conversion'],
+  'val.gaTk': 'As effort rises, social-value conversion grows fastest — once the later links connect, the dividend accelerates.',
+  'val.scTitle': 'Eight Industries: Innovation–Access–Jobs Matrix',
+  'val.scSub': 'X = innovation, Y = service access, bubble size = job creation',
+  'val.scAxisX': 'Innovation',
+  'val.scAxisY': 'Service access',
+  'val.scJobs': 'Job creation',
+  'val.scTk': 'Innovative industries are not automatically accessible — healthcare and education remind us to steer diffusion intentionally.',
+
+  // Landscape
+  'geo.title': 'Landscape: Coordinated Development Across China',
+  'geo.sub': 'A China map, a Nightingale rose chart and a parallel-coordinate plot — space, structure and multiple dimensions of coordination.',
+  'geo.mapTitle': 'Provincial AI Integration Activity (Teaching View)',
+  'geo.mapSub': 'Deeper color means a higher concept index; click a province for its index and tier (drag and zoom enabled)',
+  'geo.mapPick': 'Click or hover a province to see its activity index and tier',
+  'geo.mapLoading': 'Loading map…',
+  'geo.mapFail': 'Failed to load the map. Please try again.',
+  'geo.mapRetry': 'Reload',
+  'geo.mapTk': 'Regional gaps are real, but digital infrastructure and inclusive services are letting central and western regions catch up faster.',
+  'geo.rsTitle': 'Structure of Social-Value Domains',
+  'geo.rsSub': 'Nightingale rose chart: radius shows concept weight — structure only, not same-basis indicators',
+  'geo.rsTk': 'Jobs, health and green outcomes dominate — social development is multi-objective coordination, not maximizing one metric.',
+  'geo.ppTitle': 'Eight Industries on Six Parallel Axes',
+  'geo.ppSub': 'Each line is an industry; use the legend to filter and compare strengths and gaps dimension by dimension',
+  'geo.ppTk': 'The same matrix reads differently as a radar and as parallel coordinates — the latter makes dimension-by-dimension comparison easier.',
 }

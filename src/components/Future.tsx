@@ -21,6 +21,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import TakeawayNote from './ui/TakeawayNote'
+import FutureSocial from './social/FutureSocial'
 import { PALETTE } from '@/data/site'
 import { FUTURE_FORECASTS } from '@/data/realData'
 import { useLanguage } from '@/i18n/LanguageContext'
@@ -270,6 +271,11 @@ export default function Future() {
         {/* 未来智能工厂 */}
         <Reveal className="mt-14">
           <FutureFactory />
+        </Reveal>
+
+        {/* 社会发展视角：社会发展时间轴播放器 */}
+        <Reveal className="mt-14">
+          <FutureSocial />
         </Reveal>
       </div>
     </section>

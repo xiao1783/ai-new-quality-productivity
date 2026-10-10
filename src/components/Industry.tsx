@@ -19,6 +19,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import TakeawayNote from './ui/TakeawayNote'
+import IndustrySocial from './social/IndustrySocial'
 import { INDUSTRIES } from '@/data/industryData'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { EXPLORER_TABS } from './IndustryScenes'
@@ -279,6 +280,11 @@ export default function Industry() {
             </AnimatePresence>
           </div>
           <TakeawayNote className="mx-4 mt-5 sm:mx-6" accent={activeCase.accent}>{t('i.tkExplorer')}</TakeawayNote>
+        </Reveal>
+
+        {/* 社会发展视角：产业社会价值雷达 + 真实锚点 */}
+        <Reveal className="mt-14">
+          <IndustrySocial industry={current} />
         </Reveal>
       </div>
     </section>

@@ -8,6 +8,9 @@ export const NAV_ITEMS = [
   { id: 'future', label: '未来', en: 'Future' },
   { id: 'lab', label: '实验室', en: 'Lab' },
   { id: 'sandbox', label: '沙盘', en: 'Sandbox' },
+  { id: 'ecosystem', label: '生态', en: 'Ecosystem' },
+  { id: 'value', label: '转化', en: 'Value' },
+  { id: 'landscape', label: '区域', en: 'Regions' },
 ] as const
 
 /** 统一图表配色 */

@@ -20,6 +20,7 @@ import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import SourceNote from './ui/SourceNote'
 import TakeawayNote from './ui/TakeawayNote'
+import UnderstandSocial from './social/UnderstandSocial'
 import { useLanguage } from '@/i18n/LanguageContext'
 
 const TRANSFORM_PAIRS = [
@@ -1015,6 +1016,13 @@ export default function Understand() {
               <FeatureCard feature={f} text={featureTexts[i]} />
             </Reveal>
           ))}
+        </div>
+
+        {/* 社会发展视角：两种模式社会福祉对照 */}
+        <div className="mt-14">
+          <Reveal>
+            <UnderstandSocial />
+          </Reveal>
         </div>
       </div>
     </section>

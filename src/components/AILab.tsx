@@ -18,6 +18,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import EChart from './charts/EChart'
+import LabSocial from './social/LabSocial'
 import { PALETTE } from '@/data/site'
 import { useLanguage } from '@/i18n/LanguageContext'
 
@@ -478,6 +479,11 @@ export default function AILab() {
               </AnimatePresence>
             </div>
           </div>
+        </Reveal>
+
+        {/* 社会发展视角：规模化部署社会收益估算器（教学模拟） */}
+        <Reveal className="mt-10">
+          <LabSocial />
         </Reveal>
       </div>
     </section>

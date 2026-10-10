@@ -35,3 +35,7 @@ pnpm-debug.log*
 # 本地工具产物
 .zcode/
 shots/
+.trae/
+
+# 视频制作工作目录（素材/录制/导出，体积大，不入库）
+video/

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { ArrowRight, BarChart3, BadgeCheck, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 import AICoreGraph from './AICoreGraph'
+import Reveal from './ui/Reveal'
+import HeroSocial from './social/HeroSocial'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { HERO_STATS, HERO_STATS_SOURCE } from '@/data/realData'
 
@@ -134,6 +136,11 @@ export default function Hero() {
           </div>
           <p className="hero-metric mx-auto mt-4 max-w-[560px] rounded-2xl px-4 py-2.5 text-center text-[11.5px] leading-relaxed text-body">{t('h.coreNote')}</p>
         </motion.div>
+
+        {/* 社会发展视角：六大民生领域实测数据 */}
+        <Reveal className="mt-6 lg:col-span-2">
+          <HeroSocial />
+        </Reveal>
       </div>
 
       {/* 滚动提示 */}

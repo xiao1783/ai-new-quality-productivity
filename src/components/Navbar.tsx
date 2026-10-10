@@ -55,13 +55,13 @@ export default function Navbar() {
           <span className="text-[21px] font-black tracking-wide text-ink">智启新质</span>
         </button>
 
-        {/* Desktop links */}
-        <div className="hidden translate-x-6 items-center gap-1 lg:flex">
+        {/* Desktop links（12 项导航，<2xl 折叠进汉堡菜单以避免拥挤） */}
+        <div className="hidden items-center gap-0.5 2xl:flex">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => go(item.id)}
-              className={`relative rounded-lg px-3.5 py-2 text-[14.5px] font-medium transition-colors ${
+              className={`relative rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors ${
                 active === item.id ? 'text-brand' : 'text-body hover:text-ink'
               }`}
             >
@@ -76,7 +76,7 @@ export default function Navbar() {
         {/* CTA + language toggle + mobile menu */}
         <div className="flex items-center gap-2">
           <LanguageToggle />
-          <div className="hidden items-center gap-2 sm:flex">
+          <div className="hidden items-center gap-2 2xl:flex">
             <button
               onClick={() => go('ai-experience')}
               className="btn btn-ghost !px-4 !py-2.5 !text-[14px]"
@@ -93,7 +93,7 @@ export default function Navbar() {
             </button>
           </div>
           <button
-            className="rounded-xl p-2 text-ink lg:hidden"
+            className="rounded-xl p-2 text-ink 2xl:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="菜单"
           >
@@ -104,7 +104,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="glass absolute top-[76px] w-full max-w-[1400px] rounded-[20px] p-3 lg:hidden">
+        <div className="glass absolute top-[76px] w-full max-w-[1400px] rounded-[20px] p-3 2xl:hidden">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}

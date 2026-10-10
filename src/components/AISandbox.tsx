@@ -4,6 +4,7 @@ import { Gauge, Info, RotateCcw, Sparkles, TrendingDown, TrendingUp, Zap } from 
 import Reveal from './ui/Reveal'
 import SectionHeading from './ui/SectionHeading'
 import TakeawayNote from './ui/TakeawayNote'
+import SandboxSocial from './social/SandboxSocial'
 import { useLanguage } from '@/i18n/LanguageContext'
 
 /* ---------- 模型：五个参数 → 渗透水平 → 指数 / KPI ---------- */
@@ -679,6 +680,9 @@ export default function AISandbox() {
                     )
                   })}
                 </div>
+
+                {/* 社会效益第二行 KPI：由同一 level 派生，随七阶段联动 */}
+                <SandboxSocial level={cfg.level} />
               </div>
             </Reveal>
 

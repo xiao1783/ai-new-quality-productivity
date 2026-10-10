@@ -7,6 +7,7 @@ import CountUp from './ui/CountUp'
 import EChart from './charts/EChart'
 import SourceNote from './ui/SourceNote'
 import TakeawayNote from './ui/TakeawayNote'
+import DashboardSocial from './social/DashboardSocial'
 import { PALETTE } from '@/data/site'
 import { INDUSTRIES } from '@/data/industryData'
 import {
@@ -387,6 +388,11 @@ export default function Dashboard() {
             </div>
             <TakeawayNote className="mt-4" accent={PALETTE.teal}>{t('d.tkHeat')}</TakeawayNote>
           </div>
+        </Reveal>
+
+        {/* 社会发展视角：民生数据仪表盘（可切换） */}
+        <Reveal className="mt-6">
+          <DashboardSocial />
         </Reveal>
       </div>
     </section>

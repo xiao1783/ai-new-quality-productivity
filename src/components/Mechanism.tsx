@@ -18,6 +18,7 @@ import {
 import SectionHeading from './ui/SectionHeading'
 import Reveal from './ui/Reveal'
 import TakeawayNote from './ui/TakeawayNote'
+import MechanismSocial from './social/MechanismSocial'
 import { useLanguage } from '@/i18n/LanguageContext'
 
 type LoopNodeId = 'data' | 'perception' | 'analysis' | 'prediction' | 'decision' | 'execution' | 'feedback' | 'optimization'
@@ -591,6 +592,11 @@ export default function Mechanism() {
             </Reveal>
           ))}
         </div>
+
+        {/* 社会发展视角：闭环八节点社会价值锚点 */}
+        <Reveal className="mt-20">
+          <MechanismSocial />
+        </Reveal>
       </div>
     </section>
   )
